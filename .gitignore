@@ -1,0 +1,11 @@
+gradle.log
+.gradle
+.DS_Store
+local.properties
+**/gen/*
+build/
+output/
+captures/
+.idea
+!.idea/codeStyleSettings.xml
+*.iml
