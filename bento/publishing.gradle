@@ -1,0 +1,26 @@
+apply plugin: 'digital.wup.android-maven-publish'
+apply plugin: 'net.linguica.maven-settings'
+
+group GROUP
+version VERSION
+
+publishing {
+    publications {
+        mavenAar(MavenPublication) {
+            from components.android
+            artifact androidSourcesJar
+        }
+    }
+
+    repositories {
+        maven {
+            if (VERSION.endsWith("-SNAPSHOT")) {
+                name "nexus-snapshots"
+                url SNAPSHOT_NEXUS_URL
+            } else {
+                name "nexus-releases"
+                url RELEASE_NEXUS_URL
+            }
+        }
+    }
+}
