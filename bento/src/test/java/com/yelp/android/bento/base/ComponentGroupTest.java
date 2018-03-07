@@ -4,6 +4,9 @@ import com.yelp.android.bento.core.Component;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +17,12 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /** Unit tests for {@link ComponentGroup}. */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ComponentGroup.class)
 public class ComponentGroupTest {
 
     private ComponentGroup mComponentGroup;
@@ -61,15 +67,17 @@ public class ComponentGroupTest {
     @Test
     public void test_NotifyRangeUpdated_ComponentRemoved_CallsNotifyItemRangeRemoved() {
         ListComponent<String, String> listComponent = new ListComponent<>(null, null);
+        listComponent.toggleDivider(false);
         List<String> fakeData = new ArrayList<>(Arrays.asList("a", "b", "c", "d", "e", "f"));
-        Component spyObserver = spy(Component.class);
+        ComponentGroup spyObserver = spy(new ComponentGroup());
 
-        mComponentGroup.addComponent(listComponent);
+        spyObserver.addComponent(listComponent);
         listComponent.setData(fakeData);
 
         fakeData.remove(4);
         listComponent.setData(fakeData);
-        verify(spyObserver).notifyItemRangeRemoved(4, 1);
+        // notifyItemRangeRemoved is a final method. This is why we have to use PowerMock.
+        verify(spyObserver, times(1)).notifyItemRangeRemoved(4, 1);
     }
 
     private List<Component> createMockComponents(int numComponents) {

@@ -38,7 +38,7 @@ public class ViewPagerComponent extends Component implements ComponentController
     }
 
     @Override
-    public Class getItemHolderType(int position) {
+    public Class<? extends ComponentViewHolder> getItemHolderType(int position) {
         return ViewPagerViewHolder.class;
     }
 
