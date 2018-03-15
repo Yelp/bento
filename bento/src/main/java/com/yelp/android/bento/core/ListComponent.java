@@ -1,4 +1,4 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -7,8 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.yelp.android.bento.R;
-import com.yelp.android.bento.core.Component;
-import com.yelp.android.bento.core.ComponentViewHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,30 +52,6 @@ public class ListComponent<P, T> extends Component {
             mData.remove(index);
             notifyItemRangeRemoved(getRemoveIndexStart(index), getRemoveItemCount());
         }
-    }
-
-    @Override
-    public P getPresenter(int position) {
-        return mPresenter;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        if (mShouldShowDivider) {
-            return isListItem(position) ? getListItem(position / 2) : null;
-        }
-
-        return getListItem(position);
-    }
-
-    @Override
-    public int getItemCount() {
-        return mShouldShowDivider ? getTotalSizeWithSeparators(mData.size()) : mData.size();
-    }
-
-    @Override
-    public Class<? extends ComponentViewHolder> getItemHolderType(int position) {
-        return isListItem(position) ? mListItemViewHolder : mDividerViewHolder;
     }
 
     public void toggleDivider(boolean shouldShowDivider) {
@@ -128,6 +103,30 @@ public class ListComponent<P, T> extends Component {
      */
     @CallSuper
     protected void onGetListItem(int position) {}
+
+    @Override
+    public Object getItem(int position) {
+        if (mShouldShowDivider) {
+            return isListItem(position) ? getListItem(position / 2) : null;
+        }
+
+        return getListItem(position);
+    }
+
+    @Override
+    public P getPresenter(int position) {
+        return mPresenter;
+    }
+
+    @Override
+    public int getCount() {
+        return mShouldShowDivider ? getTotalSizeWithSeparators(mData.size()) : mData.size();
+    }
+
+    @Override
+    protected Class<? extends ComponentViewHolder> getHolderType(int position) {
+        return isListItem(position) ? mListItemViewHolder : mDividerViewHolder;
+    }
 
     private T getListItem(int position) {
         onGetListItem(position);

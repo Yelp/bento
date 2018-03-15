@@ -1,0 +1,216 @@
+package com.yelp.android.bento.core;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.spy;
+
+/** Unit tests for {@link ComponentGroup}. */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ComponentGroup.class)
+public class ComponentGroupTest {
+
+    private ComponentGroup mComponentGroup;
+
+    @Before
+    public void setup() {
+        mComponentGroup = new ComponentGroup();
+    }
+
+    @Test
+    public void removeComponent() {
+        mComponentGroup.addAll(createMockComponents(1));
+        Component mockComponent = mComponentGroup.get(0);
+        assertTrue(mComponentGroup.contains(mockComponent));
+        assertEquals(0, mComponentGroup.indexOf(mockComponent));
+        mComponentGroup.remove(mockComponent);
+        assertFalse(mComponentGroup.contains(mockComponent));
+        assertEquals(-1, mComponentGroup.indexOf(mockComponent));
+    }
+
+    @Test
+    public void componentGroupWithGap_MapsItemsPropery() {
+        Component simpleComponent = new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class);
+        simpleComponent.setTopGap(250);
+        simpleComponent.setBottomGap(125);
+        mComponentGroup.addComponent(simpleComponent);
+        mComponentGroup.setTopGap(250);
+
+        // Counts
+        assertEquals( 4, mComponentGroup.getCountInternal()); // Gap -> Gap -> SimpleComponent -> Gap
+        assertEquals(3, mComponentGroup.getCount()); // Gap -> SimpleComponent -> Gap
+        assertEquals(3, mComponentGroup.getSpan()); // Gap -> SimpleComponent -> Gap
+        assertEquals(1, mComponentGroup.getSize()); // SimpleComponent
+
+        // Presenters
+        assertEquals(null, mComponentGroup.getPresenterInternal(0)); // Gap
+        assertEquals(null, mComponentGroup.getPresenterInternal(1)); // Gap
+        assertEquals(Integer.MAX_VALUE, mComponentGroup.getPresenterInternal(2)); // Actual component
+        assertEquals(null, mComponentGroup.getPresenterInternal(3)); // Gap
+
+        // View Holders
+        assertEquals(GapViewHolder.class, mComponentGroup.getHolderTypeInternal(0)); // Gap
+        assertEquals(GapViewHolder.class, mComponentGroup.getHolderTypeInternal(1)); // Gap
+        assertEquals(SimpleComponentViewHolder.class, mComponentGroup.getHolderTypeInternal(2)); // Actual component
+        assertEquals(GapViewHolder.class, mComponentGroup.getHolderTypeInternal(3)); // Gap
+
+        // Items
+        assertEquals(250, mComponentGroup.getItemInternal(0)); // Gap
+        assertEquals(250, mComponentGroup.getItemInternal(1)); // Gap
+        assertEquals(null, mComponentGroup.getItemInternal(2)); // Actual component
+        assertEquals(125, mComponentGroup.getItemInternal(3)); // Gap
+    }
+
+    @Test
+    public void componentGroupWithBottomGap_DoesntNotifyGaps(){
+        mComponentGroup.setBottomGap(250);
+        Component simpleComponent = spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+        mComponentGroup.addComponent(simpleComponent);
+        // The system will tell the component group that the gap element is visible on the screen.
+        mComponentGroup.notifyVisibilityChange(1, true);
+
+        verify(simpleComponent, times(0)).onItemVisible(0);
+    }
+
+    @Test
+    public void componentGroupWithBottomGap_NotifiesChildren(){
+        mComponentGroup.setBottomGap(250);
+        Component simpleComponent = spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+        mComponentGroup.addComponent(simpleComponent);
+        // The system will tell the component group that the gap element is visible on the screen.
+        mComponentGroup.notifyVisibilityChange(0, true);
+
+        verify(simpleComponent, times(1)).onItemVisible(0);
+    }
+
+    @Test
+    public void componentGroupWithTopGap_DoesntNotifyGaps(){
+        mComponentGroup.setTopGap(250);
+        Component simpleComponent = spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+        mComponentGroup.addComponent(simpleComponent);
+        // The system will tell the component group that the gap element is visible on the screen.
+        mComponentGroup.notifyVisibilityChange(0, true);
+
+        verify(simpleComponent, times(0)).onItemVisible(0);
+    }
+
+    @Test
+    public void componentGroupWithTopGap_NotifiesChildren(){
+        mComponentGroup.setTopGap(250);
+        Component simpleComponent = spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+        mComponentGroup.addComponent(simpleComponent);
+        // The system will tell the component group that the gap element is visible on the screen.
+        mComponentGroup.notifyVisibilityChange(1, true);
+
+        verify(simpleComponent, times(1)).onItemVisible(0);
+    }
+
+    @Test
+    public void componentGroupMultipleComponents_ProperVisibilityNotifications() {
+        Component simpleComponent1 = spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+        simpleComponent1.setTopGap(250);
+        mComponentGroup.addComponent(simpleComponent1);
+
+        Component simpleComponent2 = spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+        simpleComponent2.setTopGap(250);
+        mComponentGroup.addComponent(simpleComponent2);
+
+        Component simpleComponent3 = spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+        simpleComponent3.setTopGap(250);
+        mComponentGroup.addComponent(simpleComponent3);
+
+        // Gap no notifications
+        mComponentGroup.notifyVisibilityChange(0, true);
+        verify(simpleComponent1, times(0)).onItemVisible(anyInt());
+
+        // Simple component notify
+        mComponentGroup.notifyVisibilityChange(1, true);
+        verify(simpleComponent1, times(1)).onItemVisible(0);
+
+        // Gap no notifications
+        mComponentGroup.notifyVisibilityChange(2, true);
+        verify(simpleComponent2, times(0)).onItemVisible(anyInt());
+
+        // Simple component notify
+        mComponentGroup.notifyVisibilityChange(3, true);
+        verify(simpleComponent2, times(1)).onItemVisible(0);
+
+        // Gap no notifications
+        mComponentGroup.notifyVisibilityChange(4, true);
+        verify(simpleComponent3, times(0)).onItemVisible(anyInt());
+
+        // Simple component notify
+        mComponentGroup.notifyVisibilityChange(5, true);
+        verify(simpleComponent3, times(1)).onItemVisible(0);
+    }
+
+    @Test
+    public void removePrecedingComponent_MaintainsValidIndices() {
+        List<Component> mockComponents = createMockComponents(2);
+        mComponentGroup.addAll(mockComponents);
+
+        for (int i = 0; i < mockComponents.size(); i++) {
+            assertTrue(mComponentGroup.contains(mockComponents.get(i)));
+            assertEquals(i, mComponentGroup.indexOf(mockComponents.get(i)));
+        }
+
+        // Remove preceding component.
+        Component precedingComponent = mockComponents.get(0);
+        mComponentGroup.remove(precedingComponent);
+        assertFalse(mComponentGroup.contains(precedingComponent));
+
+        // Assert remaining component still at valid index.
+        Component subsequentComponent = mockComponents.get(1);
+        assertTrue(mComponentGroup.contains(subsequentComponent));
+        assertEquals(0, mComponentGroup.indexOf(subsequentComponent));
+    }
+
+    @Test
+    // Todo This test fails because Bento has a bug in ComponentGroup.notifyRangeUpdated().
+    //
+    public void test_NotifyRangeUpdated_ComponentRemoved_CallsNotifyItemRangeRemoved() {
+        ListComponent<String, String> listComponent = new ListComponent<>(null, null);
+        listComponent.toggleDivider(false);
+        List<String> fakeData = new ArrayList<>(Arrays.asList("a", "b", "c", "d", "e", "f"));
+        ComponentGroup spyObserver = spy(new ComponentGroup());
+
+        spyObserver.addComponent(listComponent);
+        listComponent.setData(fakeData);
+
+        fakeData.remove(4);
+        listComponent.setData(fakeData);
+
+
+        // Alright this is unintuitive, but since Bento doesn't implement proper
+        // diffing we notify that all items in the existing list have been changed and that the
+        // list has changed by a size of 1. We notify the size change by saying the last element has
+        // been deleted.
+
+        // notifyItemRangeRemoved is a final method. This is why we have to use PowerMock.
+        verify(spyObserver, times(1)).notifyItemRangeChanged(0, 5);
+        verify(spyObserver, times(1)).notifyItemRangeRemoved(5, 1);
+    }
+
+    private List<Component> createMockComponents(int numComponents) {
+        List<Component> components = new ArrayList<>(numComponents);
+        for (int i = 0; i < numComponents; i++) {
+            components.add(mock(Component.class));
+        }
+
+        return components;
+    }
+}

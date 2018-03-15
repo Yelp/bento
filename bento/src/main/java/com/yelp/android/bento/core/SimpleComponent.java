@@ -1,4 +1,6 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
+
+import android.support.annotation.Nullable;
 
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.ComponentController;
@@ -31,18 +33,21 @@ public class SimpleComponent<P> extends Component {
         return mPresenter;
     }
 
-    @Override
-    public Object getItem(int position) {
-        return null;
-    }
 
     @Override
-    public int getItemCount() {
+    public int getCount() {
         return 1;
     }
 
     @Override
-    public Class<? extends ComponentViewHolder> getItemHolderType(int position) {
+    protected Class<? extends ComponentViewHolder> getHolderType(int position) {
         return mViewHolderType;
     }
+
+    @Override
+    @Nullable
+    public Object getItem(int position) {
+        return null;
+    }
+
 }

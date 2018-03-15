@@ -1,4 +1,4 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,9 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.yelp.android.bento.R;
-import com.yelp.android.bento.core.Component;
-import com.yelp.android.bento.core.ComponentController;
-import com.yelp.android.bento.core.ComponentViewHolder;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import java.util.Collection;
 
@@ -20,26 +17,6 @@ public class ViewPagerComponent extends Component implements ComponentController
 
     public ViewPagerComponent() {
         mComponentController = ViewPagerComponentController.create();
-    }
-
-    @Override
-    public Object getPresenter(int position) {
-        return null;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mComponentController;
-    }
-
-    @Override
-    public int getItemCount() {
-        return 1;
-    }
-
-    @Override
-    public Class<? extends ComponentViewHolder> getItemHolderType(int position) {
-        return ViewPagerViewHolder.class;
     }
 
     @Override
@@ -123,6 +100,26 @@ public class ViewPagerComponent extends Component implements ComponentController
     @Override
     public void clear() {
         mComponentController.clear();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return mComponentController;
+    }
+
+    @Override
+    public Object getPresenter(int position) {
+        return null;
+    }
+
+    @Override
+    public int getCount() {
+        return 1;
+    }
+
+    @Override
+    protected Class<? extends ComponentViewHolder> getHolderType(int position) {
+        return ViewPagerViewHolder.class;
     }
 
     public static class ViewPagerViewHolder<P, T extends ViewPagerComponentController>

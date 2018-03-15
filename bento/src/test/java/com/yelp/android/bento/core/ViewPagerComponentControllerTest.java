@@ -1,4 +1,4 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -12,9 +12,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import android.support.v4.view.ViewPager;
-import com.yelp.android.bento.base.ComponentGroup.ComponentGroupDataObserver;
+
+import com.yelp.android.bento.core.ComponentGroup;
+import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
+import com.yelp.android.bento.core.ViewPagerComponentController;
+
 import org.junit.Before;
 import org.junit.Test;
 

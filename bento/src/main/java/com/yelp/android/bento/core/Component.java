@@ -1,8 +1,12 @@
 package com.yelp.android.bento.core;
 
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.Px;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
+
 import com.yelp.android.bento.utils.Observable;
 
 /** Represents a self-contained component to be used with {@link ComponentController}. */
@@ -12,13 +16,21 @@ public abstract class Component {
 
     private int mColumns = 1;
 
+    @Px
+    private int mTopGapSize = 0;
+
+    @Px
+    private int mBottomGapSize = 0;
+
+    @Nullable
     public abstract Object getPresenter(int position);
 
+    @Nullable
     public abstract Object getItem(int position);
 
-    public abstract int getItemCount();
+    public abstract int getCount();
 
-    public abstract Class<? extends ComponentViewHolder> getItemHolderType(int position);
+    protected abstract Class<? extends ComponentViewHolder> getHolderType(int position);
 
     /** Notify observers that the {@link Component} data has changed. */
     public final void notifyDataChanged() {
@@ -39,6 +51,28 @@ public abstract class Component {
 
     public final void notifyItemMoved(int fromPosition, int toPosition) {
         mObservable.notifyOnItemMoved(fromPosition, toPosition);
+    }
+
+    /**
+     * @param gapSizePx The size of the gap in pixels.
+     */
+    public void setTopGap(@Px int gapSizePx) {
+        if (gapSizePx < 0) {
+            throw new IllegalArgumentException("Gap Size must >= 0");
+        }
+
+        mTopGapSize = gapSizePx;
+    }
+
+    /**
+     * @param gapSizePx The size of the gap in pixels.
+     */
+    public void setBottomGap(@Px int gapSizePx) {
+        if (gapSizePx < 0) {
+            throw new IllegalArgumentException("Gap Size must >= 0");
+        }
+
+        mBottomGapSize = gapSizePx;
     }
 
     public void registerComponentDataObserver(ComponentDataObserver observer) {
@@ -83,6 +117,49 @@ public abstract class Component {
      */
     @CallSuper
     public void onItemNotVisible(int index) {}
+
+
+    @Nullable
+    final Object getPresenterInternal(int position) {
+        if (hasGap(position)) {
+            return null;
+        }
+
+        return getPresenter(position - getPositionOffset());
+    }
+
+    @NonNull
+    final Class<? extends ComponentViewHolder> getHolderTypeInternal(int position) {
+        if (hasGap(position)) {
+            return GapViewHolder.class;
+        }
+
+        return getHolderType(position - getPositionOffset());
+    }
+
+    @Nullable
+    final Object getItemInternal(int position) {
+        if (hasGap(position)) {
+            if (position == 0 && mTopGapSize != 0) {
+                return mTopGapSize;
+            } else if (position == getCountInternal() - 1 && mBottomGapSize != 0) {
+                return mBottomGapSize;
+            }
+        }
+
+        return getItem(position - getPositionOffset());
+    }
+
+    final int getCountInternal() {
+        int count = 0;
+        if (mBottomGapSize > 0) {
+            count++;
+        }
+        if (mTopGapSize > 0) {
+            count++;
+        }
+        return count + getCount();
+    }
 
     private static class ComponentDataObservable extends Observable<ComponentDataObserver> {
 
@@ -130,5 +207,16 @@ public abstract class Component {
         void onItemRangeRemoved(int positionStart, int itemCount);
 
         void onItemMoved(int fromPosition, int toPosition);
+    }
+
+    boolean hasGap(int position) {
+        return mTopGapSize > 0 && position == 0 || mBottomGapSize > 0 && position == getCountInternal() - 1;
+    }
+
+    /**
+     * @return The offset the position needs to be modified by to account for gaps.
+     */
+    int getPositionOffset() {
+       return  mTopGapSize > 0 ? 1 : 0;
     }
 }

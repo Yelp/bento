@@ -2,7 +2,7 @@ package com.yelp.android.bento.core;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.yelp.android.bento.base.ComponentGroup;
+
 import com.yelp.android.bento.utils.AccordionList.Range;
 import java.util.Collection;
 

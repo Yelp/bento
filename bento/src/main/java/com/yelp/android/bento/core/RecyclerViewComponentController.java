@@ -1,4 +1,4 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
@@ -8,12 +8,9 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.common.collect.HashBiMap;
-import com.yelp.android.bento.base.ComponentGroup.ComponentGroupDataObserver;
-import com.yelp.android.bento.base.RecyclerViewComponentController.ViewHolderWrapper;
-import com.yelp.android.bento.core.Component;
+import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
+import com.yelp.android.bento.core.RecyclerViewComponentController.ViewHolderWrapper;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
-import com.yelp.android.bento.core.ComponentController;
-import com.yelp.android.bento.core.ComponentViewHolder;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.util.MathUtils;
 import java.util.Collection;
@@ -237,7 +234,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     @SuppressWarnings("unchecked") // Unchecked Component generics.
     private int getViewTypeFromComponent(int position) {
         Class<? extends ComponentViewHolder> holderType =
-                mComponentGroup.getItemHolderType(position);
+                mComponentGroup.getHolderTypeInternal(position);
         Component component = mComponentGroup.componentAt(position);
 
         if (!mViewTypeMap.containsKey(holderType)) {

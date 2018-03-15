@@ -21,5 +21,10 @@ public abstract class ComponentViewHolder<P, T> {
 
     public abstract View inflate(ViewGroup parent);
 
+    /**
+     * Using FindViewById is a heavy and non-performant method and should never be called in the
+     * bind method. You should have fields for any views you wish to modify during the bind method
+     * and instantiate them during inflation.
+     */
     public abstract void bind(P presenter, T element);
 }

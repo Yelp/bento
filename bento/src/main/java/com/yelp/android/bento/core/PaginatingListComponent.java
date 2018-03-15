@@ -1,4 +1,4 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.yelp.android.bento.R;
-import com.yelp.android.bento.core.ComponentViewHolder;
+
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
@@ -30,28 +30,28 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
 
     @Override
     public P getPresenter(int position) {
-        return mShouldShowFooter && position == (getItemCount() - 1)
+        return mShouldShowFooter && position == (getCountInternal() - 1)
                 ? null
                 : super.getPresenter(position);
     }
 
     @Override
     public Object getItem(int position) {
-        return mShouldShowFooter && position == (getItemCount() - 1)
+        return mShouldShowFooter && position == (getCountInternal() - 1)
                 ? null
-                : super.getItem(position);
+                : super.getItemInternal(position);
     }
 
     @Override
-    public int getItemCount() {
-        return super.getItemCount() + (mShouldShowFooter ? 1 : 0);
+    public int getCount() {
+        return super.getCount() + (mShouldShowFooter ? 1 : 0);
     }
 
     @Override
-    public Class<? extends ComponentViewHolder> getItemHolderType(int position) {
-        return mShouldShowFooter && position == (getItemCount() - 1)
+    protected Class<? extends ComponentViewHolder> getHolderType(int position) {
+        return mShouldShowFooter && position == (getCountInternal() - 1)
                 ? mLoadingFooter
-                : super.getItemHolderType(position);
+                : super.getHolderType(position);
     }
 
     @Override
@@ -76,16 +76,16 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
         boolean oldShouldShowFooter = mShouldShowFooter;
         mShouldShowFooter = shouldShowFooter;
         if (oldShouldShowFooter && !shouldShowFooter) {
-            notifyItemRangeRemoved(getItemCount(), 1);
+            notifyItemRangeRemoved(getCountInternal(), 1);
         } else if (!oldShouldShowFooter && shouldShowFooter) {
-            notifyItemRangeInserted(getItemCount(), 1);
+            notifyItemRangeInserted(getCountInternal(), 1);
         }
     }
 
     public void setLoadingFooter(@NonNull Class<? extends LoadingFooterViewHolder> loadingFooter) {
         mLoadingFooter = loadingFooter;
         if (mShouldShowFooter) {
-            notifyItemRangeChanged(super.getItemCount(), 1);
+            notifyItemRangeChanged(super.getCountInternal(), 1);
         }
     }
 

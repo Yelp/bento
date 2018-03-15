@@ -1,6 +1,7 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
 
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ public abstract class SimpleComponentViewHolder<P> extends ComponentViewHolder<P
     protected P mPresenter;
     @LayoutRes private int mLayoutId;
 
-    protected abstract void onViewCreated(View itemView);
+    protected abstract void onViewCreated(@NonNull View itemView);
 
     protected SimpleComponentViewHolder(@LayoutRes int layoutId) {
         mLayoutId = layoutId;

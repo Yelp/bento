@@ -1,9 +1,8 @@
-package com.yelp.android.bento.base;
+package com.yelp.android.bento.core;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import com.yelp.android.bento.core.Component;
-import com.yelp.android.bento.core.ComponentController;
-import com.yelp.android.bento.core.ComponentViewHolder;
+
 import com.yelp.android.bento.utils.AccordionList;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
@@ -80,14 +79,14 @@ public class ComponentGroup extends Component implements ComponentController {
             throw new IllegalArgumentException("Component " + component + " already added.");
         }
 
-        int originalSize = getItemCount();
+        int originalSize = getCountInternal();
         addComponentAndUpdateIndices(index, component);
 
         ComponentDataObserver componentDataObserver = new ChildComponentDataObserver(component);
         component.registerComponentDataObserver(componentDataObserver);
         mComponentDataObserverMap.put(component, componentDataObserver);
 
-        notifyItemRangeInserted(originalSize, component.getItemCount());
+        notifyItemRangeInserted(originalSize, component.getCountInternal());
         mObservable.notifyOnChanged();
         return this;
     }
@@ -121,7 +120,7 @@ public class ComponentGroup extends Component implements ComponentController {
         component.registerComponentDataObserver(componentDataObserver);
         mComponentDataObserverMap.put(component, componentDataObserver);
 
-        int newSize = component.getItemCount();
+        int newSize = component.getCountInternal();
         mComponentAccordionList.set(index, component, newSize);
         mComponentIndexMap.put(component, index);
 
@@ -161,33 +160,27 @@ public class ComponentGroup extends Component implements ComponentController {
     }
 
     @SuppressWarnings("unchecked") // Unchecked Component generics.
-    public Class<? extends ComponentViewHolder> getItemHolderType(int position) {
+    public Class<? extends ComponentViewHolder> getHolderType(int position) {
         RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);
         Component component = mComponentAccordionList.valueAt(position);
-        return component.getItemHolderType(position - compPair.mRange.mLower);
+        return component.getHolderTypeInternal(position - compPair.mRange.mLower);
     }
 
     @Override
     public Object getPresenter(int position) {
         RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);
         Component component = mComponentAccordionList.valueAt(position);
-        return component.getPresenter(position - compPair.mRange.mLower);
+        return component.getPresenterInternal(position - compPair.mRange.mLower);
     }
 
     @Override
-    public Object getItem(int position) {
-        RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);
-        Component component = mComponentAccordionList.valueAt(position);
-        return component.getItem(position - compPair.mRange.mLower);
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getCount() {
         return mComponentAccordionList.span().mUpper;
     }
 
     /** @inheritDoc */
     @Override
+    @CallSuper
     public void onItemVisible(int index) {
         super.onItemVisible(index);
         notifyVisibilityChange(index, true);
@@ -208,6 +201,13 @@ public class ComponentGroup extends Component implements ComponentController {
         mObservable.unregisterObserver(observer);
     }
 
+    @Override
+    public Object getItem(int position) {
+        RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);
+        Component component = mComponentAccordionList.valueAt(position);
+        return component.getItemInternal(position - compPair.mRange.mLower);
+    }
+
     /**
      * Finds the component which has the view at the specified index and notifies it that the view
      * is now either visible or not.
@@ -219,16 +219,49 @@ public class ComponentGroup extends Component implements ComponentController {
      * @param visible whether the view is now visible or not
      */
     /* package */ void notifyVisibilityChange(int i, boolean visible) {
-        Component component = componentAt(i);
-        int index = i - rangeOf(component).mLower;
+
+        // We explicitly don't notify visibility of gaps.
+        if (hasGap(i)) {
+            return;
+        }
+
+        Component component = componentAt(i - getPositionOffset());
+        int index = i - rangeOf(component).mLower - getPositionOffset();
+
+        if (component.hasGap(index)) {
+            return;
+        }
 
         if (visible) {
-            component.onItemVisible(index);
+            component.onItemVisible(index - component.getPositionOffset());
         } else {
-            component.onItemNotVisible(index);
+            component.onItemNotVisible(index - component.getPositionOffset());
         }
     }
 
+    /**
+     *<pre>
+     * Alright this is unintuitive, but since Bento doesn't implement proper
+     * diffing (https://developer.android.com/reference/android/support/v7/util/DiffUtil.html)
+     * we notify that all items in the existing list have been changed and that the
+     * size of the list has changed. We notify the size change by saying the last x element have
+     * been added or deleted.
+     *
+     * If we had [a, b, c]
+     *
+     * and we removed b
+     *
+     * we would notifyItemRangeChanged(0, 2)
+     *          notifyItemRangeRemoved(2, 1)
+     *
+     * instead of the expected notifyItemRangeChanged(0, 2)
+     *                         notifyItemRangeRemoved(1, 1)
+     *
+     * even though the b was removed and not the c. This works fine in terms of correctness. The
+     * RecyclerView will refresh the right items on the screen. However, this does cause Bento
+     * to do change animations instead of removal animations.
+     * </pre>
+     */
     private void notifyRangeUpdated(Range originalRange, int newSize) {
         int oldSize = originalRange.getSize();
         int sizeChange = newSize - oldSize;
@@ -245,7 +278,7 @@ public class ComponentGroup extends Component implements ComponentController {
 
     private void addComponentAndUpdateIndices(int index, @NonNull Component component) {
         // Add and update indices
-        mComponentAccordionList.add(index, component, component.getItemCount());
+        mComponentAccordionList.add(index, component, component.getCountInternal());
         mComponentIndexMap.put(component, index);
         for (int i = index + 1; i < mComponentAccordionList.size(); i++) {
             mComponentIndexMap.put(mComponentAccordionList.get(i).mValue, i);
@@ -288,7 +321,7 @@ public class ComponentGroup extends Component implements ComponentController {
         public void onChanged() {
             int listPosition = mComponentIndexMap.get(mComponent);
             Range originalRange = mComponentAccordionList.get(listPosition).mRange;
-            int newSize = mComponent.getItemCount();
+            int newSize = mComponent.getCountInternal();
             mComponentAccordionList.set(listPosition, mComponent, newSize);
 
             notifyRangeUpdated(originalRange, newSize);
