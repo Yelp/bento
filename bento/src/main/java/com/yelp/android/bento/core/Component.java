@@ -30,7 +30,7 @@ public abstract class Component {
 
     public abstract int getCount();
 
-    protected abstract Class<? extends ComponentViewHolder> getHolderType(int position);
+    public abstract Class<? extends ComponentViewHolder> getHolderType(int position);
 
     /** Notify observers that the {@link Component} data has changed. */
     public final void notifyDataChanged() {
