@@ -30,16 +30,16 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
 
     @Override
     public P getPresenter(int position) {
-        return mShouldShowFooter && position == (getCountInternal() - 1)
+        return mShouldShowFooter && position == (getCount() - 1)
                 ? null
                 : super.getPresenter(position);
     }
 
     @Override
     public Object getItem(int position) {
-        return mShouldShowFooter && position == (getCountInternal() - 1)
+        return mShouldShowFooter && position == (getCount() - 1)
                 ? null
-                : super.getItemInternal(position);
+                : super.getItem(position);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
 
     @Override
     public Class<? extends ComponentViewHolder> getHolderType(int position) {
-        return mShouldShowFooter && position == (getCountInternal() - 1)
+        return mShouldShowFooter && position == (getCount() - 1)
                 ? mLoadingFooter
                 : super.getHolderType(position);
     }
@@ -76,16 +76,16 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
         boolean oldShouldShowFooter = mShouldShowFooter;
         mShouldShowFooter = shouldShowFooter;
         if (oldShouldShowFooter && !shouldShowFooter) {
-            notifyItemRangeRemoved(getCountInternal(), 1);
+            notifyItemRangeRemoved(getCount(), 1);
         } else if (!oldShouldShowFooter && shouldShowFooter) {
-            notifyItemRangeInserted(getCountInternal(), 1);
+            notifyItemRangeInserted(getCount(), 1);
         }
     }
 
     public void setLoadingFooter(@NonNull Class<? extends LoadingFooterViewHolder> loadingFooter) {
         mLoadingFooter = loadingFooter;
         if (mShouldShowFooter) {
-            notifyItemRangeChanged(super.getCountInternal(), 1);
+            notifyItemRangeChanged(super.getCount(), 1);
         }
     }
 
