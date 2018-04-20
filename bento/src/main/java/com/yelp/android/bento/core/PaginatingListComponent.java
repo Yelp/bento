@@ -48,7 +48,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
     }
 
     @Override
-    protected Class<? extends ComponentViewHolder> getHolderType(int position) {
+    public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return mShouldShowFooter && position == (getCountInternal() - 1)
                 ? mLoadingFooter
                 : super.getHolderType(position);

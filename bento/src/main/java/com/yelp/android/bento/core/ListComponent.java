@@ -124,7 +124,7 @@ public class ListComponent<P, T> extends Component {
     }
 
     @Override
-    protected Class<? extends ComponentViewHolder> getHolderType(int position) {
+    public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return isListItem(position) ? mListItemViewHolder : mDividerViewHolder;
     }
 

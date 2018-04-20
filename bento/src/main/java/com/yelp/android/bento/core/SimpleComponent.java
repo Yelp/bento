@@ -40,7 +40,7 @@ public class SimpleComponent<P> extends Component {
     }
 
     @Override
-    protected Class<? extends ComponentViewHolder> getHolderType(int position) {
+    public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return mViewHolderType;
     }
 
