@@ -1,11 +1,10 @@
+.*
+*.iml
+
 gradle.log
-.gradle
-.DS_Store
 local.properties
-**/gen/*
+
+gen/
 build/
 output/
 captures/
-.idea
-!.idea/codeStyleSettings.xml
-*.iml
