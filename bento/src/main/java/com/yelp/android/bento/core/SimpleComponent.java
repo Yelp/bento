@@ -1,10 +1,7 @@
 package com.yelp.android.bento.core;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.yelp.android.bento.core.Component;
-import com.yelp.android.bento.core.ComponentController;
-import com.yelp.android.bento.core.ComponentViewHolder;
 
 /**
  * Component implementation that provides the bare minimum to be used with
@@ -39,6 +36,7 @@ public class SimpleComponent<P> extends Component {
         return 1;
     }
 
+    @NonNull
     @Override
     public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return mViewHolderType;

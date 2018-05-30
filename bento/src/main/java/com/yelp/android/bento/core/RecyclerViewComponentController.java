@@ -100,16 +100,17 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         recyclerView.addOnScrollListener(mComponentVisibilityListener);
     }
 
+    @NonNull
     @SuppressWarnings("unchecked") // Unchecked Component generics.
     @Override
-    public ViewHolderWrapper onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolderWrapper onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ComponentViewHolder viewHolder = constructViewHolder(mViewTypeMap.inverse().get(viewType));
         return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
     }
 
     @SuppressWarnings("unchecked") // Unchecked Component generics.
     @Override
-    public void onBindViewHolder(ViewHolderWrapper holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolderWrapper holder, int position) {
         holder.bind(
                 mComponentGroup.getPresenter(position),
                 position,

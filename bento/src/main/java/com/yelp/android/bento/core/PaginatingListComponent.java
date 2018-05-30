@@ -47,6 +47,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
         return super.getCount() + (mShouldShowFooter ? 1 : 0);
     }
 
+    @NonNull
     @Override
     public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return mShouldShowFooter && position == (getCount() - 1)
@@ -101,8 +102,9 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
     @SuppressWarnings("WeakerAccess") // Required to be public for instantiation by reflection
     public static class DefaultLoadingFooterViewHolder extends LoadingFooterViewHolder {
 
+        @NonNull
         @Override
-        public View inflate(ViewGroup parent) {
+        public View inflate(@NonNull ViewGroup parent) {
             return LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.loading_footer_default, parent, false);
         }

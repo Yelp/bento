@@ -16,8 +16,7 @@ class AnimatedComponentExampleViewHolder : SimpleComponentViewHolder<Unit>(R.lay
         animation = AnimationUtils.loadAnimation(itemView.context, R.anim.sample_animation)
     }
 
-    override fun bind(presenter: Unit, element: Void?) {
-        super.bind(presenter, element)
+    override fun bind(presenter: Unit) {
         textView.text = "This is an animated component."
     }
 

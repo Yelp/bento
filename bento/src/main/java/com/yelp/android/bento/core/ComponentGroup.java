@@ -159,6 +159,7 @@ public class ComponentGroup extends Component implements ComponentController {
         mObservable.notifyOnChanged();
     }
 
+    @NonNull
     @SuppressWarnings("unchecked") // Unchecked Component generics.
     public Class<? extends ComponentViewHolder> getHolderType(int position) {
         RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);

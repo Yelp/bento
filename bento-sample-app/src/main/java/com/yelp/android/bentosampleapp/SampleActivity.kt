@@ -10,6 +10,7 @@ import com.yelp.android.bento.core.SimpleComponent
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.SimpleJavaComponentExampleViewHolder
 
 /**
  * Main activity for displaying the different options for demonstrating Bento features.
@@ -30,10 +31,13 @@ class SampleActivity : AppCompatActivity() {
         addSimpleComponent(group, true)
         addAnimatedComponent(group)
         componentController.addComponent(group)
+
+        componentController.addComponent(SimpleComponent<Nothing>(
+                SimpleJavaComponentExampleViewHolder::class.java))
     }
 
     private fun addSimpleComponent(group: ComponentGroup, hasGap: Boolean) {
-        val simpleComponent = SimpleComponent(Unit, SimpleComponentExampleViewHolder::class.java)
+        val simpleComponent = SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java)
         if (hasGap) {
             simpleComponent.setTopGap(500)
         }

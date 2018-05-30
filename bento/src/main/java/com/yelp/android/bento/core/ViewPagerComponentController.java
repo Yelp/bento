@@ -86,7 +86,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     }
 
     @Override
-    public ComponentGroup addComponent(Component component) {
+    public ComponentGroup addComponent(@NonNull Component component) {
         return mComponentGroup.addComponent(component);
     }
 

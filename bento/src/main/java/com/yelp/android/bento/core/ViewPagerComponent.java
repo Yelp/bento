@@ -117,6 +117,7 @@ public class ViewPagerComponent extends Component implements ComponentController
         return 1;
     }
 
+    @NonNull
     @Override
     public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return ViewPagerViewHolder.class;
@@ -129,8 +130,9 @@ public class ViewPagerComponent extends Component implements ComponentController
 
         public ViewPagerViewHolder() {}
 
+        @NonNull
         @Override
-        public View inflate(ViewGroup parent) {
+        public View inflate(@NonNull ViewGroup parent) {
             mViewPager =
                     (ViewPager)
                             LayoutInflater.from(parent.getContext())

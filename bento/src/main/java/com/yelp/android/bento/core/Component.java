@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.Px;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
-
 import com.yelp.android.bento.utils.Observable;
 
 /** Represents a self-contained component to be used with {@link ComponentController}. */
@@ -16,11 +15,9 @@ public abstract class Component {
 
     private int mColumns = 1;
 
-    @Px
-    private int mTopGapSize = 0;
+    @Px private int mTopGapSize = 0;
 
-    @Px
-    private int mBottomGapSize = 0;
+    @Px private int mBottomGapSize = 0;
 
     @Nullable
     public abstract Object getPresenter(int position);
@@ -30,6 +27,7 @@ public abstract class Component {
 
     public abstract int getCount();
 
+    @NonNull
     public abstract Class<? extends ComponentViewHolder> getHolderType(int position);
 
     /** Notify observers that the {@link Component} data has changed. */
@@ -53,9 +51,7 @@ public abstract class Component {
         mObservable.notifyOnItemMoved(fromPosition, toPosition);
     }
 
-    /**
-     * @param gapSizePx The size of the gap in pixels.
-     */
+    /** @param gapSizePx The size of the gap in pixels. */
     public void setTopGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
             throw new IllegalArgumentException("Gap Size must >= 0");
@@ -64,9 +60,7 @@ public abstract class Component {
         mTopGapSize = gapSizePx;
     }
 
-    /**
-     * @param gapSizePx The size of the gap in pixels.
-     */
+    /** @param gapSizePx The size of the gap in pixels. */
     public void setBottomGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
             throw new IllegalArgumentException("Gap Size must >= 0");
@@ -117,7 +111,6 @@ public abstract class Component {
      */
     @CallSuper
     public void onItemNotVisible(int index) {}
-
 
     @Nullable
     final Object getPresenterInternal(int position) {
@@ -210,13 +203,12 @@ public abstract class Component {
     }
 
     boolean hasGap(int position) {
-        return mTopGapSize > 0 && position == 0 || mBottomGapSize > 0 && position == getCountInternal() - 1;
+        return mTopGapSize > 0 && position == 0
+                || mBottomGapSize > 0 && position == getCountInternal() - 1;
     }
 
-    /**
-     * @return The offset the position needs to be modified by to account for gaps.
-     */
+    /** @return The offset the position needs to be modified by to account for gaps. */
     int getPositionOffset() {
-       return  mTopGapSize > 0 ? 1 : 0;
+        return mTopGapSize > 0 ? 1 : 0;
     }
 }

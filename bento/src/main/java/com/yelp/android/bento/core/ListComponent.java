@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.yelp.android.bento.R;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +87,7 @@ public class ListComponent<P, T> extends Component {
      * more information.
      *
      * @return An int representing the number of items to delete. Either 1 or 2 if we need to remove
-     * a divider.
+     *     a divider.
      */
     @VisibleForTesting
     int getRemoveItemCount() {
@@ -123,6 +122,7 @@ public class ListComponent<P, T> extends Component {
         return mShouldShowDivider ? getTotalSizeWithSeparators(mData.size()) : mData.size();
     }
 
+    @NonNull
     @Override
     public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return isListItem(position) ? mListItemViewHolder : mDividerViewHolder;
@@ -153,8 +153,9 @@ public class ListComponent<P, T> extends Component {
     @SuppressWarnings("WeakerAccess") // Required to be public for instantiation by reflection
     public static class DefaultDividerViewHolder extends DividerViewHolder {
 
+        @NonNull
         @Override
-        public View inflate(ViewGroup parent) {
+        public View inflate(@NonNull ViewGroup parent) {
             return LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_divider_default, parent, false);
         }
