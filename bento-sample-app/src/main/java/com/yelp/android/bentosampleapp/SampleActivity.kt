@@ -7,6 +7,7 @@ import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.RecyclerViewComponentController
 import com.yelp.android.bento.core.SimpleComponent
+import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 
@@ -19,7 +20,7 @@ class SampleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
 
-        val recyclerView : RecyclerView = findViewById(R.id.recycler_view)
+        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         val componentController = RecyclerViewComponentController(recyclerView)
 
         val group = ComponentGroup()
@@ -27,6 +28,7 @@ class SampleActivity : AppCompatActivity() {
         group.setBottomGap(250)
         addListComponent(group)
         addSimpleComponent(group, true)
+        addAnimatedComponent(group)
         componentController.addComponent(group)
     }
 
@@ -43,5 +45,9 @@ class SampleActivity : AppCompatActivity() {
         listExample.setTopGap(50)
         listExample.setData(listOf("list element 1", "list element 2", "list element 3"))
         group.addComponent(listExample)
+    }
+
+    private fun addAnimatedComponent(group: ComponentGroup) {
+        group.addComponent(SimpleComponent(Unit, AnimatedComponentExampleViewHolder::class.java))
     }
 }

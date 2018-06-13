@@ -8,9 +8,9 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.common.collect.HashBiMap;
+import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.RecyclerViewComponentController.ViewHolderWrapper;
-import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.util.MathUtils;
 import java.util.Collection;
@@ -124,6 +124,21 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     @Override
     public int getItemViewType(int position) {
         return getViewTypeFromComponent(position);
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolderWrapper holder) {
+        holder.mViewHolder.onViewAttachedToWindow();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull ViewHolderWrapper holder) {
+        holder.mViewHolder.onViewDetachedFromWindow();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull ViewHolderWrapper holder) {
+        holder.mViewHolder.onViewRecycled();
     }
 
     @Override
