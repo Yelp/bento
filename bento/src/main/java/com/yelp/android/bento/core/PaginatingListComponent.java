@@ -6,9 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.yelp.android.bento.R;
-
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
+import io.reactivex.Observable;
+import io.reactivex.subjects.BehaviorSubject;
 
 /**
  * A {@link ListComponent} that supports pagination by exposing an {@link Observable} reporting the
@@ -37,9 +36,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
 
     @Override
     public Object getItem(int position) {
-        return mShouldShowFooter && position == (getCount() - 1)
-                ? null
-                : super.getItem(position);
+        return mShouldShowFooter && position == (getCount() - 1) ? null : super.getItem(position);
     }
 
     @Override
@@ -70,7 +67,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
      * retrieved.
      */
     public Observable<Integer> getFurthestObservable() {
-        return mFurthestObservable.asObservable();
+        return mFurthestObservable;
     }
 
     public void toggleLoadingFooter(boolean shouldShowFooter) {

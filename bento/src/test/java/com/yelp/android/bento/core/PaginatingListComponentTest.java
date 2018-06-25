@@ -1,12 +1,12 @@
 package com.yelp.android.bento.core;
 
-import org.junit.Before;
-import org.junit.Test;
+import static junit.framework.Assert.assertEquals;
 
+import io.reactivex.Observable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class PaginatingListComponentTest {
 
@@ -28,7 +28,7 @@ public class PaginatingListComponentTest {
     public void makesPaginationRequest() {
         addItems(5);
 
-        rx.Observable observable = mPaginatingListComponent.getFurthestObservable();
+        Observable observable = mPaginatingListComponent.getFurthestObservable();
 
         mPaginatingListComponent.getItem(6);
         observable.test().assertValueCount(1);
