@@ -33,20 +33,20 @@ public interface ComponentController {
     /**
      * Returns whether or not the specified {@link Component} is in this controller.
      */
-    boolean contains(Component component);
+    boolean contains(@NonNull Component component);
 
     /**
      * Returns the position of the specified {@link Component} in this controller if it exists,
      * or -1 if it does not.
      */
-    int indexOf(Component component);
+    int indexOf(@NonNull Component component);
 
     /**
      * Returns the {@link Range} occupied by the items of the specified  {@link Component} in this
      * controller if it exists, or null if it does not.
      */
     @Nullable
-    Range rangeOf(Component component);
+    Range rangeOf(@NonNull Component component);
 
     /**
      * Inserts the specified {@link Component} to the end of this controller.

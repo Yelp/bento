@@ -36,18 +36,18 @@ public class ViewPagerComponent extends Component implements ComponentController
     }
 
     @Override
-    public boolean contains(Component component) {
+    public boolean contains(@NonNull Component component) {
         return mComponentController.contains(component);
     }
 
     @Override
-    public int indexOf(Component component) {
+    public int indexOf(@NonNull Component component) {
         return mComponentController.indexOf(component);
     }
 
     @Nullable
     @Override
-    public Range rangeOf(Component component) {
+    public Range rangeOf(@NonNull Component component) {
         return mComponentController.rangeOf(component);
     }
 

@@ -8,7 +8,7 @@ import android.widget.FrameLayout;
 import com.yelp.android.bento.R;
 
 
-class GapViewHolder extends ComponentViewHolder<Void, Integer>  {
+public class GapViewHolder extends ComponentViewHolder<Void, Integer>  {
 
     private View mItemView;
 

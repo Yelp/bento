@@ -4,11 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
+import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
 import com.yelp.android.bento.core.RecyclerViewComponentController.ViewHolderWrapper;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.util.MathUtils;
@@ -31,6 +33,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     private final HashBiMap<Class<? extends ComponentViewHolder>, Integer> mViewTypeMap;
     private final RecyclerView mRecyclerView;
     private ComponentVisibilityListener mComponentVisibilityListener;
+    private OnScrollListener mOnScrollListener;
     private GridLayoutManager mLayoutManager;
     private int mNumColumns;
 
@@ -157,17 +160,17 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     }
 
     @Override
-    public boolean contains(Component component) {
+    public boolean contains(@NonNull Component component) {
         return mComponentGroup.contains(component);
     }
 
     @Override
-    public int indexOf(Component component) {
+    public int indexOf(@NonNull Component component) {
         return mComponentGroup.indexOf(component);
     }
 
     @Override
-    public Range rangeOf(Component component) {
+    public Range rangeOf(@NonNull Component component) {
         return mComponentGroup.rangeOf(component);
     }
 
@@ -236,13 +239,28 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     @Override
     public void clear() {
         mComponentGroup.clear();
-        mRecyclerView.removeOnScrollListener(mComponentVisibilityListener);
+        mRecyclerView.removeOnScrollListener(mOnScrollListener);
+        mComponentGroup.unregisterComponentDataObserver(mComponentVisibilityListener);
         addVisibilityListener();
     }
 
     private void addVisibilityListener() {
-        mComponentVisibilityListener = new ComponentVisibilityListener(mLayoutManager, mComponentGroup);
-        mRecyclerView.addOnScrollListener(mComponentVisibilityListener);
+        mComponentVisibilityListener =
+                new ComponentVisibilityListener(
+                        new RecyclerViewLayoutManagerHelper(mLayoutManager), mComponentGroup);
+        mOnScrollListener =
+                new OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                        // Do nothing.
+                    }
+
+                    @Override
+                    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                        mComponentVisibilityListener.onScrolled();
+                    }
+                };
+        mRecyclerView.addOnScrollListener(mOnScrollListener);
         mComponentGroup.registerComponentDataObserver(mComponentVisibilityListener);
     }
 
@@ -374,4 +392,22 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         }
     }
 
+    private static class RecyclerViewLayoutManagerHelper implements LayoutManagerHelper {
+
+        private final GridLayoutManager mLayoutManager;
+
+        private RecyclerViewLayoutManagerHelper(GridLayoutManager layoutManager) {
+            mLayoutManager = layoutManager;
+        }
+
+        @Override
+        public int findFirstVisibleItemPosition() {
+            return mLayoutManager.findFirstVisibleItemPosition();
+        }
+
+        @Override
+        public int findLastVisibleItemPosition() {
+            return mLayoutManager.findLastVisibleItemPosition();
+        }
+    }
 }
