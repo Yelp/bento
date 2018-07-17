@@ -97,6 +97,8 @@ public abstract class Component {
     /**
      * Override this method when you want to take an action when a view in this component is (at
      * least partially) visible on the screen.
+     * <p><p>
+     * See {@link ComponentVisibilityListener} for more info.
      *
      * @param index Index of item that is now visible on screen.
      */
@@ -106,6 +108,8 @@ public abstract class Component {
     /**
      * Override this method when you want to take an action when a view in this component is no
      * longer visible on the screen.
+     * <p><p>
+     * See {@link ComponentVisibilityListener} for more info.
      *
      * @param index Index of item that is no longer visible on screen.
      */

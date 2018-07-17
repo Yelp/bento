@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.common.collect.HashBiMap;
@@ -96,8 +95,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
 
         mRecyclerView.setAdapter(this);
         setupComponentSpans();
-        mComponentVisibilityListener = new ComponentVisibilityListener();
-        recyclerView.addOnScrollListener(mComponentVisibilityListener);
+        addVisibilityListener();
     }
 
     @NonNull
@@ -239,8 +237,13 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     public void clear() {
         mComponentGroup.clear();
         mRecyclerView.removeOnScrollListener(mComponentVisibilityListener);
-        mComponentVisibilityListener = new ComponentVisibilityListener();
+        addVisibilityListener();
+    }
+
+    private void addVisibilityListener() {
+        mComponentVisibilityListener = new ComponentVisibilityListener(mLayoutManager, mComponentGroup);
         mRecyclerView.addOnScrollListener(mComponentVisibilityListener);
+        mComponentGroup.registerComponentDataObserver(mComponentVisibilityListener);
     }
 
     /**
@@ -371,115 +374,4 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         }
     }
 
-    /**
-     * When added to the recycler view, it will notify all components as long as they are visible on
-     * the screen and the recycler view is being scrolled.
-     */
-    private class ComponentVisibilityListener extends OnScrollListener {
-
-        private int mPreviousFirst = mLayoutManager.findFirstVisibleItemPosition();
-        private int mPreviousLast = mLayoutManager.findLastVisibleItemPosition();
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-
-            int firstVisible = mLayoutManager.findFirstVisibleItemPosition();
-            int lastVisible = mLayoutManager.findLastVisibleItemPosition();
-
-            // If the user hasn't scrolled far enough to show or hide any views, there's nothing for
-            // us to do. Bail out.
-            if ((firstVisible == mPreviousFirst && lastVisible == mPreviousLast)
-                    || (firstVisible == RecyclerView.NO_POSITION
-                            || lastVisible == RecyclerView.NO_POSITION)) {
-                return;
-            }
-
-            // If we didn't have a first and last then this is the first time we are showing any
-            // items and we should notify that they are all visible.
-            if (mPreviousFirst == RecyclerView.NO_POSITION
-                    && mPreviousLast == RecyclerView.NO_POSITION) {
-                for (int i = firstVisible; i <= lastVisible; i++) {
-                    mComponentGroup.notifyVisibilityChange(i, true);
-                }
-            } else {
-                // We want to iterate through the entire range of both, views that used to be
-                // visible and views that are now visible, so we can notify them of their visibility
-                // changes.
-                int start = Math.min(mPreviousFirst, firstVisible);
-                int end = Math.max(mPreviousLast, lastVisible);
-
-                for (int i = start; i <= end; i++) {
-
-                    if (i < firstVisible || i > lastVisible) {
-                        // We are checking for views which are no longer visible. There are 2 cases:
-                        // i < firstVisible -> Views that are ABOVE that are no longer visible.
-                        // i > lastVisible -> Views that are BELOW that are no longer visible.
-                        // If we've removed components, we cannot notify them that their views are
-                        // not visible.
-                        if (i < mComponentGroup.getSpan()) {
-                            mComponentGroup.notifyVisibilityChange(i, false);
-                        }
-                    } else if (i < mPreviousFirst || i > mPreviousLast) {
-                        // We are checking for views which are now visible. There are 2 cases:
-                        // i < mPreviousFirst -> We have scrolled UP and new views are visible.
-                        // i > mPreviousLast -> We have scrolled DOWN and new views are visible.
-                        mComponentGroup.notifyVisibilityChange(i, true);
-                    } else {
-                        // We are iterating through the views that used to be visible and are still
-                        // visible. Since we've already notified the items at these positions, we
-                        // can skip them to make the loop (a little) faster,
-                        i = Math.min(mPreviousLast, lastVisible);
-                    }
-                }
-            }
-
-            mPreviousFirst = firstVisible;
-            mPreviousLast = lastVisible;
-        }
-
-        /**
-         * Should be called when a component is added to the controller. This will check if that
-         * component is immediately visible and notify it.
-         *
-         * @param addedComponent the component that has been added to this controller
-         */
-        public void onComponentAdded(@NonNull Component addedComponent) {
-            // If we didn't have a first and last then we haven't shown any components yet and we
-            // can bail early. Everything will be handled by onScrolled().
-            if (mPreviousFirst == RecyclerView.NO_POSITION
-                    && mPreviousLast == RecyclerView.NO_POSITION) {
-                return;
-            }
-
-            int firstVisible = mLayoutManager.findFirstVisibleItemPosition();
-            int lastVisible = mLayoutManager.findLastVisibleItemPosition();
-
-            // If we don't have any visible items then there's nothing to notify.
-            if (firstVisible == RecyclerView.NO_POSITION
-                    || lastVisible == RecyclerView.NO_POSITION) {
-                return;
-            }
-
-            Range range = mComponentGroup.rangeOf(addedComponent);
-            if (range == null) {
-                throw new IllegalArgumentException(
-                        "Component hasn't been added to this ComponentController");
-            }
-
-            // If a component was added within the visible components, we need to notify it.
-            // We want to iterate through the items that are the intersection of our visible items
-            // and the items within the range of this component.
-            // NOTE: Range is inclusive-exclusive so we must subtract 1 from mUpper.
-            int start = Math.max(firstVisible, range.mLower);
-            int end = Math.min(lastVisible, range.mUpper - 1);
-
-            for (int i = start; i <= end; i++) {
-                mComponentGroup.notifyVisibilityChange(i, true);
-            }
-
-            mPreviousFirst = firstVisible;
-            mPreviousLast = lastVisible;
-        }
-    }
 }
