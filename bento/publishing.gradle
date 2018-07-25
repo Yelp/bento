@@ -4,11 +4,17 @@ apply plugin: 'net.linguica.maven-settings'
 group GROUP
 version VERSION
 
+task sourcesJar(type: Jar) {
+    description = "Assemble sources"
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
 publishing {
     publications {
         mavenAar(MavenPublication) {
             from components.android
-            artifact androidSourcesJar
+            artifact sourcesJar
         }
     }
 
