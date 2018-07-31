@@ -3,6 +3,8 @@ package com.yelp.android.bentosampleapp
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
+import android.view.Menu
+import android.view.MenuItem
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.RecyclerViewComponentController
@@ -11,6 +13,8 @@ import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHo
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleJavaComponentExampleViewHolder
+
+
 
 /**
  * Main activity for displaying the different options for demonstrating Bento features.
@@ -34,6 +38,22 @@ class SampleActivity : AppCompatActivity() {
 
         componentController.addComponent(SimpleComponent<Nothing>(
                 SimpleJavaComponentExampleViewHolder::class.java))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.grid -> {
+                startActivity(GridComponentsActivity.intentFor(this))
+                true
+            }
+            else -> false
+        }
     }
 
     private fun addSimpleComponent(group: ComponentGroup, hasGap: Boolean) {

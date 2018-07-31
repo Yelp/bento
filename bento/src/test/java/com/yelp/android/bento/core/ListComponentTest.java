@@ -1,13 +1,14 @@
 package com.yelp.android.bento.core;
 
-import com.yelp.android.bento.core.ListComponent;
+import android.support.v7.widget.GridLayoutManager;
 
-import static junit.framework.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
 
 public class ListComponentTest {
 
@@ -114,6 +115,24 @@ public class ListComponentTest {
                 0,
                 mListComponent.getRemoveIndexStart(0));
         assertEquals("Expected to remove one item", 1, mListComponent.getRemoveItemCount());
+    }
+
+    @Test
+    public void test_GetSpanSizeLookupTwoColumnsGapItem_ReturnsTwo() {
+        addItems(2);
+        mListComponent.setTopGap(10);
+        mListComponent.setNumberColumns(2);
+        GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
+        assertEquals(2, spanSizeLookup.getSpanSize(0));
+    }
+
+    @Test
+    public void test_GetSpanSizeLookupTwoColumnsNonGapItem_ReturnsTwo() {
+        addItems(2);
+        mListComponent.setTopGap(10);
+        mListComponent.setNumberColumns(2);
+        GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
+        assertEquals(1, spanSizeLookup.getSpanSize(1));
     }
 
     /**

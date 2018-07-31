@@ -3,6 +3,7 @@ package com.yelp.android.bento.core;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.support.v7.widget.GridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,6 +127,21 @@ public class ListComponent<P, T> extends Component {
     @Override
     public Class<? extends ComponentViewHolder> getHolderType(int position) {
         return isListItem(position) ? mListItemViewHolder : mDividerViewHolder;
+    }
+
+    @Override
+    public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
+        // If there is a gap in the list component, we want it to span the entire width.
+        // Otherwise, just one item.
+        return new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (hasGap(position)) {
+                    return getNumberColumns();
+                }
+                return 1;
+            }
+        };
     }
 
     private T getListItem(int position) {

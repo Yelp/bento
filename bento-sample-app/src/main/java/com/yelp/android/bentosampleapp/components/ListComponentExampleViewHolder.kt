@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bentosampleapp.R
 
-class ListComponentExampleViewHolder : ComponentViewHolder<Void?, String?>() {
+class ListComponentExampleViewHolder : ComponentViewHolder<Any?, String>() {
 
     private lateinit var itemView: TextView
 
@@ -19,7 +19,7 @@ class ListComponentExampleViewHolder : ComponentViewHolder<Void?, String?>() {
         return view
     }
 
-    override fun bind(presenter: Void?, element: String?) {
+    override fun bind(presenter: Any?, element: String) {
         itemView.text = element
     }
 
