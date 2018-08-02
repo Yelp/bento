@@ -28,7 +28,7 @@ class GridComponentsActivity : AppCompatActivity() {
     }
 
     private fun createListComponent(): ListComponent<out Any?, String> {
-        return ListComponent(null, ListComponentExampleViewHolder::class.java) apply {
+        return ListComponent(null, ListComponentExampleViewHolder::class.java).apply {
             toggleDivider(false)
             setData((0..9).map { "Item:$it" })
             setTopGap(50)
