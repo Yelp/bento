@@ -23,7 +23,7 @@ class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
 
     override fun getPresenter(position: Int): Wrapper = presenters[position]
 
-    override fun getItem(position: Int): Unit = Unit
+    override fun getItem(position: Int): Any = listAdapter.getItem(position)
 
     override fun getCount(): Int = listAdapter.count
 

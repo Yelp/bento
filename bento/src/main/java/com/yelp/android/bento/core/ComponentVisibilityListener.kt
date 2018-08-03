@@ -29,6 +29,13 @@ class ComponentVisibilityListener(
             return
         }
 
+        // We also return if the position don't make much sense, like they are negative or the last
+        // visible is smaller than the first visible, or bigger than the total number of item.
+        // This would trigger IndexOutOfBounds exception.
+        if (firstVisible > lastVisible || firstVisible < 0 || lastVisible >= componentGroup.span) {
+            return
+        }
+
         // If we didn't have a first and last then this is the first time we are showing any
         // items and we should notify that they are all visible.
         if (previousFirst == NO_POSITION && previousLast == NO_POSITION) {
@@ -51,7 +58,7 @@ class ComponentVisibilityListener(
                     // i > lastVisible -> Views that are BELOW that are no longer visible.
                     // If we've removed components, we cannot notify them that their views are
                     // not visible.
-                    if (i < componentGroup.getSpan()) {
+                    if (i < componentGroup.span) {
                         componentGroup.notifyVisibilityChange(i, false)
                     }
                 } else if (i < previousFirst || i > previousLast) {
