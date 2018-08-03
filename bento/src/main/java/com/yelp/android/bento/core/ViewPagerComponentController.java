@@ -75,13 +75,13 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     }
 
     @Override
-    public int indexOf(Component component) {
+    public int indexOf(@NonNull Component component) {
         return mComponentGroup.indexOf(component);
     }
 
     @Nullable
     @Override
-    public Range rangeOf(Component component) {
+    public Range rangeOf(@NonNull Component component) {
         return mComponentGroup.rangeOf(component);
     }
 

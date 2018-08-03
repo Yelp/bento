@@ -1,27 +1,17 @@
 package com.yelp.android.bentosampleapp
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.RecyclerView
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.RecyclerViewComponentController
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
+import kotlinx.android.synthetic.main.activity_sample.*
 
 class GridComponentsActivity : AppCompatActivity() {
-
-    companion object {
-        fun intentFor(context: Context): Intent {
-            return Intent(context, GridComponentsActivity::class.java)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sample)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recycler_view)
         val componentController = RecyclerViewComponentController(recyclerView)
 
         componentController.addComponent(createListComponent())

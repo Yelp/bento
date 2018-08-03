@@ -5,9 +5,10 @@ source_compatibility              = JavaVersion.VERSION_1_7
 target_compatibility              = JavaVersion.VERSION_1_7
 
 // Kotlin
-kotlin_version                    = "1.2.50"
+kotlin_version                    = "1.2.60"
 
 // Android
+android_tools_version             = '3.1.3'
 compile_sdk_version               = 27
 min_sdk_version                   = 21
 target_sdk_version                = 25

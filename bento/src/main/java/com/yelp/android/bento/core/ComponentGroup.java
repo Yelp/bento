@@ -47,18 +47,18 @@ public class ComponentGroup extends Component implements ComponentController {
     }
 
     @Override
-    public boolean contains(Component component) {
+    public boolean contains(@NonNull Component component) {
         return mComponentIndexMap.containsKey(component);
     }
 
     @Override
-    public int indexOf(Component component) {
+    public int indexOf(@NonNull Component component) {
         Integer index = mComponentIndexMap.get(component);
         return index == null ? -1 : index;
     }
 
     @Override
-    public Range rangeOf(Component component) {
+    public Range rangeOf(@NonNull Component component) {
         Integer index = mComponentIndexMap.get(component);
         return index == null ? null : mComponentAccordionList.get(index).mRange;
     }
