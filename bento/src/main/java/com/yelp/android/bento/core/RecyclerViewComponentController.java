@@ -3,6 +3,7 @@ package com.yelp.android.bento.core;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
@@ -13,7 +14,7 @@ import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
 import com.yelp.android.bento.core.RecyclerViewComponentController.ViewHolderWrapper;
 import com.yelp.android.bento.utils.AccordionList.Range;
-import com.yelp.android.util.MathUtils;
+import com.yelp.android.bento.utils.MathUtils;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     private OnScrollListener mOnScrollListener;
     private GridLayoutManager mLayoutManager;
     private int mNumColumns;
+    private LinearSmoothScroller mSmoothScroller;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
@@ -95,6 +97,13 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         mUniqueViewType = new AtomicInteger();
         mViewTypeMap = HashBiMap.create();
         mRecyclerView = recyclerView;
+        mSmoothScroller =
+                new LinearSmoothScroller(mRecyclerView.getContext()) {
+                    @Override
+                    protected int getVerticalSnapPreference() {
+                        return LinearSmoothScroller.SNAP_TO_START;
+                    }
+                };
 
         mRecyclerView.setAdapter(this);
         setupComponentSpans();
@@ -242,6 +251,19 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         mRecyclerView.removeOnScrollListener(mOnScrollListener);
         mComponentGroup.unregisterComponentDataObserver(mComponentVisibilityListener);
         addVisibilityListener();
+    }
+
+    @Override
+    public void scrollToComponent(@NonNull Component component, boolean smoothScroll) {
+        int componentIndex = mComponentGroup.findComponentOffset(component);
+        if (componentIndex != -1) {
+            if (smoothScroll) {
+                mSmoothScroller.setTargetPosition(componentIndex);
+                mLayoutManager.startSmoothScroll(mSmoothScroller);
+            } else {
+                mLayoutManager.scrollToPositionWithOffset(componentIndex, 0);
+            }
+        }
     }
 
     private void addVisibilityListener() {

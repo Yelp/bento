@@ -11,14 +11,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.yelp.android.bento.R;
-import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
+import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/** Component controller that can be used at the top-level for adding components to a view pager. */
+/**
+ * Component controller that can be used at the top-level for adding components to a view pager.
+ */
 public class ViewPagerComponentController extends PagerAdapter implements ComponentController {
 
     private Map<Component, ComponentController> mComponentPageMap;
@@ -42,7 +44,9 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         return new ViewPagerComponentController();
     }
 
-    /** The view for this ViewPagerComponentController should only be set once. */
+    /**
+     * The view for this ViewPagerComponentController should only be set once.
+     */
     public void setViewPager(@NonNull ViewPager viewPager) {
         mViewPager = viewPager;
         mViewPager.setAdapter(this);
@@ -86,38 +90,45 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     }
 
     @Override
-    public ComponentGroup addComponent(@NonNull Component component) {
-        return mComponentGroup.addComponent(component);
+    public ComponentController addComponent(@NonNull Component component) {
+        mComponentGroup.addComponent(component);
+        return this;
     }
 
     @Override
     public ComponentController addComponent(@NonNull ComponentGroup componentGroup) {
-        return mComponentGroup.addComponent(componentGroup);
+        mComponentGroup.addComponent(componentGroup);
+        return this;
     }
 
     @Override
     public ComponentController addComponent(int index, @NonNull Component component) {
-        return mComponentGroup.addComponent(index, component);
+        mComponentGroup.addComponent(index, component);
+        return this;
     }
 
     @Override
     public ComponentController addComponent(int index, @NonNull ComponentGroup componentGroup) {
-        return mComponentGroup.addComponent(index, componentGroup);
+        mComponentGroup.addComponent(index, componentGroup);
+        return this;
     }
 
     @Override
     public ComponentController addAll(@NonNull Collection<? extends Component> components) {
-        return mComponentGroup.addAll(components);
+        mComponentGroup.addAll(components);
+        return this;
     }
 
     @Override
     public ComponentController setComponent(int index, @NonNull Component component) {
-        return mComponentGroup.setComponent(index, component);
+        mComponentGroup.setComponent(index, component);
+        return this;
     }
 
     @Override
     public ComponentController setComponent(int index, @NonNull ComponentGroup componentGroup) {
-        return mComponentGroup.setComponent(index, componentGroup);
+        mComponentGroup.setComponent(index, componentGroup);
+        return this;
     }
 
     @NonNull
@@ -134,6 +145,21 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     @Override
     public void clear() {
         mComponentGroup.clear();
+    }
+
+    @Override
+    public void scrollToComponent(@NonNull Component component, boolean smoothScroll) {
+        // We need to figure out which page the component belongs to. A component may be a page or
+        // within a page, so we iterate through all the pages and check if the component exists on
+        // that page.
+        for (int i = 0; i < getCount(); i++) {
+            Component page = get(i);
+            if (page == component
+                    || (page instanceof ComponentGroup
+                    && ((ComponentGroup) page).findComponentOffset(component) != -1)) {
+                mViewPager.setCurrentItem(i, smoothScroll);
+            }
+        }
     }
 
     @Override

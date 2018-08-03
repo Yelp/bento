@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/scroll"
+        android:title="@string/scroll_to_component" />
+
+    <item
+        android:id="@+id/scroll_smooth"
+        android:title="@string/smooth_scroll_to_component" />
+</menu>

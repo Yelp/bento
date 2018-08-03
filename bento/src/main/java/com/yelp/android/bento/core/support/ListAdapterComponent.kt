@@ -23,13 +23,11 @@ class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
 
     override fun getPresenter(position: Int): Wrapper = presenters[position]
 
-    override fun getItem(position: Int): Any = listAdapter.getItem(position)
+    override fun getItem(position: Int): Any? = listAdapter.getItem(position)
 
     override fun getCount(): Int = listAdapter.count
 
-    override fun getHolderType(position: Int): Class<out ComponentViewHolder<Wrapper, Unit>> {
-        return ListAdapterHolderType::class.java
-    }
+    override fun getHolderType(position: Int) = ListAdapterHolderType::class.java
 
     /**
      * A [ListAdapter] classically recycles all items, except those whose type is
@@ -45,7 +43,7 @@ class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
         }
     }
 
-    private class ListAdapterHolderType : ListViewComponentViewHolder<Unit>() {
+    class ListAdapterHolderType : ListViewComponentViewHolder<Any?>() {
         lateinit var parent: ViewGroup
         lateinit var view: View
 
@@ -55,7 +53,7 @@ class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
                     .also { view = it }
         }
 
-        override fun bind(presenter: Wrapper, element: Unit) {
+        override fun bind(presenter: Wrapper, element: Any?) {
             presenter.listAdapter.getView(presenter.position, view, parent)
         }
     }

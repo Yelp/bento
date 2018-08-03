@@ -5,18 +5,22 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.SimpleComponent
 import com.yelp.android.bento.core.support.ListAdapterComponent
 import com.yelp.android.bento.core.support.ListViewComponentController
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_list_view.*
 
 class ListViewActivity : AppCompatActivity() {
+
     private lateinit var controller: ComponentController
+    private lateinit var componentToScrollTo: Component
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +37,7 @@ class ListViewActivity : AppCompatActivity() {
         addListComponent(controller)
         addArrayAdapterComponent(controller)
         addAnimatedComponent(controller)
+        addComponentToScrollTo(controller)
         addArrayAdapterComponent(controller)
         addAnimatedComponent(controller)
     }
@@ -43,12 +48,21 @@ class ListViewActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (R.id.action_clear == item.itemId) {
-            controller.clear()
-            setupListView(controller)
-            true
-        } else {
-            super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.action_clear -> {
+                controller.clear()
+                setupListView(controller)
+                true
+            }
+            R.id.scroll -> {
+                controller.scrollToComponent(componentToScrollTo)
+                true
+            }
+            R.id.scroll_smooth -> {
+                controller.scrollToComponent(componentToScrollTo, true)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -76,5 +90,11 @@ class ListViewActivity : AppCompatActivity() {
     private fun addAnimatedComponent(controller: ComponentController) {
         controller.addComponent(SimpleComponent(Unit,
                 AnimatedComponentExampleViewHolder::class.java))
+    }
+
+    private fun addComponentToScrollTo(controller: ComponentController) {
+        controller.addComponent(LabeledComponent("Component to scroll to").also {
+            componentToScrollTo = it
+        })
     }
 }

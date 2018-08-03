@@ -15,10 +15,16 @@ import com.yelp.android.bento.core.ComponentVisibilityListener
 import com.yelp.android.bento.utils.AccordionList
 
 private const val MAX_ITEM_TYPES_PER_ADAPTER = 4096
+private const val SMOOTH_SCROLL_DURATION = 300 // In milliseconds.
 
 class ListViewComponentController(val listView: ListView) :
         ComponentController,
         AbsListView.OnScrollListener {
+    override val span: Int
+        get() = components.span
+    override val size: Int
+        get() = components.size
+
     private val components = ComponentGroup()
     private var adapter: Adapter = Adapter()
     private val componentVisibilityListener =
@@ -33,10 +39,6 @@ class ListViewComponentController(val listView: ListView) :
     }
 
     // Component controller
-    override fun getSpan(): Int = components.span
-
-    override fun getSize(): Int = components.size
-
     override fun get(index: Int) = components[index]
 
     override fun contains(component: Component) = component in components
@@ -71,7 +73,7 @@ class ListViewComponentController(val listView: ListView) :
         return this
     }
 
-    override fun addAll(components: MutableCollection<out Component>): ComponentController {
+    override fun addAll(components: Collection<Component>): ComponentController {
         this.components.addAll(components)
         components.forEach { componentVisibilityListener.onComponentAdded(it) }
         return this
@@ -99,6 +101,15 @@ class ListViewComponentController(val listView: ListView) :
         components.clear()
         componentVisibilityListener.clear()
         recreate()
+    }
+
+    override fun scrollToComponent(component: Component, smoothScroll: Boolean) {
+        val index = components.findComponentOffset(component)
+        if (index != -1) {
+            listView.smoothScrollToPositionFromTop(index,
+                    0,
+                    if (smoothScroll) SMOOTH_SCROLL_DURATION else 0)
+        }
     }
 
     private fun recreate() {

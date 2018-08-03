@@ -3,9 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/scroll"
+        android:title="@string/scroll_to_component" />
+
+    <item
+        android:id="@+id/scroll_smooth"
+        android:title="@string/smooth_scroll_to_component" />
+
+    <item
         android:id="@+id/action_clear"
         android:icon="@drawable/ic_layers_clear_black_24dp"
-        android:title="Clear"
+        android:title="@string/clear"
         app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
 </menu>

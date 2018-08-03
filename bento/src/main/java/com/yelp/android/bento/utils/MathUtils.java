@@ -1,11 +1,8 @@
-package com.yelp.android.util;
+package com.yelp.android.bento.utils;
 
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
-import java.util.PriorityQueue;
-import java.util.Queue;
-
-/** General math utility methods not in {@link Math} class. */
+/**
+ * General math utility methods not in {@link Math} class.
+ */
 public final class MathUtils {
 
     private MathUtils() {
@@ -61,43 +58,6 @@ public final class MathUtils {
             if (counter == inputs.length) {
                 return currentLcm;
             }
-        }
-    }
-
-    /**
-     * Converts absolute counts to whole-number percentages, while making sure that the percentages
-     * sum up to 100%.
-     */
-    public static int[] absolutesToPercentages(double[] absolutes, double total) {
-        Queue<NumToIndex> absoluteValToIndex = new PriorityQueue<>();
-        for (int i = 0; i < absolutes.length; ++i) {
-            absoluteValToIndex.add(new NumToIndex(absolutes[i] / total * 100, i));
-        }
-
-        int percentageSum = 100;
-        int[] percentages = new int[absolutes.length];
-        while (percentageSum > 0) {
-            NumToIndex p = absoluteValToIndex.poll();
-            double valToAdd = Math.max(1, p.first.intValue());
-            percentages[p.second] += valToAdd;
-            absoluteValToIndex.add(new NumToIndex(p.first - valToAdd, p.second));
-            percentageSum -= valToAdd;
-        }
-        return percentages;
-    }
-
-    private static class NumToIndex extends Pair<Double, Integer>
-            implements Comparable<NumToIndex> {
-
-        NumToIndex(Double first, Integer second) {
-            super(first, second);
-        }
-
-        @Override
-        public int compareTo(@NonNull NumToIndex o) {
-            return Math.abs(o.first - first) > 1.0e-10d
-                    ? Double.compare(o.first, first)
-                    : Integer.compare(second, o.second);
         }
     }
 }

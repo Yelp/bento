@@ -5,12 +5,12 @@ import android.support.v7.app.AppCompatActivity
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.RecyclerViewComponentController
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
-import kotlinx.android.synthetic.main.activity_sample.*
+import kotlinx.android.synthetic.main.activity_recycler_view.*
 
 class GridComponentsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sample)
+        setContentView(R.layout.activity_recycler_view)
 
         val componentController = RecyclerViewComponentController(recyclerView)
 

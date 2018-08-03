@@ -103,6 +103,11 @@ public class ViewPagerComponent extends Component implements ComponentController
     }
 
     @Override
+    public void scrollToComponent(@NonNull Component component, boolean smoothScroll) {
+        mComponentController.scrollToComponent(component, smoothScroll);
+    }
+
+    @Override
     public Object getItem(int position) {
         return mComponentController;
     }

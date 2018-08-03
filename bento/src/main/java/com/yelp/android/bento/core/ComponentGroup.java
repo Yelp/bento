@@ -2,7 +2,6 @@ package com.yelp.android.bento.core;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-
 import com.yelp.android.bento.utils.AccordionList;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
@@ -17,7 +16,7 @@ import java.util.Map.Entry;
  * A {@link Component} comprising of zero or more ordered child {@link Component}s and managed by
  * implementing {@link ComponentController}.
  */
-public class ComponentGroup extends Component implements ComponentController {
+public class ComponentGroup extends Component {
 
     private final AccordionList<Component> mComponentAccordionList = new AccordionList<>();
     private final Map<Component, Integer> mComponentIndexMap = new HashMap<>();
@@ -25,55 +24,48 @@ public class ComponentGroup extends Component implements ComponentController {
 
     private final ComponentGroupObservable mObservable = new ComponentGroupObservable();
 
-    @Override
     public int getSpan() {
         return mComponentAccordionList.span().getSize();
     }
 
-    @Override
     public int getSize() {
         return mComponentAccordionList.size();
     }
 
     @NonNull
-    @Override
     public Component get(int index) {
         return mComponentAccordionList.get(index).mValue;
     }
 
-    /** Returns the {@link Component} associated with the range this location belongs to. */
+    /**
+     * Returns the {@link Component} associated with the range this location belongs to.
+     */
     public Component componentAt(int position) {
         return mComponentAccordionList.valueAt(position);
     }
 
-    @Override
     public boolean contains(@NonNull Component component) {
         return mComponentIndexMap.containsKey(component);
     }
 
-    @Override
     public int indexOf(@NonNull Component component) {
         Integer index = mComponentIndexMap.get(component);
         return index == null ? -1 : index;
     }
 
-    @Override
     public Range rangeOf(@NonNull Component component) {
         Integer index = mComponentIndexMap.get(component);
         return index == null ? null : mComponentAccordionList.get(index).mRange;
     }
 
-    @Override
     public ComponentGroup addComponent(@NonNull Component component) {
         return addComponent(getSize(), component);
     }
 
-    @Override
     public ComponentGroup addComponent(@NonNull ComponentGroup componentGroup) {
         return addComponent(getSize(), componentGroup);
     }
 
-    @Override
     public ComponentGroup addComponent(int index, @NonNull final Component component) {
         if (mComponentIndexMap.containsKey(component)) {
             throw new IllegalArgumentException("Component " + component + " already added.");
@@ -91,12 +83,10 @@ public class ComponentGroup extends Component implements ComponentController {
         return this;
     }
 
-    @Override
     public ComponentGroup addComponent(int index, @NonNull ComponentGroup componentGroup) {
         return addComponent(index, (Component) componentGroup);
     }
 
-    @Override
     public ComponentGroup addAll(@NonNull Collection<? extends Component> components) {
         for (Component comp : components) {
             addComponent(comp);
@@ -105,7 +95,6 @@ public class ComponentGroup extends Component implements ComponentController {
         return this;
     }
 
-    @Override
     public ComponentGroup setComponent(int index, @NonNull Component component) {
         if (mComponentIndexMap.containsKey(component)) {
             throw new IllegalArgumentException("Component " + component + " already added.");
@@ -130,13 +119,11 @@ public class ComponentGroup extends Component implements ComponentController {
         return this;
     }
 
-    @Override
     public ComponentGroup setComponent(int index, @NonNull ComponentGroup componentGroup) {
         return setComponent(index, (Component) componentGroup);
     }
 
     @NonNull
-    @Override
     public Component remove(int index) {
         Component component = get(index);
         remove(index, component);
@@ -144,12 +131,10 @@ public class ComponentGroup extends Component implements ComponentController {
         return component;
     }
 
-    @Override
     public boolean remove(@NonNull Component component) {
         return contains(component) && remove(indexOf(component), component);
     }
 
-    @Override
     public void clear() {
         mComponentAccordionList.clear();
         for (Component component : new ArrayList<>(mComponentIndexMap.keySet())) {
@@ -179,7 +164,9 @@ public class ComponentGroup extends Component implements ComponentController {
         return mComponentAccordionList.span().mUpper;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     @Override
     @CallSuper
     public void onItemVisible(int index) {
@@ -187,7 +174,9 @@ public class ComponentGroup extends Component implements ComponentController {
         notifyVisibilityChange(index, true);
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     @Override
     public void onItemNotVisible(int index) {
         super.onItemNotVisible(index);
@@ -210,13 +199,46 @@ public class ComponentGroup extends Component implements ComponentController {
     }
 
     /**
+     * Finds the offset of the specified component if it belongs in this ComponentGroup's hierarchy.
+     * That is, we will perform a depth-first search through all Components contained in this group
+     * and return the offset of the requested Component. Offset here refers to the number of items
+     * declared by all Components appearing before the specified Component. If this group is the
+     * root, then this value can directly be used as the index of the first view of the Component in
+     * an adapter.
+     *
+     * @param component the component to search for
+     * @return the offset of the component, or -1 if the component does not belong in this group or any of its children.
+     */
+    public int findComponentOffset(@NonNull Component component) {
+        int offset = 0;
+        if (component == this) {
+            return 0;
+        }
+
+        for (int i = 0; i < getSize(); i++) {
+            Component candidate = get(i);
+            if (candidate == component) {
+                return offset;
+            }
+            if (candidate instanceof ComponentGroup) {
+                int maybeIndex = ((ComponentGroup) candidate).findComponentOffset(component);
+                if (maybeIndex != -1) {
+                    return offset + maybeIndex;
+                }
+            }
+            offset = rangeOf(candidate).mUpper;
+        }
+        return -1;
+    }
+
+    /**
      * Finds the component which has the view at the specified index and notifies it that the view
      * is now either visible or not.
      *
      * <p>NOTE: this is notifying the view is visible on screen, not that its Visibility property is
      * set to VISIBLE.
      *
-     * @param i the index of the view in the adapter whose visibility has changed.
+     * @param i       the index of the view in the adapter whose visibility has changed.
      * @param visible whether the view is now visible or not
      */
     /* package */ void notifyVisibilityChange(int i, boolean visible) {
@@ -241,7 +263,7 @@ public class ComponentGroup extends Component implements ComponentController {
     }
 
     /**
-     *<pre>
+     * <pre>
      * Alright this is unintuitive, but since Bento doesn't implement proper
      * diffing (https://developer.android.com/reference/android/support/v7/util/DiffUtil.html)
      * we notify that all items in the existing list have been changed and that the
@@ -401,7 +423,9 @@ public class ComponentGroup extends Component implements ComponentController {
          */
         void onChanged();
 
-        /** Called whenever a {@link Component} is removed. */
+        /**
+         * Called whenever a {@link Component} is removed.
+         */
         void onComponentRemoved(Component component);
     }
 }

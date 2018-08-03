@@ -21,9 +21,10 @@ class MainActivity : AppCompatActivity() {
                 ActivityStarterViewHolder::class.java
         )
         listComponent.setData(listOf(
-                "Recycler View" to SampleActivity::class.java,
+                "Recycler View" to RecyclerViewActivity::class.java,
                 "Recycler View with grid" to GridComponentsActivity::class.java,
-                "List View" to ListViewActivity::class.java
+                "List View" to ListViewActivity::class.java,
+                "View Pager" to ViewPagerActivity::class.java
         ))
         componentController.addComponent(listComponent)
     }
