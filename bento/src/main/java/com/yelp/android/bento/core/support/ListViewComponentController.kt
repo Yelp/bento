@@ -18,12 +18,9 @@ private const val MAX_ITEM_TYPES_PER_ADAPTER = 4096
 private const val SMOOTH_SCROLL_DURATION = 300 // In milliseconds.
 
 class ListViewComponentController(val listView: ListView) :
-        ComponentController,
-        AbsListView.OnScrollListener {
-    override val span: Int
-        get() = components.span
-    override val size: Int
-        get() = components.size
+        ComponentController, AbsListView.OnScrollListener {
+    override val span: Int get() = components.span
+    override val size: Int get() = components.size
 
     private val components = ComponentGroup()
     private var adapter: Adapter = Adapter()
@@ -124,47 +121,54 @@ class ListViewComponentController(val listView: ListView) :
     }
 
     private inner class Adapter : BaseAdapter() {
-        private val itemViewTypes = mutableListOf<Any>()
+        internal val itemViewTypes = mutableListOf<Any>()
         internal val itemTypes = mutableMapOf<Int, Int>()
 
         // List adapter
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            when {
-                convertView != null -> {
-                    @Suppress("UNCHECKED_CAST")
-                    val holder: ComponentViewHolder<Any?, Any?> =
-                            convertView.getTag(R.id.bento_list_view_holder)
-                                    as ComponentViewHolder<Any?, Any?>
-                    holder.bind(components.getPresenter(position), components.getItem(position))
-                    return convertView
-                }
-                else -> {
-                    val holderType: Class<out ComponentViewHolder<Any?, Any?>> =
-                            components.getHolderType(position)
-                    val holder = holderType.newInstance()
-                    val view = if (holder is ListViewComponentViewHolder) {
-                        holder.inflate(components.getPresenter(position) as ListAdapterComponent.Wrapper,
-                                parent)
-                    } else {
-                        holder.inflate(parent).also {
-                            holder.bind(components.getPresenter(position),
-                                    components.getItem(position))
-                        }
+            @Suppress("UNCHECKED_CAST")
+            val holder = convertView?.getTag(R.id.bento_list_view_holder)
+                    as? ComponentViewHolder<Any?, Any?>
+            return try {
+                when (holder) {
+                    null -> createFreshView(position, parent)
+                    else -> {
+                        holder.bind(components.getPresenter(position), components.getItem(position))
+                        convertView
                     }
+                }
+            } catch (exception: Exception) {
+                // Try-catch in case the underlying ListView Adapters are buggy and don't have
+                // stable view types.
+                createFreshView(position, parent)
+            }
+        }
 
-                    view.setTag(R.id.bento_list_view_holder, holder)
-                    view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                        override fun onViewAttachedToWindow(v: View) {
-                            holder.onViewAttachedToWindow()
-                        }
-
-                        override fun onViewDetachedFromWindow(v: View) {
-                            holder.onViewDetachedFromWindow()
-                        }
-                    })
-                    return view
+        fun createFreshView(position: Int, parent: ViewGroup): View {
+            val holderType: Class<out ComponentViewHolder<Any?, Any?>> =
+                    components.getHolderType(position)
+            val holder = holderType.newInstance()
+            val view = if (holder is ListViewComponentViewHolder) {
+                holder.inflate(components.getPresenter(position) as ListAdapterComponent.Wrapper,
+                        parent)
+            } else {
+                holder.inflate(parent).also {
+                    holder.bind(components.getPresenter(position),
+                            components.getItem(position))
                 }
             }
+
+            view.setTag(R.id.bento_list_view_holder, holder)
+            view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    holder.onViewAttachedToWindow()
+                }
+
+                override fun onViewDetachedFromWindow(v: View) {
+                    holder.onViewDetachedFromWindow()
+                }
+            })
+            return view
         }
 
         /**
@@ -178,7 +182,7 @@ class ListViewComponentController(val listView: ListView) :
             val component = components.componentAt(position)
             val holderType = if (component is ListAdapterComponent) {
                 val innerPosition = position - (components.rangeOf(component)?.mLower
-                        ?: return ListAdapter.IGNORE_ITEM_VIEW_TYPE)
+                    ?: return ListAdapter.IGNORE_ITEM_VIEW_TYPE)
                 component.getViewType(innerPosition)
             } else {
                 components.getHolderType(position)
