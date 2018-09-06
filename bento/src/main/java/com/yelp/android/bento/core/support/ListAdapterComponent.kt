@@ -43,6 +43,8 @@ class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
         }
     }
 
+    fun isEnabled(position: Int) = listAdapter.isEnabled(position)
+
     class ListAdapterHolderType : ListViewComponentViewHolder<Any?>() {
         lateinit var parent: ViewGroup
         lateinit var view: View

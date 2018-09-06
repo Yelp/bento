@@ -123,6 +123,7 @@ class ListViewComponentController(val listView: ListView) :
     private inner class Adapter : BaseAdapter() {
         internal val itemViewTypes = mutableListOf<Any>()
         internal val itemTypes = mutableMapOf<Int, Int>()
+        internal val areEnabled = mutableMapOf<Int, Boolean>()
 
         // List adapter
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -218,6 +219,25 @@ class ListViewComponentController(val listView: ListView) :
         override fun getItemId(position: Int) = position.toLong()
 
         override fun getCount() = components.span
+
+        override fun isEnabled(position: Int): Boolean {
+            if (position in areEnabled) {
+                return areEnabled.getValue(position)
+            }
+
+            val component = components.componentAt(position)
+            return if (component is ListAdapterComponent) {
+                val innerPosition = position - (components.rangeOf(component)?.mLower
+                    ?: return false)
+                component.isEnabled(innerPosition)
+            } else {
+                false
+            }.also {
+                areEnabled[position] = it
+            }
+        }
+
+        override fun areAllItemsEnabled() = false
     }
 
     // Scroll listener
@@ -235,6 +255,7 @@ class ListViewComponentController(val listView: ListView) :
     private inner class ComponentObserver : ComponentGroup.ComponentGroupDataObserver {
         override fun onChanged() {
             adapter.itemTypes.clear()
+            adapter.areEnabled.clear()
             adapter.notifyDataSetChanged()
         }
 
