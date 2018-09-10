@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.BaseAdapter
+import android.widget.FrameLayout
 import android.widget.ListAdapter
 import android.widget.ListView
 import com.yelp.android.bento.R
@@ -153,10 +154,15 @@ class ListViewComponentController(val listView: ListView) :
                 holder.inflate(components.getPresenter(position) as ListAdapterComponent.Wrapper,
                         parent)
             } else {
-                holder.inflate(parent).also {
+                // The ListView set its child views with an AbsListView.LayoutParam, which doesn't
+                // handle parameters like margins. By wrapping the view in a FrameLayout, we ensure
+                // that any ViewGroup.LayoutParams parameter can be set/displayed properly.
+                val frameLayout = FrameLayout(parent.context)
+                holder.inflate(frameLayout).also {
                     holder.bind(components.getPresenter(position),
                             components.getItem(position))
-                }
+                }.also { frameLayout.addView(it) }
+                frameLayout
             }
 
             view.setTag(R.id.bento_list_view_holder, holder)
