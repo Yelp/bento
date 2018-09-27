@@ -116,6 +116,15 @@ public abstract class Component {
     @CallSuper
     public void onItemNotVisible(int index) {}
 
+    /**
+     * Override this method when you want to take action when a view in this component is now
+     * scrolled to the top of the screen.
+     *
+     * @param index The index of the top visible item.
+     */
+    @CallSuper
+    public void onItemAtTop(int index) {}
+
     @Nullable
     final Object getPresenterInternal(int position) {
         if (hasGap(position)) {

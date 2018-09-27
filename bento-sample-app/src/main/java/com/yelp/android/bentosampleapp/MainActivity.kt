@@ -24,7 +24,8 @@ class MainActivity : AppCompatActivity() {
                 "Recycler View" to RecyclerViewActivity::class.java,
                 "Recycler View with grid" to GridComponentsActivity::class.java,
                 "List View" to ListViewActivity::class.java,
-                "View Pager" to ViewPagerActivity::class.java
+                "View Pager" to ViewPagerActivity::class.java,
+                "Visibility Listener" to ListVisibilityActivity::class.java
         ))
         componentController.addComponent(listComponent)
     }

@@ -232,6 +232,25 @@ public class ComponentGroup extends Component {
     }
 
     /**
+     * Called when the first visible item changes as a result of scrolling.
+     * @param i The position of the new first item visible.
+     */
+    /* package */ void notifyFirstItemVisibilityChanged(int i) {
+        if (hasGap(i)) {
+            return;
+        }
+
+        Component component = componentAt(i - getPositionOffset());
+        int index = i - rangeOf(component).mLower - getPositionOffset();
+
+        if (component.hasGap(index)) {
+            return;
+        }
+
+        component.onItemAtTop(index);
+    }
+
+    /**
      * Finds the component which has the view at the specified index and notifies it that the view
      * is now either visible or not.
      *

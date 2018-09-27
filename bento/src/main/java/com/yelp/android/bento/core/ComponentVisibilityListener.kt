@@ -36,6 +36,10 @@ class ComponentVisibilityListener(
             return
         }
 
+        if (firstVisible != previousFirst) {
+            componentGroup.notifyFirstItemVisibilityChanged(firstVisible)
+        }
+
         // If we didn't have a first and last then this is the first time we are showing any
         // items and we should notify that they are all visible.
         if (previousFirst == NO_POSITION && previousLast == NO_POSITION) {
