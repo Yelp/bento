@@ -1,0 +1,6 @@
+-   repo: git@github.com:Yelp/detect-secrets
+    rev: 0.10.1
+    hooks:
+    -   id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: .*/build/.*|.*/test/.*|.*/androidTest/.*
