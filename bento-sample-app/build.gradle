@@ -1,19 +1,23 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-android {
 
-    compileSdkVersion compile_sdk_version
+android {
+    compileSdkVersion Versions.COMPILE_SDK
 
     defaultConfig {
         applicationId "com.yelp.android.bentosampleapp"
-        minSdkVersion min_sdk_version
-        targetSdkVersion target_sdk_version
+        minSdkVersion Versions.MIN_SDK
+        targetSdkVersion Versions.TARGET_SDK
         versionCode 1
-        versionName "1.0"
+        versionName Publishing.VERSION
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
     buildTypes {
@@ -25,22 +29,25 @@ android {
 }
 
 dependencies {
-
     implementation project(':bento')
 
-    // Espresso
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:$espresso_lib_version", {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
     // JUnit
-    testImplementation "junit:junit:$junit_lib_version"
+    testImplementation TestLibs.JUNIT
 
     // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation Libs.KOTLIN
+    implementation Libs.KOTLIN_REFLECT
 
     // Support library dependencies.
-    implementation "com.android.support:appcompat-v7:$support_lib_version"
-    implementation "com.android.support:recyclerview-v7:$support_lib_version"
-    implementation "com.android.support.constraint:constraint-layout:$support_constraint_layout_version"
+    implementation SupportLibs.APP_COMPAT
+    implementation SupportLibs.RECYCLERVIEW
+    implementation SupportLibs.CONSTRAINT_LAYOUT
+
+    // Espresso
+    androidTestImplementation project(':bento-testing')
+    androidTestImplementation TestLibs.ESPRESSO
+    androidTestImplementation TestLibs.ESPRESSO_CONTRIB
+    androidTestImplementation TestLibs.ESPRESSO_INTENTS
+    androidTestImplementation TestLibs.SUPPORT_TEST_RULES
+    androidTestImplementation TestLibs.SUPPORT_TEST_RUNNER
 }

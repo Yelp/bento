@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="bento_list_view_holder" type="id" />
+    <item name="bento_list_view_wrapper" type="id" />
+    <item name="bento_list_component_controller" type="id" />
 </resources>

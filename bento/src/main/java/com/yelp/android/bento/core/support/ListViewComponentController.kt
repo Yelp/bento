@@ -2,17 +2,9 @@ package com.yelp.android.bento.core.support
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
-import android.widget.BaseAdapter
-import android.widget.FrameLayout
-import android.widget.ListAdapter
-import android.widget.ListView
+import android.widget.*
 import com.yelp.android.bento.R
-import com.yelp.android.bento.core.Component
-import com.yelp.android.bento.core.ComponentController
-import com.yelp.android.bento.core.ComponentGroup
-import com.yelp.android.bento.core.ComponentViewHolder
-import com.yelp.android.bento.core.ComponentVisibilityListener
+import com.yelp.android.bento.core.*
 import com.yelp.android.bento.utils.AccordionList
 
 private const val MAX_ITEM_TYPES_PER_ADAPTER = 4096
@@ -34,6 +26,9 @@ class ListViewComponentController(val listView: ListView) :
         components.registerComponentDataObserver(componentVisibilityListener)
         listView.setOnScrollListener(this)
         listView.adapter = adapter
+        // Set the component controller as a tag so that it can be retrieved from the ListView
+        // during testing.
+        listView.setTag(R.id.bento_list_component_controller, this)
     }
 
     // Component controller
@@ -121,8 +116,8 @@ class ListViewComponentController(val listView: ListView) :
         isRecreating = false
     }
 
-    private inner class Adapter : BaseAdapter() {
-        internal val itemViewTypes = mutableListOf<Any>()
+    inner class Adapter : BaseAdapter() {
+        private val itemViewTypes = mutableListOf<Any>()
         internal val itemTypes = mutableMapOf<Int, Int>()
         internal val areEnabled = mutableMapOf<Int, Boolean>()
 
@@ -146,7 +141,7 @@ class ListViewComponentController(val listView: ListView) :
             }
         }
 
-        fun createFreshView(position: Int, parent: ViewGroup): View {
+        private fun createFreshView(position: Int, parent: ViewGroup): View {
             val holderType: Class<out ComponentViewHolder<Any?, Any?>> =
                     components.getHolderType(position)
             val holder = holderType.newInstance()
@@ -158,6 +153,8 @@ class ListViewComponentController(val listView: ListView) :
                 // handle parameters like margins. By wrapping the view in a FrameLayout, we ensure
                 // that any ViewGroup.LayoutParams parameter can be set/displayed properly.
                 val frameLayout = FrameLayout(parent.context)
+                // We tag the wrapper frame layout so that we can identify it later during testing.
+                frameLayout.setTag(R.id.bento_list_view_wrapper, true)
                 holder.inflate(frameLayout).also {
                     holder.bind(components.getPresenter(position),
                             components.getItem(position))
@@ -189,7 +186,7 @@ class ListViewComponentController(val listView: ListView) :
             val component = components.componentAt(position)
             val holderType = if (component is ListAdapterComponent) {
                 val innerPosition = position - (components.rangeOf(component)?.mLower
-                    ?: return ListAdapter.IGNORE_ITEM_VIEW_TYPE)
+                        ?: return ListAdapter.IGNORE_ITEM_VIEW_TYPE)
                 component.getViewType(innerPosition)
             } else {
                 components.getHolderType(position)
@@ -234,7 +231,7 @@ class ListViewComponentController(val listView: ListView) :
             val component = components.componentAt(position)
             return if (component is ListAdapterComponent) {
                 val innerPosition = position - (components.rangeOf(component)?.mLower
-                    ?: return false)
+                        ?: return false)
                 component.isEnabled(innerPosition)
             } else {
                 false

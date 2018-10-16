@@ -1,5 +1,7 @@
 package com.yelp.android.bentosampleapp.components
 
+import android.animation.Animator
+import android.animation.AnimatorInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -10,10 +12,13 @@ import com.yelp.android.bentosampleapp.R
 class AnimatedComponentExampleViewHolder : SimpleComponentViewHolder<Unit>(R.layout.simple_component_example) {
     private lateinit var textView: TextView
     private lateinit var animation: Animation
+    private lateinit var animator: Animator
 
     override fun onViewCreated(itemView: View) {
         textView = itemView.findViewById(R.id.text)
         animation = AnimationUtils.loadAnimation(itemView.context, R.anim.sample_animation)
+        animator = AnimatorInflater.loadAnimator(itemView.context, R.animator.sample_animator)
+        animator.setTarget(textView)
     }
 
     override fun bind(presenter: Unit) {
@@ -21,14 +26,11 @@ class AnimatedComponentExampleViewHolder : SimpleComponentViewHolder<Unit>(R.lay
     }
 
     override fun onViewAttachedToWindow() {
-        textView.startAnimation(animation)
+        animator.start()
     }
 
     override fun onViewDetachedFromWindow() {
         textView.clearAnimation()
-        animation.apply {
-            cancel()
-            reset()
-        }
+        animator.pause()
     }
 }

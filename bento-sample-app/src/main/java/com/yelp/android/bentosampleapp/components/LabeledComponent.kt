@@ -2,7 +2,7 @@ package com.yelp.android.bentosampleapp.components
 
 import com.yelp.android.bento.core.Component
 
-class LabeledComponent(val label: String) : Component() {
+class LabeledComponent(private val label: String) : Component() {
 
     override fun getPresenter(position: Int) = Unit
 
