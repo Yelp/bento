@@ -132,4 +132,15 @@ interface ComponentController {
      * @param smoothScroll whether to animate the scroll or instantly move to the position
      */
     fun scrollToComponent(component: Component, smoothScroll: Boolean = false)
+
+    /**
+     * Scroll the controller until the specified component is at the top of the screen (or as close
+     * as possible if the view cannot scroll enough). If the component cannot be found in the
+     * controller, this is a no-op.
+     *
+     * @param component the component to scroll to
+     * @param offset The distance (in pixels) from the start edge of the item view when scrolling
+     *               is finished.
+     */
+    fun scrollToComponentWithOffset(component: Component, offset: Int = 0)
 }

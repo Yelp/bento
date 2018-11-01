@@ -3,5 +3,6 @@
     <string name="grid">Grid Demo</string>
     <string name="scroll_to_component">Scroll to Component</string>
     <string name="smooth_scroll_to_component">Smooth scroll to component</string>
+    <string name="scroll_with_offset">Scroll to Component with offset</string>
     <string name="clear">Clear</string>
 </resources>

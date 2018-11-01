@@ -108,6 +108,11 @@ public class ViewPagerComponent extends Component implements ComponentController
     }
 
     @Override
+    public void scrollToComponentWithOffset(@NonNull Component component, int offset) {
+        mComponentController.scrollToComponentWithOffset(component, offset);
+    }
+
+    @Override
     public Object getItem(int position) {
         return mComponentController;
     }

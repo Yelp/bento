@@ -266,6 +266,14 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         }
     }
 
+    @Override
+    public void scrollToComponentWithOffset(@NonNull Component component, int offset) {
+        int componentIndex = mComponentGroup.findComponentOffset(component);
+        if (componentIndex != -1) {
+            mLayoutManager.scrollToPositionWithOffset(componentIndex, offset);
+        }
+    }
+
     private void addVisibilityListener() {
         mComponentVisibilityListener =
                 new ComponentVisibilityListener(

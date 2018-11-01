@@ -58,6 +58,10 @@ class RecyclerViewActivity : AppCompatActivity() {
                 componentController.scrollToComponent(componentToScrollTo, true)
                 true
             }
+            R.id.scroll_with_offset -> {
+                componentController.scrollToComponentWithOffset(componentToScrollTo, 100)
+                true
+            }
             else -> false
         }
     }

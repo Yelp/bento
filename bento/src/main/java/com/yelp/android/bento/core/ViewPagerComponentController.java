@@ -162,6 +162,13 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         }
     }
 
+    /** Not supported. Use {@link #scrollToComponent(Component, boolean)} instead. */
+    @Override
+    public void scrollToComponentWithOffset(@NonNull Component component, int offset) {
+        throw new UnsupportedOperationException("Scrolling with offset is not supported for " +
+                "ViewPagerComponent. Use scrollToComponent(Component, boolean) instead.");
+    }
+
     @Override
     public int getItemPosition(Object object) {
         if (mComponentViewMap.containsKey(object)) {

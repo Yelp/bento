@@ -62,6 +62,10 @@ class ListViewActivity : AppCompatActivity() {
                 controller.scrollToComponent(componentToScrollTo, true)
                 true
             }
+            R.id.scroll_with_offset -> {
+                controller.scrollToComponentWithOffset(componentToScrollTo, 100)
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
