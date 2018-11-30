@@ -1,5 +1,17 @@
 package com.yelp.android.bento.core;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -10,20 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.spy;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-
-/**
- * Unit tests for {@link ComponentGroup}.
- */
+/** Unit tests for {@link ComponentGroup}. */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ComponentGroup.class)
 public class ComponentGroupTest {
@@ -64,13 +63,16 @@ public class ComponentGroupTest {
         // Presenters
         assertEquals(null, mComponentGroup.getPresenterInternal(0)); // Gap
         assertEquals(null, mComponentGroup.getPresenterInternal(1)); // Gap
-        assertEquals(Integer.MAX_VALUE, mComponentGroup.getPresenterInternal(2)); // Actual component
+        assertEquals(
+                Integer.MAX_VALUE, mComponentGroup.getPresenterInternal(2)); // Actual component
         assertEquals(null, mComponentGroup.getPresenterInternal(3)); // Gap
 
         // View Holders
         assertEquals(GapViewHolder.class, mComponentGroup.getHolderTypeInternal(0)); // Gap
         assertEquals(GapViewHolder.class, mComponentGroup.getHolderTypeInternal(1)); // Gap
-        assertEquals(SimpleComponentViewHolder.class, mComponentGroup.getHolderTypeInternal(2)); // Actual component
+        assertEquals(
+                SimpleComponentViewHolder.class,
+                mComponentGroup.getHolderTypeInternal(2)); // Actual component
         assertEquals(GapViewHolder.class, mComponentGroup.getHolderTypeInternal(3)); // Gap
 
         // Items
@@ -204,7 +206,6 @@ public class ComponentGroupTest {
         fakeData.remove(4);
         listComponent.setData(fakeData);
 
-
         // Alright this is unintuitive, but since Bento doesn't implement proper
         // diffing we notify that all items in the existing list have been changed and that the
         // list has changed by a size of 1. We notify the size change by saying the last element has
@@ -213,6 +214,68 @@ public class ComponentGroupTest {
         // notifyItemRangeRemoved is a final method. This is why we have to use PowerMock.
         verify(spyObserver, times(1)).notifyItemRangeChanged(0, 5);
         verify(spyObserver, times(1)).notifyItemRangeRemoved(5, 1);
+    }
+
+    @Test
+    public void test_NotifyRangeInserted_ComponentAddedInTheMiddle_CallsNotifyItemRangeInserted() {
+        List<String> fakeData = new ArrayList<>(Arrays.asList("a", "b", "c"));
+        ListComponent<String, String> listComponent0 = new ListComponent<>(null, null);
+        listComponent0.toggleDivider(false);
+        listComponent0.setData(fakeData);
+        ListComponent<String, String> listComponent1 = new ListComponent<>(null, null);
+        listComponent1.toggleDivider(false);
+        listComponent1.setData(fakeData);
+        ComponentGroup group = new ComponentGroup();
+        group.addComponent(listComponent0);
+        group.addComponent(listComponent1);
+
+        List<String> insertedData = new ArrayList<>(Arrays.asList("0", "1", "2", "3"));
+        ListComponent<String, String> insertedComponent = new ListComponent<>(null, null);
+        insertedComponent.toggleDivider(false);
+        insertedComponent.setData(insertedData);
+        ComponentGroup spyGroup = spy(group);
+
+        spyGroup.addComponent(1, insertedComponent);
+        verify(spyGroup, times(1)).notifyItemRangeInserted(3, 4);
+    }
+
+    @Test
+    public void
+            test_NotifyRangeInserted_ComponentAddedAtLastPosition_CallsNotifyItemRangeInserted() {
+        List<String> fakeData = new ArrayList<>(Arrays.asList("a", "b", "c", "d"));
+        ListComponent<String, String> listComponent0 = new ListComponent<>(null, null);
+        listComponent0.toggleDivider(false);
+        listComponent0.setData(fakeData);
+        ComponentGroup group = new ComponentGroup();
+        group.addComponent(listComponent0);
+
+        List<String> insertedData = new ArrayList<>(Arrays.asList("0", "1", "2", "3"));
+        ListComponent<String, String> insertedComponent = new ListComponent<>(null, null);
+        insertedComponent.toggleDivider(false);
+        insertedComponent.setData(insertedData);
+        ComponentGroup spyGroup = spy(group);
+
+        spyGroup.addComponent(insertedComponent);
+        verify(spyGroup, times(1)).notifyItemRangeInserted(4, 4);
+    }
+
+    @Test
+    public void test_NotifyRangeInserted_ComponentAddedAtIndex0_CallsNotifyItemRangeInserted() {
+        List<String> fakeData = new ArrayList<>(Arrays.asList("a", "b", "c", "d"));
+        ListComponent<String, String> listComponent0 = new ListComponent<>(null, null);
+        listComponent0.toggleDivider(false);
+        listComponent0.setData(fakeData);
+        ComponentGroup group = new ComponentGroup();
+        group.addComponent(listComponent0);
+
+        List<String> insertedData = new ArrayList<>(Arrays.asList("0", "1", "2"));
+        ListComponent<String, String> insertedComponent = new ListComponent<>(null, null);
+        insertedComponent.toggleDivider(false);
+        insertedComponent.setData(insertedData);
+        ComponentGroup spyGroup = spy(group);
+
+        spyGroup.addComponent(insertedComponent);
+        verify(spyGroup, times(0)).notifyItemRangeInserted(0, 4);
     }
 
     @Test
@@ -270,7 +333,6 @@ public class ComponentGroupTest {
         nestedGroup.addAll(nestedComponents);
         group.addComponent(nestedGroup);
 
-
         Component componentToFind = nestedComponents.get(4);
         int offset = group.findComponentOffset(componentToFind);
         assertEquals(14, offset);
@@ -281,13 +343,15 @@ public class ComponentGroupTest {
         for (int i = 0; i < numComponents; i++) {
             Component mock = mock(Component.class);
             when(mock.getCount()).thenReturn(1);
-            when(mock.getHolderType(anyInt())).thenAnswer(
-                    new Answer<Class<TestComponentViewHolder>>() {
-                        @Override
-                        public Class<TestComponentViewHolder> answer(InvocationOnMock invocation) {
-                            return TestComponentViewHolder.class;
-                        }
-                    });
+            when(mock.getHolderType(anyInt()))
+                    .thenAnswer(
+                            new Answer<Class<TestComponentViewHolder>>() {
+                                @Override
+                                public Class<TestComponentViewHolder> answer(
+                                        InvocationOnMock invocation) {
+                                    return TestComponentViewHolder.class;
+                                }
+                            });
             components.add(mock);
         }
 

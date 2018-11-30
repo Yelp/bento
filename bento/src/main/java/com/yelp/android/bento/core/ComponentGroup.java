@@ -2,10 +2,12 @@ package com.yelp.android.bento.core;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+
 import com.yelp.android.bento.utils.AccordionList;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Observable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,9 +39,7 @@ public class ComponentGroup extends Component {
         return mComponentAccordionList.get(index).mValue;
     }
 
-    /**
-     * Returns the {@link Component} associated with the range this location belongs to.
-     */
+    /** Returns the {@link Component} associated with the range this location belongs to. */
     public Component componentAt(int position) {
         return mComponentAccordionList.valueAt(position);
     }
@@ -71,14 +71,20 @@ public class ComponentGroup extends Component {
             throw new IllegalArgumentException("Component " + component + " already added.");
         }
 
-        int originalSize = getCountInternal();
+        final int insertionStartIndex;
+        if (mComponentAccordionList.size() > index) {
+            RangedValue<Component> rangedValue = mComponentAccordionList.get(index);
+            insertionStartIndex = rangedValue.mRange.mLower;
+        } else {
+            insertionStartIndex = getCountInternal();
+        }
         addComponentAndUpdateIndices(index, component);
 
         ComponentDataObserver componentDataObserver = new ChildComponentDataObserver(component);
         component.registerComponentDataObserver(componentDataObserver);
         mComponentDataObserverMap.put(component, componentDataObserver);
 
-        notifyItemRangeInserted(originalSize, component.getCountInternal());
+        notifyItemRangeInserted(insertionStartIndex, component.getCountInternal());
         mObservable.notifyOnChanged();
         return this;
     }
@@ -164,9 +170,7 @@ public class ComponentGroup extends Component {
         return mComponentAccordionList.span().mUpper;
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     @Override
     @CallSuper
     public void onItemVisible(int index) {
@@ -174,9 +178,7 @@ public class ComponentGroup extends Component {
         notifyVisibilityChange(index, true);
     }
 
-    /**
-     * @inheritDoc
-     */
+    /** @inheritDoc */
     @Override
     public void onItemNotVisible(int index) {
         super.onItemNotVisible(index);
@@ -207,7 +209,8 @@ public class ComponentGroup extends Component {
      * an adapter.
      *
      * @param component the component to search for
-     * @return the offset of the component, or -1 if the component does not belong in this group or any of its children.
+     * @return the offset of the component, or -1 if the component does not belong in this group or
+     *     any of its children.
      */
     public int findComponentOffset(@NonNull Component component) {
         int offset = 0;
@@ -233,6 +236,7 @@ public class ComponentGroup extends Component {
 
     /**
      * Called when the first visible item changes as a result of scrolling.
+     *
      * @param i The position of the new first item visible.
      */
     /* package */ void notifyFirstItemVisibilityChanged(int i) {
@@ -257,7 +261,7 @@ public class ComponentGroup extends Component {
      * <p>NOTE: this is notifying the view is visible on screen, not that its Visibility property is
      * set to VISIBLE.
      *
-     * @param i       the index of the view in the adapter whose visibility has changed.
+     * @param i the index of the view in the adapter whose visibility has changed.
      * @param visible whether the view is now visible or not
      */
     /* package */ void notifyVisibilityChange(int i, boolean visible) {
@@ -282,6 +286,8 @@ public class ComponentGroup extends Component {
     }
 
     /**
+     *
+     *
      * <pre>
      * Alright this is unintuitive, but since Bento doesn't implement proper
      * diffing (https://developer.android.com/reference/android/support/v7/util/DiffUtil.html)
@@ -442,9 +448,7 @@ public class ComponentGroup extends Component {
          */
         void onChanged();
 
-        /**
-         * Called whenever a {@link Component} is removed.
-         */
+        /** Called whenever a {@link Component} is removed. */
         void onComponentRemoved(Component component);
     }
 }
