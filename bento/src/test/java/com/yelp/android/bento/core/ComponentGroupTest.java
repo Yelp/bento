@@ -338,6 +338,18 @@ public class ComponentGroupTest {
         assertEquals(14, offset);
     }
 
+    @Test
+    public void test_GetNumberColumns_ReturnsCorrectAnswer() {
+        List<Component> components = createMockComponents(3);
+        when(components.get(0).getNumberColumns()).thenReturn(2);
+        when(components.get(1).getNumberColumns()).thenReturn(3);
+        when(components.get(2).getNumberColumns()).thenReturn(4);
+
+        ComponentGroup listComponent = new ComponentGroup();
+        listComponent.addAll(components);
+        assertEquals(12, listComponent.getNumberColumns());
+    }
+
     private List<Component> createMockComponents(int numComponents) {
         List<Component> components = new ArrayList<>(numComponents);
         for (int i = 0; i < numComponents; i++) {

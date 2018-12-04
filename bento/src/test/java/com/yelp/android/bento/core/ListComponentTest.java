@@ -1,14 +1,13 @@
 package com.yelp.android.bento.core;
 
+import static junit.framework.Assert.assertEquals;
+
 import android.support.v7.widget.GridLayoutManager;
-
-import org.junit.Before;
-import org.junit.Test;
-
+import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import java.util.ArrayList;
 import java.util.List;
-
-import static junit.framework.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ListComponentTest {
 
@@ -127,12 +126,27 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_GetSpanSizeLookupTwoColumnsNonGapItem_ReturnsTwo() {
+    public void test_GetSpanSizeLookupTwoColumnsNonGapItem_ReturnsOne() {
         addItems(2);
         mListComponent.setTopGap(10);
         mListComponent.setNumberColumns(2);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
         assertEquals(1, spanSizeLookup.getSpanSize(1));
+    }
+
+    @Test
+    public void test_SetSpanSizeLookupCustomReturnsTen_ReturnsLookupWithTen() {
+        addItems(2);
+        SpanSizeLookup customLookup = new SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return 10;
+            }
+        };
+
+        mListComponent.setSpanSizeLookup(customLookup);
+
+        assertEquals(10, mListComponent.getSpanSizeLookup().getSpanSize(0));
     }
 
     /**

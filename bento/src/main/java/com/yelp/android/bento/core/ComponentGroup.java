@@ -2,12 +2,12 @@ package com.yelp.android.bento.core;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-
+import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.utils.AccordionList;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
+import com.yelp.android.bento.utils.MathUtils;
 import com.yelp.android.bento.utils.Observable;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,6 +25,18 @@ public class ComponentGroup extends Component {
     private final Map<Component, ComponentDataObserver> mComponentDataObserverMap = new HashMap<>();
 
     private final ComponentGroupObservable mObservable = new ComponentGroupObservable();
+
+    public ComponentGroup() {
+        mSpanSizeLookup = new SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(position);
+                return rangedValue.mValue
+                        .getSpanSizeLookup()
+                        .getSpanSize(position - rangedValue.mRange.mLower);
+            }
+        };
+    }
 
     public int getSpan() {
         return mComponentAccordionList.span().getSize();
@@ -198,6 +210,30 @@ public class ComponentGroup extends Component {
         RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);
         Component component = mComponentAccordionList.valueAt(position);
         return component.getItemInternal(position - compPair.mRange.mLower);
+    }
+
+    @Override
+    public int getNumberColumns() {
+        int[] childColumns = new int[mComponentAccordionList.size()];
+        for (int i = 0; i < mComponentAccordionList.size(); i ++) {
+            childColumns[i] = mComponentAccordionList.get(i).mValue.getNumberColumns();
+        }
+        return MathUtils.lcm(childColumns);
+    }
+
+    /**
+     * At a given position, we want to determine the number of columns the component it is in has.
+     * @param position The position to lookup.
+     * @return The number of columns the owner of the position has.
+     */
+    @Override
+    public int getNumberColumnsAtPosition(int position) {
+        return componentAt(position).getNumberColumnsAtPosition(position);
+    }
+
+    @Override
+    public SpanSizeLookup getSpanSizeLookup() {
+        return mSpanSizeLookup;
     }
 
     /**

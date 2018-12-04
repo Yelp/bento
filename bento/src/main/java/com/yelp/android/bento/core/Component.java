@@ -8,16 +8,20 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.utils.Observable;
 
-/** Represents a self-contained component to be used with {@link ComponentController}. */
+/**
+ * Represents a self-contained component to be used with {@link ComponentController}.
+ */
 public abstract class Component {
 
     private final ComponentDataObservable mObservable = new ComponentDataObservable();
 
     private int mColumns = 1;
 
-    @Px private int mTopGapSize = 0;
+    @Px
+    private int mTopGapSize = 0;
 
-    @Px private int mBottomGapSize = 0;
+    @Px
+    private int mBottomGapSize = 0;
 
     @Nullable
     public abstract Object getPresenter(int position);
@@ -27,10 +31,14 @@ public abstract class Component {
 
     public abstract int getCount();
 
+    protected SpanSizeLookup mSpanSizeLookup;
+
     @NonNull
     public abstract Class<? extends ComponentViewHolder> getHolderType(int position);
 
-    /** Notify observers that the {@link Component} data has changed. */
+    /**
+     * Notify observers that the {@link Component} data has changed.
+     */
     public final void notifyDataChanged() {
         mObservable.notifyChanged();
     }
@@ -51,7 +59,9 @@ public abstract class Component {
         mObservable.notifyOnItemMoved(fromPosition, toPosition);
     }
 
-    /** @param gapSizePx The size of the gap in pixels. */
+    /**
+     * @param gapSizePx The size of the gap in pixels.
+     */
     public void setTopGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
             throw new IllegalArgumentException("Gap Size must >= 0");
@@ -60,7 +70,9 @@ public abstract class Component {
         mTopGapSize = gapSizePx;
     }
 
-    /** @param gapSizePx The size of the gap in pixels. */
+    /**
+     * @param gapSizePx The size of the gap in pixels.
+     */
     public void setBottomGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
             throw new IllegalArgumentException("Gap Size must >= 0");
@@ -85,13 +97,31 @@ public abstract class Component {
         return mColumns;
     }
 
+    /**
+     * Returns the number of columns at a given position. This will usually return the same as
+     * {@link Component#getNumberColumns()}, but {@link ComponentGroup}s will want to return the
+     * number of columns at a given index. For example, if you have a {@link ComponentGroup} with
+     * two {@link Component}s with a different number of columns, this should return the number of
+     * columns in the component that owns the
+     */
+    public int getNumberColumnsAtPosition(int position) {
+        return mColumns;
+    }
+
     public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
-        return new SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return 1;
-            }
-        };
+         if (mSpanSizeLookup == null) {
+            mSpanSizeLookup = new SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return 1;
+                }
+            };
+        }
+        return mSpanSizeLookup;
+    }
+
+    public void setSpanSizeLookup(SpanSizeLookup spanSizeLookup) {
+        mSpanSizeLookup = spanSizeLookup;
     }
 
     /**
@@ -103,7 +133,8 @@ public abstract class Component {
      * @param index Index of item that is now visible on screen.
      */
     @CallSuper
-    public void onItemVisible(int index) {}
+    public void onItemVisible(int index) {
+    }
 
     /**
      * Override this method when you want to take an action when a view in this component is no
@@ -114,7 +145,8 @@ public abstract class Component {
      * @param index Index of item that is no longer visible on screen.
      */
     @CallSuper
-    public void onItemNotVisible(int index) {}
+    public void onItemNotVisible(int index) {
+    }
 
     /**
      * Override this method when you want to take action when a view in this component is now
@@ -220,7 +252,9 @@ public abstract class Component {
                 || mBottomGapSize > 0 && position == getCountInternal() - 1;
     }
 
-    /** @return The offset the position needs to be modified by to account for gaps. */
+    /**
+     * @return The offset the position needs to be modified by to account for gaps.
+     */
     int getPositionOffset() {
         return mTopGapSize > 0 ? 1 : 0;
     }

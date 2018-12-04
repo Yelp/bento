@@ -3,7 +3,7 @@ package com.yelp.android.bento.core;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,16 +130,29 @@ public class ListComponent<P, T> extends Component {
     }
 
     @Override
-    public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
-        // If there is a gap in the list component, we want it to span the entire width.
-        // Otherwise, just one item.
-        return new GridLayoutManager.SpanSizeLookup() {
+    public SpanSizeLookup getSpanSizeLookup() {
+        if (mSpanSizeLookup == null) {
+            setSpanSizeLookup(super.getSpanSizeLookup());
+        }
+        return mSpanSizeLookup;
+    }
+
+    /**
+     * Sets the {@link SpanSizeLookup} to use when getting the widths of the cells. This method will
+     * take padding into account.
+     * @param spanSizeLookup The new {@link SpanSizeLookup} to add.
+     */
+    @Override
+    public void setSpanSizeLookup(final SpanSizeLookup spanSizeLookup) {
+        mSpanSizeLookup = new SpanSizeLookup() {
+            // If there is a gap in the list component, we want it to span the entire width.
+            // Otherwise, return the requested span size lookup.
             @Override
             public int getSpanSize(int position) {
                 if (hasGap(position)) {
                     return getNumberColumns();
                 }
-                return 1;
+                return spanSizeLookup.getSpanSize(position - getPositionOffset());
             }
         };
     }

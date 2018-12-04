@@ -358,15 +358,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     }
 
     private void setupComponentSpans() {
-        // Get an array of all the component's requested columns.
-        int[] columns = new int[mComponentGroup.getSize()];
-        for (int i = 0; i < mComponentGroup.getSize(); i++) {
-            columns[i] = mComponentGroup.get(i).getNumberColumns();
-        }
-
-        // The actual number of columns will be the lcm of all the component columns. That way, if
-        // one component wants 2 and another 3, the total will be 6.
-        int cols = MathUtils.lcm(columns);
+        int cols = mComponentGroup.getNumberColumns();
 
         // Setup the layout manager if there is no current layout manager, or the number of columns
         // has changed.
@@ -396,7 +388,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
                         // The span of a 2 column cell would be 1, but we need to multiply by 6/2=3
                         // to get the true span across the recycler view.
                         return component.getSpanSizeLookup().getSpanSize(position - range.mLower)
-                                * (mNumColumns / component.getNumberColumns());
+                                * (mNumColumns / component.getNumberColumnsAtPosition(position));
                     }
                 });
     }
