@@ -8,13 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
 import com.yelp.android.bento.core.RecyclerViewComponentController.ViewHolderWrapper;
 import com.yelp.android.bento.utils.AccordionList.Range;
-import com.yelp.android.bento.utils.MathUtils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -388,7 +389,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
                         // The span of a 2 column cell would be 1, but we need to multiply by 6/2=3
                         // to get the true span across the recycler view.
                         return component.getSpanSizeLookup().getSpanSize(position - range.mLower)
-                                * (mNumColumns / component.getNumberColumnsAtPosition(position));
+                                * (mNumColumns / component.getNumberColumnsAtPosition(position - range.mLower));
                     }
                 });
     }

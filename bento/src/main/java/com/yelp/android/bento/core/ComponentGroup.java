@@ -228,7 +228,8 @@ public class ComponentGroup extends Component {
      */
     @Override
     public int getNumberColumnsAtPosition(int position) {
-        return componentAt(position).getNumberColumnsAtPosition(position);
+        Component componentAtPos = componentAt(position);
+        return componentAtPos.getNumberColumnsAtPosition(position - rangeOf(componentAtPos).mLower);
     }
 
     @Override
