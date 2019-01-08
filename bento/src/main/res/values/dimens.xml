@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="list_divider_line_height">0.5dp</dimen>
-    <dimen name="loading_footer_height">50dp</dimen>
+    <dimen name="bento_loading_footer_height">50dp</dimen>
 </resources>

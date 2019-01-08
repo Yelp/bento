@@ -186,7 +186,7 @@ public class ListComponent<P, T> extends Component {
         @Override
         public View inflate(@NonNull ViewGroup parent) {
             return LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_divider_default, parent, false);
+                    .inflate(R.layout.bento_list_divider_default, parent, false);
         }
     }
 }

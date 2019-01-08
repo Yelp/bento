@@ -146,7 +146,7 @@ public class ViewPagerComponent extends Component implements ComponentController
             mViewPager =
                     (ViewPager)
                             LayoutInflater.from(parent.getContext())
-                                    .inflate(R.layout.horizontal_view_pager, parent, false);
+                                    .inflate(R.layout.bento_horizontal_view_pager, parent, false);
             return mViewPager;
         }
 

@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white">
 
-    <include layout="@layout/list_divider_default"/>
+    <include layout="@layout/bento_list_divider_default"/>
     <ProgressBar
         android:layout_width="match_parent"
-        android:layout_height="@dimen/loading_footer_height" />
+        android:layout_height="@dimen/bento_loading_footer_height" />
 </RelativeLayout>

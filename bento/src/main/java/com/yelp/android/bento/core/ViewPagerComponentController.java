@@ -7,10 +7,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.yelp.android.bento.R;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.utils.AccordionList.Range;
@@ -18,9 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Component controller that can be used at the top-level for adding components to a view pager.
- */
+/** Component controller that can be used at the top-level for adding components to a view pager. */
 public class ViewPagerComponentController extends PagerAdapter implements ComponentController {
 
     private Map<Component, ComponentController> mComponentPageMap;
@@ -44,9 +40,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         return new ViewPagerComponentController();
     }
 
-    /**
-     * The view for this ViewPagerComponentController should only be set once.
-     */
+    /** The view for this ViewPagerComponentController should only be set once. */
     public void setViewPager(@NonNull ViewPager viewPager) {
         mViewPager = viewPager;
         mViewPager.setAdapter(this);
@@ -156,7 +150,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
             Component page = get(i);
             if (page == component
                     || (page instanceof ComponentGroup
-                    && ((ComponentGroup) page).findComponentOffset(component) != -1)) {
+                            && ((ComponentGroup) page).findComponentOffset(component) != -1)) {
                 mViewPager.setCurrentItem(i, smoothScroll);
             }
         }
@@ -165,8 +159,9 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     /** Not supported. Use {@link #scrollToComponent(Component, boolean)} instead. */
     @Override
     public void scrollToComponentWithOffset(@NonNull Component component, int offset) {
-        throw new UnsupportedOperationException("Scrolling with offset is not supported for " +
-                "ViewPagerComponent. Use scrollToComponent(Component, boolean) instead.");
+        throw new UnsupportedOperationException(
+                "Scrolling with offset is not supported for "
+                        + "ViewPagerComponent. Use scrollToComponent(Component, boolean) instead.");
     }
 
     @Override
@@ -190,10 +185,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         ComponentController componentController;
 
         if (mComponentPageMap.get(component) == null) {
-            RecyclerView view =
-                    (RecyclerView)
-                            LayoutInflater.from(container.getContext())
-                                    .inflate(R.layout.recycler_view, container, false);
+            RecyclerView view = new RecyclerView(container.getContext());
             view.setLayoutManager(
                     new LinearLayoutManager(
                             container.getContext(), LinearLayoutManager.VERTICAL, false));

@@ -103,7 +103,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
         @Override
         public View inflate(@NonNull ViewGroup parent) {
             return LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.loading_footer_default, parent, false);
+                    .inflate(R.layout.bento_loading_footer_default, parent, false);
         }
     }
 }
