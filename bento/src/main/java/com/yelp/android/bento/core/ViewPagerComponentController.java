@@ -166,10 +166,10 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
 
     @Override
     public int getItemPosition(Object object) {
-        if (mComponentViewMap.containsKey(object)) {
-            return POSITION_UNCHANGED;
-        } else {
+        if (!contains((Component) object)) {
             return POSITION_NONE;
+        } else {
+            return indexOf((Component)object);
         }
     }
 

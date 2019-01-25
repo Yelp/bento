@@ -8,4 +8,12 @@
     <item
         android:id="@+id/scroll_smooth"
         android:title="@string/smooth_scroll_to_component" />
+
+    <item
+        android:id="@+id/remove"
+        android:title="@string/remove_component" />
+
+    <item
+        android:id="@+id/add"
+        android:title="@string/add_component" />
 </menu>

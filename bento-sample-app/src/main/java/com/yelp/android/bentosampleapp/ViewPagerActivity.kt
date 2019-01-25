@@ -21,6 +21,7 @@ class ViewPagerActivity : AppCompatActivity() {
         ViewPagerComponentController().apply { setViewPager(viewPager) }
     }
     private lateinit var componentToScrollTo: Component
+    private lateinit var removableComponent: Component
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +34,20 @@ class ViewPagerActivity : AppCompatActivity() {
         addComponentToScrollTo(controller)
         addListComponent(controller)
         addAnimatedComponent(controller)
+        addRemovableComponent(controller)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.view_pager, menu)
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val isRemovableComponentPresent = controller.contains(removableComponent)
+        menu?.findItem(R.id.add)?.isVisible = !isRemovableComponentPresent
+        menu?.findItem(R.id.remove)?.isVisible = isRemovableComponentPresent
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -49,6 +58,14 @@ class ViewPagerActivity : AppCompatActivity() {
             }
             R.id.scroll_smooth -> {
                 controller.scrollToComponent(componentToScrollTo, true)
+                true
+            }
+            R.id.remove -> {
+                controller.remove(removableComponent)
+                true
+            }
+            R.id.add -> {
+                addRemovableComponent(controller)
                 true
             }
             else -> false
@@ -79,5 +96,13 @@ class ViewPagerActivity : AppCompatActivity() {
     private fun addComponentToScrollTo(controller: ComponentController) {
         componentToScrollTo = LabeledComponent("Component to scroll to")
         controller.addComponent(componentToScrollTo)
+    }
+
+    private fun addRemovableComponent(controller: ComponentController) {
+        removableComponent =
+                LabeledComponent("This is a component used to test the removal and addition " +
+                        "from/to the ViewPagerComponent. Use the overflow menu to remove me")
+        val index = viewPager.currentItem
+        controller.addComponent(index, removableComponent)
     }
 }
