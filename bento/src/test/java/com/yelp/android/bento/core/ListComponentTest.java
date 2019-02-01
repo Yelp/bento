@@ -6,22 +6,16 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ListComponentTest {
 
     private ListComponent<Void, Object> mListComponent;
 
-    @Before
-    public void setup() {
-        mListComponent = new ListComponent<>(null, null);
-    }
-
     @Test
     public void test_RemoveItemGettersFiveItemsFirstItemNoDividers_FirstItemCountOne() {
+        setup(5);
         mListComponent.toggleDivider(false);
-        addItems(5);
 
         assertEquals(
                 "Expected to start removing at the first item",
@@ -32,8 +26,8 @@ public class ListComponentTest {
 
     @Test
     public void test_RemoveItemGettersFiveItemsMiddleItemNoDividers_MiddleItemCountOne() {
+        setup(5);
         mListComponent.toggleDivider(false);
-        addItems(5);
 
         assertEquals(
                 "Expected to start removing at the middle item",
@@ -44,8 +38,8 @@ public class ListComponentTest {
 
     @Test
     public void test_RemoveItemGettersFiveItemsLastItemNoDividers_LastItemCountOne() {
+        setup(5);
         mListComponent.toggleDivider(false);
-        addItems(5);
 
         assertEquals(
                 "Expected to start removing at the Last item",
@@ -56,8 +50,8 @@ public class ListComponentTest {
 
     @Test
     public void test_RemoveItemGettersSingleItemOnlyItemNoDividers_OnlyItemCountOne() {
+        setup(1);
         mListComponent.toggleDivider(false);
-        addItems(1);
 
         assertEquals(
                 "Expected to start removing at the only item",
@@ -68,8 +62,8 @@ public class ListComponentTest {
 
     @Test
     public void test_RemoveItemGettersFiveItemsFirstItemWithDividers_FirstItemCountTwo() {
+        setup(5);
         mListComponent.toggleDivider(true);
-        addItems(5);
 
         assertEquals(
                 "Expected to start removing at the first item",
@@ -81,8 +75,8 @@ public class ListComponentTest {
     @Test
     public void
             test_RemoveItemGettersFiveItemsMiddleItemWithDividers_MiddleItemTimesTwoMinusOneCountTwo() {
+        setup(5);
         mListComponent.toggleDivider(true);
-        addItems(5);
 
         assertEquals(
                 "Expected to start removing at the first item",
@@ -94,8 +88,8 @@ public class ListComponentTest {
     @Test
     public void
             test_RemoveItemGettersFiveItemsLastItemWithDividers_LastItemTimesTwoMinusOneCountTwo() {
+        setup(5);
         mListComponent.toggleDivider(true);
-        addItems(5);
 
         assertEquals(
                 "Expected to start removing at the first item",
@@ -106,8 +100,8 @@ public class ListComponentTest {
 
     @Test
     public void test_RemoveItemGettersSingleItemOnlyItemWithDividers_FirstItemCountOne() {
+        setup(1);
         mListComponent.toggleDivider(true);
-        addItems(1);
 
         assertEquals(
                 "Expected to start removing at the first item",
@@ -118,25 +112,23 @@ public class ListComponentTest {
 
     @Test
     public void test_GetSpanSizeLookupTwoColumnsGapItem_ReturnsTwo() {
-        addItems(2);
+        setup(2, 2);
         mListComponent.setTopGap(10);
-        mListComponent.setNumberColumns(2);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
         assertEquals(2, spanSizeLookup.getSpanSize(0));
     }
 
     @Test
     public void test_GetSpanSizeLookupTwoColumnsNonGapItem_ReturnsOne() {
-        addItems(2);
+        setup(2, 2);
         mListComponent.setTopGap(10);
-        mListComponent.setNumberColumns(2);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
         assertEquals(1, spanSizeLookup.getSpanSize(1));
     }
 
     @Test
     public void test_SetSpanSizeLookupCustomReturnsTen_ReturnsLookupWithTen() {
-        addItems(2);
+        setup(2);
         SpanSizeLookup customLookup = new SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -152,8 +144,10 @@ public class ListComponentTest {
     /**
      * Adds fake items to the list component.
      * @param count The number of items to add.
+     * @param columns The number of columns the list should have
      */
-    private void addItems(int count) {
+    private void setup(int count, int columns) {
+        mListComponent = new ListComponent<>(null, null, columns);
         List<Object> fakeData = new ArrayList<>(count);
 
         while (count > 0) {
@@ -161,5 +155,9 @@ public class ListComponentTest {
             fakeData.add(new Object());
         }
         mListComponent.appendData(fakeData);
+    }
+
+    private void setup(int count) {
+        setup(count, 1);
     }
 }

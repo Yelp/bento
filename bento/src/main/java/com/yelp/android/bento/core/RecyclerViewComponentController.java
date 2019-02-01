@@ -2,20 +2,17 @@ package com.yelp.android.bento.core;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
 import com.yelp.android.bento.core.RecyclerViewComponentController.ViewHolderWrapper;
 import com.yelp.android.bento.utils.AccordionList.Range;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,7 +33,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     private final RecyclerView mRecyclerView;
     private ComponentVisibilityListener mComponentVisibilityListener;
     private OnScrollListener mOnScrollListener;
-    private GridLayoutManager mLayoutManager;
+    private BentoLayoutManager mLayoutManager;
     private int mNumColumns;
     private LinearSmoothScroller mSmoothScroller;
 
@@ -98,6 +95,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         mUniqueViewType = new AtomicInteger();
         mViewTypeMap = HashBiMap.create();
         mRecyclerView = recyclerView;
+        mLayoutManager = new BentoLayoutManager(recyclerView.getContext(), mComponentGroup);
         mSmoothScroller =
                 new LinearSmoothScroller(mRecyclerView.getContext()) {
                     @Override
@@ -107,6 +105,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
                 };
 
         mRecyclerView.setAdapter(this);
+        recyclerView.setLayoutManager(mLayoutManager);
         setupComponentSpans();
         addVisibilityListener();
     }
@@ -359,39 +358,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     }
 
     private void setupComponentSpans() {
-        int cols = mComponentGroup.getNumberColumns();
-
-        // Setup the layout manager if there is no current layout manager, or the number of columns
-        // has changed.
-        if (mLayoutManager == null || cols != mNumColumns) {
-            mLayoutManager = new GridLayoutManager(mRecyclerView.getContext(), cols);
-            mRecyclerView.setLayoutManager(mLayoutManager);
-        }
-        mNumColumns = cols;
-
-        mLayoutManager.setSpanSizeLookup(
-                new SpanSizeLookup() {
-                    @Override
-                    public int getSpanSize(int position) {
-
-                        // Get the component at the position and the range of that component.
-                        Component component = mComponentGroup.componentAt(position);
-                        Range range = mComponentGroup.rangeOf(component);
-
-                        // Should never happen, but AS complains about a possible NPE.
-                        if (range == null) {
-                            return 1;
-                        }
-                        // First get the span of the cell based on its position in the component
-                        // Then calculate the column width factor based on the number of columns in
-                        // the recyclerview. In the 2 and 3 column example, there are 6 total
-                        // columns.
-                        // The span of a 2 column cell would be 1, but we need to multiply by 6/2=3
-                        // to get the true span across the recycler view.
-                        return component.getSpanSizeLookup().getSpanSize(position - range.mLower)
-                                * (mNumColumns / component.getNumberColumnsAtPosition(position - range.mLower));
-                    }
-                });
+        mLayoutManager.setSpanCount(mComponentGroup.getNumberColumns());
     }
 
     /**

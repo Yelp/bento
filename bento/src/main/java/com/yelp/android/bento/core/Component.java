@@ -4,7 +4,6 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.Px;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.utils.Observable;
 
@@ -31,10 +30,18 @@ public abstract class Component {
 
     public abstract int getCount();
 
-    protected SpanSizeLookup mSpanSizeLookup;
-
     @NonNull
     public abstract Class<? extends ComponentViewHolder> getHolderType(int position);
+
+    protected SpanSizeLookup mSpanSizeLookup = new SpanSizeLookup() {
+        @Override
+        public int getSpanSize(int position) {
+            if (hasGap(position)) {
+                return getNumberColumns();
+            }
+            return 1;
+        }
+    };
 
     /**
      * Notify observers that the {@link Component} data has changed.
@@ -89,10 +96,6 @@ public abstract class Component {
         mObservable.unregisterObserver(observer);
     }
 
-    public void setNumberColumns(int columns) {
-        mColumns = columns;
-    }
-
     public int getNumberColumns() {
         return mColumns;
     }
@@ -105,23 +108,7 @@ public abstract class Component {
      * columns in the component that owns the
      */
     public int getNumberColumnsAtPosition(int position) {
-        return mColumns;
-    }
-
-    public GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
-         if (mSpanSizeLookup == null) {
-            mSpanSizeLookup = new SpanSizeLookup() {
-                @Override
-                public int getSpanSize(int position) {
-                    return 1;
-                }
-            };
-        }
-        return mSpanSizeLookup;
-    }
-
-    public void setSpanSizeLookup(SpanSizeLookup spanSizeLookup) {
-        mSpanSizeLookup = spanSizeLookup;
+        return getNumberColumns();
     }
 
     /**
@@ -186,6 +173,14 @@ public abstract class Component {
         }
 
         return getItem(position - getPositionOffset());
+    }
+
+    public SpanSizeLookup getSpanSizeLookup() {
+        return mSpanSizeLookup;
+    }
+
+    public void setSpanSizeLookup(SpanSizeLookup lookup) {
+        mSpanSizeLookup = lookup;
     }
 
     final int getCountInternal() {

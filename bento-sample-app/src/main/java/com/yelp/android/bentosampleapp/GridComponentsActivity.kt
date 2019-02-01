@@ -23,12 +23,11 @@ class GridComponentsActivity : AppCompatActivity() {
     }
 
     private fun createSimplePaddedListComponent(columns: Int): ListComponent<out Any?, String> {
-        return ListComponent<Any, String>(null, ListComponentExampleViewHolder::class.java).apply {
+        return ListComponent<Any, String>(null, ListComponentExampleViewHolder::class.java, columns).apply {
             toggleDivider(false)
             setData((0..9).map { "$columns:$it" })
             setTopGap(50)
             setBottomGap(50)
-            numberColumns = columns
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return if (position % (numberColumns + 1) == 0) numberColumns else 1

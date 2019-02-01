@@ -25,11 +25,20 @@ public class ListComponent<P, T> extends Component {
     private final Class<? extends ComponentViewHolder> mListItemViewHolder;
     private boolean mShouldShowDivider = true;
     private Class<? extends DividerViewHolder> mDividerViewHolder = DefaultDividerViewHolder.class;
+    private int mNumberColumns;
 
     public ListComponent(
             P presenter, Class<? extends ComponentViewHolder<P, T>> listItemViewHolder) {
+        this(presenter, listItemViewHolder, 1);
+    }
+
+    public ListComponent(
+            P presenter,
+            Class<? extends ComponentViewHolder<P, T>> listItemViewHolder,
+            int numberColumns) {
         mPresenter = presenter;
         mListItemViewHolder = listItemViewHolder;
+        mNumberColumns = numberColumns;
     }
 
     public void setData(@NonNull List<T> data) {
@@ -88,7 +97,7 @@ public class ListComponent<P, T> extends Component {
      * more information.
      *
      * @return An int representing the number of items to delete. Either 1 or 2 if we need to remove
-     *     a divider.
+     * a divider.
      */
     @VisibleForTesting
     int getRemoveItemCount() {
@@ -102,7 +111,8 @@ public class ListComponent<P, T> extends Component {
      * @param position Index of the data item.
      */
     @CallSuper
-    protected void onGetListItem(int position) {}
+    protected void onGetListItem(int position) {
+    }
 
     @Override
     public Object getItem(int position) {
@@ -140,6 +150,7 @@ public class ListComponent<P, T> extends Component {
     /**
      * Sets the {@link SpanSizeLookup} to use when getting the widths of the cells. This method will
      * take padding into account.
+     *
      * @param spanSizeLookup The new {@link SpanSizeLookup} to add.
      */
     @Override
@@ -155,6 +166,11 @@ public class ListComponent<P, T> extends Component {
                 return spanSizeLookup.getSpanSize(position - getPositionOffset());
             }
         };
+    }
+
+    @Override
+    public int getNumberColumns() {
+        return mNumberColumns;
     }
 
     private T getListItem(int position) {

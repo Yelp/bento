@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,9 +185,6 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
 
         if (mComponentPageMap.get(component) == null) {
             RecyclerView view = new RecyclerView(container.getContext());
-            view.setLayoutManager(
-                    new LinearLayoutManager(
-                            container.getContext(), LinearLayoutManager.VERTICAL, false));
             container.addView(view);
             componentController = new RecyclerViewComponentController(view);
             mComponentPageMap.put(component, componentController);

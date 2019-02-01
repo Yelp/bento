@@ -213,10 +213,14 @@ public class ComponentGroup extends Component {
     }
 
     @Override
-    public int getNumberColumns() {
+    public final int getNumberColumns() {
         int[] childColumns = new int[mComponentAccordionList.size()];
         for (int i = 0; i < mComponentAccordionList.size(); i ++) {
             childColumns[i] = mComponentAccordionList.get(i).mValue.getNumberColumns();
+
+            if (childColumns[i] < 1) {
+                throw new IllegalStateException("A component returned a number of columns less than one. All components must have at least one column. " + mComponentAccordionList.get(i).mValue.toString());
+            }
         }
         return MathUtils.lcm(childColumns);
     }
@@ -227,7 +231,7 @@ public class ComponentGroup extends Component {
      * @return The number of columns the owner of the position has.
      */
     @Override
-    public int getNumberColumnsAtPosition(int position) {
+    public final int getNumberColumnsAtPosition(int position) {
         Component componentAtPos = componentAt(position);
         return componentAtPos.getNumberColumnsAtPosition(position - rangeOf(componentAtPos).mLower);
     }
