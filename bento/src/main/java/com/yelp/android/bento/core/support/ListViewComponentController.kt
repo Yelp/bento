@@ -97,14 +97,14 @@ class ListViewComponentController(val listView: ListView) :
     }
 
     override fun scrollToComponent(component: Component, smoothScroll: Boolean) {
-        scrollToComponent(component, smoothScroll)
+        scrollToComponentInternal(component, smoothScroll)
     }
 
     override fun scrollToComponentWithOffset(component: Component, offset: Int) {
-        scrollToComponent(component, offset = offset)
+        scrollToComponentInternal(component, offset = offset)
     }
 
-    private fun scrollToComponent(component: Component, smoothScroll: Boolean = false, offset: Int = 0) {
+    private fun scrollToComponentInternal(component: Component, smoothScroll: Boolean = false, offset: Int = 0) {
         val index = components.findComponentOffset(component)
         if (index != -1) {
             listView.smoothScrollToPositionFromTop(index,
