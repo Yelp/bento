@@ -6,29 +6,30 @@ import android.support.v7.widget.GridLayoutManager
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.RecyclerViewComponentController
+import com.yelp.android.bentosampleapp.components.HorizontalComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
-import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_recycler_view.*
 
-class GridComponentsActivity : AppCompatActivity() {
+class HorizontalGridComponentsActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler_view)
 
-        val componentController = RecyclerViewComponentController(recyclerView)
+        val componentController =
+                RecyclerViewComponentController(recyclerView, GridLayoutManager.HORIZONTAL)
 
         componentController.addComponent(createEmbeddedListComponent())
         componentController.addComponent(createSimplePaddedListComponent(4))
         componentController.addComponent(createListComponentWithHeaderAndFooter())
     }
 
-    private fun createSimplePaddedListComponent(columns: Int): ListComponent<out Any?, String> {
-        return ListComponent<Any, String>(null, ListComponentExampleViewHolder::class.java, columns).apply {
+    private fun createSimplePaddedListComponent(rows: Int): ListComponent<out Any?, String> {
+        return ListComponent<Any, String>(null, HorizontalComponentExampleViewHolder::class.java).apply {
             toggleDivider(false)
-            setData((0..9).map { "$columns:$it" })
+            setData((0..9).map { "$rows:$it" })
             setStartGap(50)
             setEndGap(50)
-            numberLanes = columns
+            numberLanes = rows
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return if (position % (numberLanes + 1) == 0) numberLanes else 1

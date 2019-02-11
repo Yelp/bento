@@ -78,7 +78,7 @@ class ListViewActivity : AppCompatActivity() {
 
     private fun addListComponent(controller: ComponentController) {
         with(ListComponent(null, ListComponentExampleViewHolder::class.java)) {
-            setTopGap(50)
+            setStartGap(50)
             setData((1 until 42).map { "List element $it" })
             toggleDivider(false)
             controller.addComponent(this)

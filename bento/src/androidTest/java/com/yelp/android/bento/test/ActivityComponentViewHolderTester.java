@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import com.yelp.android.bento.R;
 import com.yelp.android.bento.core.ComponentViewHolder;
 
 /**

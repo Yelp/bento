@@ -14,13 +14,17 @@ public abstract class Component {
 
     private final ComponentDataObservable mObservable = new ComponentDataObservable();
 
-    private int mColumns = 1;
+    /**
+     * Depending on whether the component is in a vertical or horizontal setting,
+     * the number of lanes is analogous to the number of rows or columns.
+     */
+    private int mLanes = 1;
 
     @Px
-    private int mTopGapSize = 0;
+    private int mStartGapSize = 0;
 
     @Px
-    private int mBottomGapSize = 0;
+    private int mEndGapSize = 0;
 
     @Nullable
     public abstract Object getPresenter(int position);
@@ -37,7 +41,7 @@ public abstract class Component {
         @Override
         public int getSpanSize(int position) {
             if (hasGap(position)) {
-                return getNumberColumns();
+                return getNumberLanes();
             }
             return 1;
         }
@@ -69,23 +73,23 @@ public abstract class Component {
     /**
      * @param gapSizePx The size of the gap in pixels.
      */
-    public void setTopGap(@Px int gapSizePx) {
+    public void setStartGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
             throw new IllegalArgumentException("Gap Size must >= 0");
         }
 
-        mTopGapSize = gapSizePx;
+        mStartGapSize = gapSizePx;
     }
 
     /**
      * @param gapSizePx The size of the gap in pixels.
      */
-    public void setBottomGap(@Px int gapSizePx) {
+    public void setEndGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
             throw new IllegalArgumentException("Gap Size must >= 0");
         }
 
-        mBottomGapSize = gapSizePx;
+        mEndGapSize = gapSizePx;
     }
 
     public void registerComponentDataObserver(ComponentDataObserver observer) {
@@ -96,19 +100,23 @@ public abstract class Component {
         mObservable.unregisterObserver(observer);
     }
 
-    public int getNumberColumns() {
-        return mColumns;
+    public void setNumberLanes(int lanes) {
+        mLanes = lanes;
+    }
+
+    public int getNumberLanes() {
+        return mLanes;
     }
 
     /**
-     * Returns the number of columns at a given position. This will usually return the same as
-     * {@link Component#getNumberColumns()}, but {@link ComponentGroup}s will want to return the
-     * number of columns at a given index. For example, if you have a {@link ComponentGroup} with
-     * two {@link Component}s with a different number of columns, this should return the number of
-     * columns in the component that owns the
+     * Returns the number of lanes at a given position. This will usually return the same as
+     * {@link Component#getNumberLanes()}, but {@link ComponentGroup}s will want to return the
+     * number of lanes at a given index. For example, if you have a {@link ComponentGroup} with
+     * two {@link Component}s with a different number of lanes, this should return the number of
+     * lanes in the component that owns the
      */
-    public int getNumberColumnsAtPosition(int position) {
-        return getNumberColumns();
+    public int getNumberLanesAtPosition(int position) {
+        return mLanes;
     }
 
     /**
@@ -165,10 +173,10 @@ public abstract class Component {
     @Nullable
     final Object getItemInternal(int position) {
         if (hasGap(position)) {
-            if (position == 0 && mTopGapSize != 0) {
-                return mTopGapSize;
-            } else if (position == getCountInternal() - 1 && mBottomGapSize != 0) {
-                return mBottomGapSize;
+            if (position == 0 && mStartGapSize != 0) {
+                return mStartGapSize;
+            } else if (position == getCountInternal() - 1 && mEndGapSize != 0) {
+                return mEndGapSize;
             }
         }
 
@@ -185,10 +193,10 @@ public abstract class Component {
 
     final int getCountInternal() {
         int count = 0;
-        if (mBottomGapSize > 0) {
+        if (mEndGapSize > 0) {
             count++;
         }
-        if (mTopGapSize > 0) {
+        if (mStartGapSize > 0) {
             count++;
         }
         return count + getCount();
@@ -243,14 +251,14 @@ public abstract class Component {
     }
 
     boolean hasGap(int position) {
-        return mTopGapSize > 0 && position == 0
-                || mBottomGapSize > 0 && position == getCountInternal() - 1;
+        return mStartGapSize > 0 && position == 0
+                || mEndGapSize > 0 && position == getCountInternal() - 1;
     }
 
     /**
      * @return The offset the position needs to be modified by to account for gaps.
      */
     int getPositionOffset() {
-        return mTopGapSize > 0 ? 1 : 0;
+        return mStartGapSize > 0 ? 1 : 0;
     }
 }

@@ -113,7 +113,8 @@ public class ListComponentTest {
     @Test
     public void test_GetSpanSizeLookupTwoColumnsGapItem_ReturnsTwo() {
         setup(2, 2);
-        mListComponent.setTopGap(10);
+        mListComponent.setStartGap(10);
+        mListComponent.setNumberLanes(2);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
         assertEquals(2, spanSizeLookup.getSpanSize(0));
     }
@@ -121,7 +122,8 @@ public class ListComponentTest {
     @Test
     public void test_GetSpanSizeLookupTwoColumnsNonGapItem_ReturnsOne() {
         setup(2, 2);
-        mListComponent.setTopGap(10);
+        mListComponent.setStartGap(10);
+        mListComponent.setNumberLanes(2);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
         assertEquals(1, spanSizeLookup.getSpanSize(1));
     }
@@ -144,10 +146,10 @@ public class ListComponentTest {
     /**
      * Adds fake items to the list component.
      * @param count The number of items to add.
-     * @param columns The number of columns the list should have
+     * @param lanes The number of columns the list should have
      */
-    private void setup(int count, int columns) {
-        mListComponent = new ListComponent<>(null, null, columns);
+    private void setup(int count, int lanes) {
+        mListComponent = new ListComponent<>(null, null, lanes);
         List<Object> fakeData = new ArrayList<>(count);
 
         while (count > 0) {

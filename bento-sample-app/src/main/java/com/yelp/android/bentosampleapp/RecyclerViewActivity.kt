@@ -69,7 +69,7 @@ class RecyclerViewActivity : AppCompatActivity() {
     private fun addSimpleComponent(controller: ComponentController, hasGap: Boolean) {
         val simpleComponent = SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java)
         if (hasGap) {
-            simpleComponent.setTopGap(500)
+            simpleComponent.setStartGap(500)
         }
         controller.addComponent(simpleComponent)
     }
@@ -77,7 +77,7 @@ class RecyclerViewActivity : AppCompatActivity() {
     private fun addListComponent(controller: ComponentController) {
         controller.addComponent(ListComponent(null,
                 ListComponentExampleViewHolder::class.java).apply {
-            setTopGap(50)
+            setStartGap(50)
             setData((1..20).map { "List element $it" })
         })
     }

@@ -5,8 +5,9 @@ import android.support.v7.widget.GridLayoutManager
 
 class BentoLayoutManager(
         context: Context,
-        componentGroup: ComponentGroup
-) : GridLayoutManager(context, componentGroup.numberColumns) {
+        componentGroup: ComponentGroup,
+        orientation: Int = GridLayoutManager.VERTICAL
+) : GridLayoutManager(context, componentGroup.numberLanes, orientation, false) {
 
     init {
         spanSizeLookup = object : SpanSizeLookup() {
@@ -23,7 +24,7 @@ class BentoLayoutManager(
                 // columns.
                 // The span of a 2 column cell would be 1, but we need to multiply by 6/2=3
                 // to get the true span across the recycler view.
-                return component.spanSizeLookup.getSpanSize(position - range.mLower) * (spanCount / component.getNumberColumnsAtPosition(
+                return component.spanSizeLookup.getSpanSize(position - range.mLower) * (spanCount / component.getNumberLanesAtPosition(
                         position - range.mLower))
             }
         }

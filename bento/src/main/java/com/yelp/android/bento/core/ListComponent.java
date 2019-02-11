@@ -161,16 +161,11 @@ public class ListComponent<P, T> extends Component {
             @Override
             public int getSpanSize(int position) {
                 if (hasGap(position)) {
-                    return getNumberColumns();
+                    return getNumberLanes();
                 }
                 return spanSizeLookup.getSpanSize(position - getPositionOffset());
             }
         };
-    }
-
-    @Override
-    public int getNumberColumns() {
-        return mNumberColumns;
     }
 
     private T getListItem(int position) {

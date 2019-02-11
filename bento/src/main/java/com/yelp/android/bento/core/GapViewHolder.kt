@@ -15,7 +15,6 @@ class GapViewHolder : ComponentViewHolder<Nothing?, Int>() {
     }
 
     override fun bind(presenter: Nothing?, gapSize: Int) {
-        itemView.layoutParams =
-                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, gapSize)
+        itemView.layoutParams = FrameLayout.LayoutParams(gapSize, gapSize)
     }
 }

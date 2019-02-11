@@ -34,16 +34,28 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     private ComponentVisibilityListener mComponentVisibilityListener;
     private OnScrollListener mOnScrollListener;
     private BentoLayoutManager mLayoutManager;
-    private int mNumColumns;
     private LinearSmoothScroller mSmoothScroller;
+    private int mOrientation;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
-     * the {@link RecyclerView}. In order to make the columns, this component controller will set
+     * the {@link RecyclerView}. In order to make the lanes, this component controller will set
      * the {@link RecyclerView}'s {@link android.support.v7.widget.RecyclerView.LayoutManager}. Do
      * not do it manually.
      */
     public RecyclerViewComponentController(RecyclerView recyclerView) {
+        this(recyclerView, GridLayoutManager.VERTICAL);
+    }
+
+    /**
+     * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
+     * the {@link RecyclerView}. In order to make the lanes (columns / rows), this component
+     * controller will set the {@link RecyclerView}'s
+     * {@link android.support.v7.widget.RecyclerView.LayoutManager}.
+     * Do not do it manually.
+     */
+    public RecyclerViewComponentController(RecyclerView recyclerView, int orientation) {
+        mOrientation = orientation;
         mComponentGroup = new ComponentGroup();
         mComponentGroup.registerComponentDataObserver(
                 new ComponentDataObserver() {
@@ -95,7 +107,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         mUniqueViewType = new AtomicInteger();
         mViewTypeMap = HashBiMap.create();
         mRecyclerView = recyclerView;
-        mLayoutManager = new BentoLayoutManager(recyclerView.getContext(), mComponentGroup);
+        mLayoutManager = new BentoLayoutManager(recyclerView.getContext(), mComponentGroup, mOrientation);
         mSmoothScroller =
                 new LinearSmoothScroller(mRecyclerView.getContext()) {
                     @Override
@@ -358,7 +370,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     }
 
     private void setupComponentSpans() {
-        mLayoutManager.setSpanCount(mComponentGroup.getNumberColumns());
+        mLayoutManager.setSpanCount(mComponentGroup.getNumberLanes());
     }
 
     /**

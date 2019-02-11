@@ -28,7 +28,7 @@ class ViewPagerGridActivity : AppCompatActivity() {
     private fun createListComponent(columns: Int): ListComponent<*, String> {
         return ListComponent(null,
                 ListComponentExampleViewHolder::class.java, columns).apply {
-            setTopGap(50)
+            setStartGap(50)
             setData((1..100).map { "$it" })
             toggleDivider(false)
             spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {

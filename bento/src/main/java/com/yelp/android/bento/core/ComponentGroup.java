@@ -213,27 +213,26 @@ public class ComponentGroup extends Component {
     }
 
     @Override
-    public final int getNumberColumns() {
-        int[] childColumns = new int[mComponentAccordionList.size()];
+    public final int getNumberLanes() {
+        int[] childLanes = new int[mComponentAccordionList.size()];
         for (int i = 0; i < mComponentAccordionList.size(); i ++) {
-            childColumns[i] = mComponentAccordionList.get(i).mValue.getNumberColumns();
-
-            if (childColumns[i] < 1) {
-                throw new IllegalStateException("A component returned a number of columns less than one. All components must have at least one column. " + mComponentAccordionList.get(i).mValue.toString());
+            childLanes[i] = mComponentAccordionList.get(i).mValue.getNumberLanes();
+            if (childLanes[i] < 1) {
+                throw new IllegalStateException("A component returned a number of lanes less than one. All components must have at least one lane. " + mComponentAccordionList.get(i).mValue.toString());
             }
         }
-        return MathUtils.lcm(childColumns);
+        return MathUtils.lcm(childLanes);
     }
 
     /**
-     * At a given position, we want to determine the number of columns the component it is in has.
+     * At a given position, we want to determine the number of lanes the component it is in has.
      * @param position The position to lookup.
-     * @return The number of columns the owner of the position has.
+     * @return The number of lanes the owner of the position has.
      */
     @Override
-    public final int getNumberColumnsAtPosition(int position) {
+    public final int getNumberLanesAtPosition(int position) {
         Component componentAtPos = componentAt(position);
-        return componentAtPos.getNumberColumnsAtPosition(position - rangeOf(componentAtPos).mLower);
+        return componentAtPos.getNumberLanesAtPosition(position - rangeOf(componentAtPos).mLower);
     }
 
     @Override

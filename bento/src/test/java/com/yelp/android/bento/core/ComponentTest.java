@@ -1,7 +1,5 @@
 package com.yelp.android.bento.core;
 
-import com.yelp.android.bento.core.ListComponent;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,39 +21,39 @@ public class ComponentTest {
 
     @Test
     public void test_HasBottomGap_RightCount() {
-        mListComponent.setBottomGap(10);
+        mListComponent.setEndGap(10);
         assertEquals(1, mListComponent.getCountInternal());
     }
 
     @Test
     public void test_HasTopGap_RightCount() {
-        mListComponent.setTopGap(10);
+        mListComponent.setStartGap(10);
         assertEquals(1, mListComponent.getCountInternal());
     }
 
     @Test
     public void test_HasBothGaps_RightCount() {
-        mListComponent.setTopGap(10);
-        mListComponent.setBottomGap(10);
+        mListComponent.setStartGap(10);
+        mListComponent.setEndGap(10);
         assertEquals(2, mListComponent.getCountInternal());
     }
 
     @Test
     public void test_GetItemBottomGap_RightItem() {
-        mListComponent.setBottomGap(10);
+        mListComponent.setEndGap(10);
         assertEquals(10, mListComponent.getItemInternal(0));
     }
 
     @Test
     public void test_GetItemTopGap_RightItem() {
-        mListComponent.setTopGap(10);
+        mListComponent.setStartGap(10);
         assertEquals(10, mListComponent.getItemInternal(0));
     }
 
     @Test
     public void test_GetItemBothGaps_RightItem() {
-        mListComponent.setTopGap(10);
-        mListComponent.setBottomGap(20);
+        mListComponent.setStartGap(10);
+        mListComponent.setEndGap(20);
         assertEquals(10, mListComponent.getItemInternal(0));
         assertEquals(20, mListComponent.getItemInternal(1));
     }

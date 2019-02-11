@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         listComponent.setData(listOf(
                 "Recycler View" to RecyclerViewActivity::class.java,
                 "Recycler View with grid" to GridComponentsActivity::class.java,
+                "Horizontal recycler View with grid" to
+                        HorizontalGridComponentsActivity::class.java,
                 "List View" to ListViewActivity::class.java,
                 "View Pager" to ViewPagerActivity::class.java,
                 "Visibility Listener" to ListVisibilityActivity::class.java,

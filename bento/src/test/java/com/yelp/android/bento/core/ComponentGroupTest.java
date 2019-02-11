@@ -49,10 +49,10 @@ public class ComponentGroupTest {
     public void componentGroupWithGap_MapsItemsPropery() {
         Component simpleComponent =
                 new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class);
-        simpleComponent.setTopGap(250);
-        simpleComponent.setBottomGap(125);
+        simpleComponent.setStartGap(250);
+        simpleComponent.setEndGap(125);
         mComponentGroup.addComponent(simpleComponent);
-        mComponentGroup.setTopGap(250);
+        mComponentGroup.setStartGap(250);
 
         // Counts
         assertEquals(4, mComponentGroup.getCountInternal()); // Gap -> Gap -> SimpleComponent -> Gap
@@ -84,7 +84,7 @@ public class ComponentGroupTest {
 
     @Test
     public void componentGroupWithBottomGap_DoesntNotifyGaps() {
-        mComponentGroup.setBottomGap(250);
+        mComponentGroup.setEndGap(250);
         Component simpleComponent =
                 spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         mComponentGroup.addComponent(simpleComponent);
@@ -96,7 +96,7 @@ public class ComponentGroupTest {
 
     @Test
     public void componentGroupWithBottomGap_NotifiesChildren() {
-        mComponentGroup.setBottomGap(250);
+        mComponentGroup.setEndGap(250);
         Component simpleComponent =
                 spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         mComponentGroup.addComponent(simpleComponent);
@@ -108,7 +108,7 @@ public class ComponentGroupTest {
 
     @Test
     public void componentGroupWithTopGap_DoesntNotifyGaps() {
-        mComponentGroup.setTopGap(250);
+        mComponentGroup.setStartGap(250);
         Component simpleComponent =
                 spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         mComponentGroup.addComponent(simpleComponent);
@@ -120,7 +120,7 @@ public class ComponentGroupTest {
 
     @Test
     public void componentGroupWithTopGap_NotifiesChildren() {
-        mComponentGroup.setTopGap(250);
+        mComponentGroup.setStartGap(250);
         Component simpleComponent =
                 spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         mComponentGroup.addComponent(simpleComponent);
@@ -134,17 +134,17 @@ public class ComponentGroupTest {
     public void componentGroupMultipleComponents_ProperVisibilityNotifications() {
         Component simpleComponent1 =
                 spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
-        simpleComponent1.setTopGap(250);
+        simpleComponent1.setStartGap(250);
         mComponentGroup.addComponent(simpleComponent1);
 
         Component simpleComponent2 =
                 spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
-        simpleComponent2.setTopGap(250);
+        simpleComponent2.setStartGap(250);
         mComponentGroup.addComponent(simpleComponent2);
 
         Component simpleComponent3 =
                 spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
-        simpleComponent3.setTopGap(250);
+        simpleComponent3.setStartGap(250);
         mComponentGroup.addComponent(simpleComponent3);
 
         // Gap no notifications
@@ -341,13 +341,13 @@ public class ComponentGroupTest {
     @Test
     public void test_GetNumberColumns_ReturnsCorrectAnswer() {
         List<Component> components = createMockComponents(3);
-        when(components.get(0).getNumberColumns()).thenReturn(2);
-        when(components.get(1).getNumberColumns()).thenReturn(3);
-        when(components.get(2).getNumberColumns()).thenReturn(4);
+        when(components.get(0).getNumberLanes()).thenReturn(2);
+        when(components.get(1).getNumberLanes()).thenReturn(3);
+        when(components.get(2).getNumberLanes()).thenReturn(4);
 
         ComponentGroup listComponent = new ComponentGroup();
         listComponent.addAll(components);
-        assertEquals(12, listComponent.getNumberColumns());
+        assertEquals(12, listComponent.getNumberLanes());
     }
 
     private List<Component> createMockComponents(int numComponents) {
