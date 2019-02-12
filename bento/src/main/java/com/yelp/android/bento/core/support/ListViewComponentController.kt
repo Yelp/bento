@@ -2,9 +2,17 @@ package com.yelp.android.bento.core.support
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AbsListView
+import android.widget.BaseAdapter
+import android.widget.FrameLayout
+import android.widget.ListAdapter
+import android.widget.ListView
 import com.yelp.android.bento.R
-import com.yelp.android.bento.core.*
+import com.yelp.android.bento.core.Component
+import com.yelp.android.bento.core.ComponentController
+import com.yelp.android.bento.core.ComponentGroup
+import com.yelp.android.bento.core.ComponentViewHolder
+import com.yelp.android.bento.core.ComponentVisibilityListener
 import com.yelp.android.bento.utils.AccordionList
 
 private const val MAX_ITEM_TYPES_PER_ADAPTER = 4096
@@ -93,7 +101,6 @@ class ListViewComponentController(val listView: ListView) :
     override fun clear() {
         components.clear()
         componentVisibilityListener.clear()
-        recreate()
     }
 
     override fun scrollToComponent(component: Component, smoothScroll: Boolean) {
@@ -113,6 +120,10 @@ class ListViewComponentController(val listView: ListView) :
         }
     }
 
+    /**
+     * Used to address a specific case where if we have more than MAX_ITEM_TYPES_PER_ADAPTER types
+     * of views in the adapter (which is pretty unlikely), we should recreate the adapter.
+     */
     private fun recreate() {
         isRecreating = true
         val onSaveInstanceState = listView.onSaveInstanceState()
