@@ -25,7 +25,7 @@ public class ListComponent<P, T> extends Component {
     private final Class<? extends ComponentViewHolder> mListItemViewHolder;
     private boolean mShouldShowDivider = true;
     private Class<? extends DividerViewHolder> mDividerViewHolder = DefaultDividerViewHolder.class;
-    private int mNumberColumns;
+    private int mNumberLanes;
 
     public ListComponent(
             P presenter, Class<? extends ComponentViewHolder<P, T>> listItemViewHolder) {
@@ -35,10 +35,15 @@ public class ListComponent<P, T> extends Component {
     public ListComponent(
             P presenter,
             Class<? extends ComponentViewHolder<P, T>> listItemViewHolder,
-            int numberColumns) {
+            int numberLanes) {
         mPresenter = presenter;
         mListItemViewHolder = listItemViewHolder;
-        mNumberColumns = numberColumns;
+        mNumberLanes = numberLanes;
+    }
+
+    @Override
+    public int getNumberLanes() {
+        return mNumberLanes;
     }
 
     public void setData(@NonNull List<T> data) {

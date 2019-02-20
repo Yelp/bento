@@ -14,12 +14,6 @@ public abstract class Component {
 
     private final ComponentDataObservable mObservable = new ComponentDataObservable();
 
-    /**
-     * Depending on whether the component is in a vertical or horizontal setting,
-     * the number of lanes is analogous to the number of rows or columns.
-     */
-    private int mLanes = 1;
-
     @Px
     private int mStartGapSize = 0;
 
@@ -100,12 +94,13 @@ public abstract class Component {
         mObservable.unregisterObserver(observer);
     }
 
-    public void setNumberLanes(int lanes) {
-        mLanes = lanes;
-    }
-
+    /**
+     * Depending on whether the component is in a vertical or horizontal setting, the number of
+     * lanes is analogous to the number of rows or columns. Override this method to increase the
+     * number of lanes in the component.
+     */
     public int getNumberLanes() {
-        return mLanes;
+        return 1;
     }
 
     /**
@@ -116,7 +111,7 @@ public abstract class Component {
      * lanes in the component that owns the
      */
     public int getNumberLanesAtPosition(int position) {
-        return mLanes;
+        return getNumberLanes();
     }
 
     /**

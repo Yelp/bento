@@ -114,7 +114,6 @@ public class ListComponentTest {
     public void test_GetSpanSizeLookupTwoColumnsGapItem_ReturnsTwo() {
         setup(2, 2);
         mListComponent.setStartGap(10);
-        mListComponent.setNumberLanes(2);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
         assertEquals(2, spanSizeLookup.getSpanSize(0));
     }
@@ -123,7 +122,6 @@ public class ListComponentTest {
     public void test_GetSpanSizeLookupTwoColumnsNonGapItem_ReturnsOne() {
         setup(2, 2);
         mListComponent.setStartGap(10);
-        mListComponent.setNumberLanes(2);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
         assertEquals(1, spanSizeLookup.getSpanSize(1));
     }
