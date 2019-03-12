@@ -1,12 +1,12 @@
 package com.yelp.android.bento.testing
 
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.UiController
-import android.support.test.espresso.ViewAction
-import android.support.test.espresso.ViewAssertion
-import android.support.test.espresso.contrib.RecyclerViewActions
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.ViewAssertion
+import androidx.test.espresso.contrib.RecyclerViewActions
 import org.hamcrest.Matcher
 
 /**
@@ -45,7 +45,7 @@ internal class BentoRecyclerViewInteraction(
 
                     val viewHolder =
                             view.findViewHolderForAdapterPosition(targetMatcher.position)
-                    viewAssertion.check(viewHolder.itemView, null)
+                    viewAssertion.check(viewHolder?.itemView, null)
                 }
             }
         }

@@ -2,7 +2,7 @@ package com.yelp.android.bentosampleapp
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.RecyclerViewComponentController
 import com.yelp.android.bentosampleapp.components.ActivityStarterViewHolder

@@ -1,6 +1,6 @@
 package com.yelp.android.bento.utils;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import java.util.ArrayList;
 import java.util.Collections;

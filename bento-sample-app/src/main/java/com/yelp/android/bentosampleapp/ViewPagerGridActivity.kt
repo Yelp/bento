@@ -1,8 +1,8 @@
 package com.yelp.android.bentosampleapp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.ViewPagerComponentController

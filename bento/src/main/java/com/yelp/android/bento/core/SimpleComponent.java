@@ -1,7 +1,7 @@
 package com.yelp.android.bento.core;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Component implementation that provides the bare minimum to be used with

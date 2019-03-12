@@ -2,7 +2,7 @@ package com.yelp.android.bento.test;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -21,24 +21,26 @@ public class ActivityComponentViewHolderTester extends Activity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_componentviewholder_tester);
-        mRootView = (FrameLayout) findViewById(R.id.root_view);
+        mRootView = findViewById(R.id.root_view);
     }
 
     /**
      * Inflates, injects, and binds a specified {@link ComponentViewHolder} to the activity.
+     *
+     * @return the constructed view holder.
      */
-    @SuppressWarnings("unchecked")
-    public <P, T> void inflateAndBindViewHolder(
-            Class<? extends ComponentViewHolder<P, T>> viewHolderType, P presenter, T element) {
+    public <ViewHolder extends ComponentViewHolder<P, T>, P, T> ViewHolder inflateAndBindViewHolder(
+            Class<ViewHolder> viewHolderType, P presenter, T element) {
         // Remove old view if necessary.
         if (mView != null) {
             mRootView.removeView(mView);
         }
 
-        ComponentViewHolder viewHolder = constructViewHolder(viewHolderType);
+        ViewHolder viewHolder = constructViewHolder(viewHolderType);
         mView = viewHolder.inflate(mRootView);
         mRootView.addView(mView);
         viewHolder.bind(presenter, element);
+        return viewHolder;
     }
 
     /**
@@ -49,8 +51,8 @@ public class ActivityComponentViewHolderTester extends Activity {
      *
      * @throws RuntimeException if the specified view holder type could not be instantiated.
      */
-    private <P, T> ComponentViewHolder<P, T> constructViewHolder(
-            Class<? extends ComponentViewHolder<P, T>> viewHolderType) {
+    private <ViewHolder extends ComponentViewHolder<P, T>, P, T> ViewHolder constructViewHolder(
+            Class<ViewHolder> viewHolderType) {
         try {
             return viewHolderType.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {

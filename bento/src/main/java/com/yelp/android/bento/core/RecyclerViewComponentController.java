@@ -1,12 +1,13 @@
 package com.yelp.android.bento.core;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
+import androidx.recyclerview.widget.RecyclerView.Orientation;
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
@@ -35,26 +36,25 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     private OnScrollListener mOnScrollListener;
     private BentoLayoutManager mLayoutManager;
     private LinearSmoothScroller mSmoothScroller;
+    @RecyclerView.Orientation
     private int mOrientation;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
      * the {@link RecyclerView}. In order to make the lanes, this component controller will set
-     * the {@link RecyclerView}'s {@link android.support.v7.widget.RecyclerView.LayoutManager}. Do
-     * not do it manually.
+     * the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do it manually.
      */
     public RecyclerViewComponentController(RecyclerView recyclerView) {
-        this(recyclerView, GridLayoutManager.VERTICAL);
+        this(recyclerView, RecyclerView.VERTICAL);
     }
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
      * the {@link RecyclerView}. In order to make the lanes (columns / rows), this component
-     * controller will set the {@link RecyclerView}'s
-     * {@link android.support.v7.widget.RecyclerView.LayoutManager}.
-     * Do not do it manually.
+     * controller will set the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do 
+     * it manually.
      */
-    public RecyclerViewComponentController(RecyclerView recyclerView, int orientation) {
+    public RecyclerViewComponentController(RecyclerView recyclerView, @Orientation int orientation) {
         mOrientation = orientation;
         mComponentGroup = new ComponentGroup();
         mComponentGroup.registerComponentDataObserver(
@@ -117,7 +117,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
                 };
 
         mRecyclerView.setAdapter(this);
-        recyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         setupComponentSpans();
         addVisibilityListener();
     }
@@ -195,6 +195,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         return mComponentGroup.rangeOf(component);
     }
 
+    @NonNull
     @Override
     public RecyclerViewComponentController addComponent(@NonNull Component component) {
         mComponentGroup.addComponent(component);
@@ -202,6 +203,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController addComponent(@NonNull ComponentGroup componentGroup) {
         mComponentGroup.addComponent(componentGroup);
@@ -209,6 +211,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         return this;
     }
 
+    @NonNull
     @Override
     public RecyclerViewComponentController addComponent(
             int index, @NonNull final Component component) {
@@ -217,6 +220,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController addComponent(int index, @NonNull ComponentGroup componentGroup) {
         mComponentGroup.addComponent(index, componentGroup);
@@ -224,6 +228,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         return this;
     }
 
+    @NonNull
     @Override
     public RecyclerViewComponentController addAll(
             @NonNull Collection<? extends Component> components) {
@@ -234,12 +239,14 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         return this;
     }
 
+    @NonNull
     @Override
     public RecyclerViewComponentController setComponent(int index, @NonNull Component component) {
         mComponentGroup.setComponent(index, component);
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController setComponent(int index, @NonNull ComponentGroup componentGroup) {
         mComponentGroup.setComponent(index, componentGroup);

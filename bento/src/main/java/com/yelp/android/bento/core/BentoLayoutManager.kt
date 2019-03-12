@@ -1,12 +1,13 @@
 package com.yelp.android.bento.core
 
 import android.content.Context
-import android.support.v7.widget.GridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class BentoLayoutManager(
         context: Context,
         componentGroup: ComponentGroup,
-        orientation: Int = GridLayoutManager.VERTICAL
+        @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL
 ) : GridLayoutManager(context, componentGroup.numberLanes, orientation, false) {
 
     init {

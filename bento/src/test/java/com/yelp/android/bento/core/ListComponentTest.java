@@ -2,8 +2,8 @@ package com.yelp.android.bento.core;
 
 import static junit.framework.Assert.assertEquals;
 
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;

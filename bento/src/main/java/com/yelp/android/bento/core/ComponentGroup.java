@@ -1,8 +1,8 @@
 package com.yelp.android.bento.core;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.utils.AccordionList;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;

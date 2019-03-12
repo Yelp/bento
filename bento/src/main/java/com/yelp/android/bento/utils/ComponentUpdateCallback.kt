@@ -1,6 +1,6 @@
 package com.yelp.android.bento.utils
 
-import android.support.v7.util.ListUpdateCallback
+import androidx.recyclerview.widget.ListUpdateCallback
 import com.yelp.android.bento.core.Component
 
 /**

@@ -1,8 +1,9 @@
 package com.yelp.android.bentosampleapp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.GridLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ListComponent
 import com.yelp.android.bento.core.RecyclerViewComponentController
@@ -16,7 +17,7 @@ class HorizontalGridComponentsActivity: AppCompatActivity() {
         setContentView(R.layout.activity_recycler_view)
 
         val componentController =
-                RecyclerViewComponentController(recyclerView, GridLayoutManager.HORIZONTAL)
+                RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL)
 
         componentController.addComponent(createEmbeddedListComponent())
         componentController.addComponent(createSimplePaddedListComponent(4))
@@ -29,7 +30,6 @@ class HorizontalGridComponentsActivity: AppCompatActivity() {
             setData((0..9).map { "$rows:$it" })
             setStartGap(50)
             setEndGap(50)
-            numberLanes = rows
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return if (position % (numberLanes + 1) == 0) numberLanes else 1

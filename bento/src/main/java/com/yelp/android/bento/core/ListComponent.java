@@ -1,9 +1,9 @@
 package com.yelp.android.bento.core;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

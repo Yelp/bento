@@ -1,7 +1,7 @@
 package com.yelp.android.bentosampleapp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.core.RecyclerViewComponentController
 import com.yelp.android.bentosampleapp.components.VisibilityListererListComponent
 import kotlinx.android.synthetic.main.activity_main.*
