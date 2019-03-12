@@ -1,0 +1,25 @@
+Copyright Yelp Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Bento includes or links to the following unmodified packages, which are
+subject to separate licenses:
+
+- [Kotlin](https://github.com/JetBrains/kotlin) licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [Apache Commons Lang](https://github.com/apache/commons-lang) licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [Guava](https://github.com/google/guava) licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [RxJava](https://github.com/ReactiveX/RxJava) licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [JUnit](https://github.com/junit-team/junit4) licensed under [Eclipse Public License 1.0](https://www.eclipse.org/legal/epl-v10.html)
+- [Mockito](https://github.com/mockito/mockito) licensed under [The MIT License](https://opensource.org/licenses/MIT)
+- [Powermock](https://github.com/powermock/powermock) licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [Gradle](https://github.com/gradle/gradle) licensed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
