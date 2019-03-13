@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /** Implementation of {@link ComponentController} for {@link RecyclerView}s. */
 public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHolderWrapper>
@@ -29,9 +28,9 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     private final Map<Component, Set<Class<? extends ComponentViewHolder>>>
             mComponentViewHolderSetMap;
     private final Map<Class<? extends ComponentViewHolder>, Integer> mViewTypeReferenceCounts;
-    private final AtomicInteger mUniqueViewType;
     private final HashBiMap<Class<? extends ComponentViewHolder>, Integer> mViewTypeMap;
     private final RecyclerView mRecyclerView;
+    private final RecyclerView.RecycledViewPool mRecycledViewPool;
     private ComponentVisibilityListener mComponentVisibilityListener;
     private OnScrollListener mOnScrollListener;
     private BentoLayoutManager mLayoutManager;
@@ -104,7 +103,6 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
 
         mComponentViewHolderSetMap = new HashMap<>();
         mViewTypeReferenceCounts = new HashMap<>();
-        mUniqueViewType = new AtomicInteger();
         mViewTypeMap = HashBiMap.create();
         mRecyclerView = recyclerView;
         mLayoutManager = new BentoLayoutManager(recyclerView.getContext(), mComponentGroup, mOrientation);
@@ -118,6 +116,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
 
         mRecyclerView.setAdapter(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecycledViewPool = mRecyclerView.getRecycledViewPool();
         setupComponentSpans();
         addVisibilityListener();
     }
@@ -199,6 +198,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     @Override
     public RecyclerViewComponentController addComponent(@NonNull Component component) {
         mComponentGroup.addComponent(component);
+        shareViewPool(component);
         mComponentVisibilityListener.onComponentAdded(component);
         return this;
     }
@@ -207,6 +207,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     @Override
     public ComponentController addComponent(@NonNull ComponentGroup componentGroup) {
         mComponentGroup.addComponent(componentGroup);
+        shareViewPool(componentGroup);
         mComponentVisibilityListener.onComponentAdded(componentGroup);
         return this;
     }
@@ -216,6 +217,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     public RecyclerViewComponentController addComponent(
             int index, @NonNull final Component component) {
         mComponentGroup.addComponent(index, component);
+        shareViewPool(component);
         mComponentVisibilityListener.onComponentAdded(component);
         return this;
     }
@@ -224,6 +226,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
     @Override
     public ComponentController addComponent(int index, @NonNull ComponentGroup componentGroup) {
         mComponentGroup.addComponent(index, componentGroup);
+        shareViewPool(componentGroup);
         mComponentVisibilityListener.onComponentAdded(componentGroup);
         return this;
     }
@@ -234,6 +237,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
             @NonNull Collection<? extends Component> components) {
         mComponentGroup.addAll(components);
         for (Component component : components) {
+            shareViewPool(component);
             mComponentVisibilityListener.onComponentAdded(component);
         }
         return this;
@@ -324,7 +328,7 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         Component component = mComponentGroup.componentAt(position);
 
         if (!mViewTypeMap.containsKey(holderType)) {
-            mViewTypeMap.put(holderType, mUniqueViewType.getAndIncrement());
+            mViewTypeMap.put(holderType, holderType.hashCode());
             Set<Class<? extends ComponentViewHolder>> viewHolderSet =
                     mComponentViewHolderSetMap.get(component);
             if (viewHolderSet == null) {
@@ -358,6 +362,17 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         }
 
         mComponentViewHolderSetMap.remove(component);
+    }
+
+    private void shareViewPool(@NonNull Component component) {
+        if (component instanceof SharesViewPool) {
+            ((SharesViewPool) component).sharePool(mRecycledViewPool);
+        } else if (component instanceof ComponentGroup) {
+            ComponentGroup group = (ComponentGroup) component;
+            for (int i = 0; i < group.getSize(); i++) {
+                shareViewPool(group.get(i));
+            }
+        }
     }
 
     /**
@@ -418,5 +433,9 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
         public int findLastVisibleItemPosition() {
             return mLayoutManager.findLastVisibleItemPosition();
         }
+    }
+
+    public interface SharesViewPool {
+        void sharePool(@NonNull RecyclerView.RecycledViewPool pool);
     }
 }

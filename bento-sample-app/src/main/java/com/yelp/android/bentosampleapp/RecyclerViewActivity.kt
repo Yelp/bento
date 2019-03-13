@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.yelp.android.bento.core.CarouselComponent
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bento.core.ListComponent
@@ -35,8 +36,10 @@ class RecyclerViewActivity : AppCompatActivity() {
         addSimpleComponent(componentController, true)
         addListComponent(componentController)
         addComponentToScrollTo(componentController)
+        addCarouselComponent(componentController)
         addListComponent(componentController)
         addAnimatedComponent(componentController)
+        addCarouselComponent(componentController)
 
         componentController.addComponent(SimpleComponent<Nothing>(
                 SimpleJavaComponentExampleViewHolder::class.java))
@@ -90,5 +93,17 @@ class RecyclerViewActivity : AppCompatActivity() {
     private fun addComponentToScrollTo(controller: ComponentController) {
         componentToScrollTo = LabeledComponent("Component to scroll to")
         controller.addComponent(componentToScrollTo)
+    }
+
+    private fun addCarouselComponent(controller: ComponentController) {
+        val carousel = CarouselComponent()
+        carousel.addComponent(LabeledComponent("Swipe   --->"))
+        carousel.addComponent(ListComponent(null,
+                ListComponentExampleViewHolder::class.java, 3).apply {
+            toggleDivider(false)
+            setData((1..20).map { "List element $it" })
+        })
+        carousel.addAll((1..20).map { SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java) })
+        controller.addComponent(carousel)
     }
 }
