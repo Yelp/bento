@@ -1,15 +1,15 @@
 package com.yelp.android.bentosampleapp
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.yelp.android.bento.core.CarouselComponent
+import androidx.appcompat.app.AppCompatActivity
+import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
+import com.yelp.android.bento.components.CarouselComponent
+import com.yelp.android.bento.components.ListComponent
+import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
-import com.yelp.android.bento.core.ListComponent
-import com.yelp.android.bento.core.RecyclerViewComponentController
-import com.yelp.android.bento.core.SimpleComponent
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
@@ -70,7 +70,8 @@ class RecyclerViewActivity : AppCompatActivity() {
     }
 
     private fun addSimpleComponent(controller: ComponentController, hasGap: Boolean) {
-        val simpleComponent = SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java)
+        val simpleComponent = SimpleComponent<Nothing>(
+                SimpleComponentExampleViewHolder::class.java)
         if (hasGap) {
             simpleComponent.setStartGap(500)
         }

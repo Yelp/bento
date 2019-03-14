@@ -1,4 +1,4 @@
-package com.yelp.android.bento.core;
+package com.yelp.android.bento.componentcontrollers;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,7 +8,10 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
+import com.yelp.android.bento.core.ComponentController;
+import com.yelp.android.bento.core.ComponentGroup;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package com.yelp.android.bento.core.support
+package com.yelp.android.bento.components.support
 
 import android.database.DataSetObserver
 import android.view.View
@@ -9,7 +9,6 @@ import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentViewHolder
-import java.lang.UnsupportedOperationException
 
 class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
     private val presenters: LoadingCache<Int, Wrapper> =

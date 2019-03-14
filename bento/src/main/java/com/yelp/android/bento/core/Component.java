@@ -157,7 +157,7 @@ public abstract class Component {
     }
 
     @NonNull
-    final Class<? extends ComponentViewHolder> getHolderTypeInternal(int position) {
+    public final Class<? extends ComponentViewHolder> getHolderTypeInternal(int position) {
         if (hasGap(position)) {
             return GapViewHolder.class;
         }
@@ -166,7 +166,7 @@ public abstract class Component {
     }
 
     @Nullable
-    final Object getItemInternal(int position) {
+    protected final Object getItemInternal(int position) {
         if (hasGap(position)) {
             if (position == 0 && mStartGapSize != 0) {
                 return mStartGapSize;
@@ -186,7 +186,7 @@ public abstract class Component {
         mSpanSizeLookup = lookup;
     }
 
-    final int getCountInternal() {
+    protected final int getCountInternal() {
         int count = 0;
         if (mEndGapSize > 0) {
             count++;
@@ -245,7 +245,7 @@ public abstract class Component {
         void onItemMoved(int fromPosition, int toPosition);
     }
 
-    boolean hasGap(int position) {
+    protected boolean hasGap(int position) {
         return mStartGapSize > 0 && position == 0
                 || mEndGapSize > 0 && position == getCountInternal() - 1;
     }
@@ -253,7 +253,7 @@ public abstract class Component {
     /**
      * @return The offset the position needs to be modified by to account for gaps.
      */
-    int getPositionOffset() {
+    protected int getPositionOffset() {
         return mStartGapSize > 0 ? 1 : 0;
     }
 }

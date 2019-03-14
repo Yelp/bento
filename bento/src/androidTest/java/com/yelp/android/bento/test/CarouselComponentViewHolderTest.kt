@@ -1,12 +1,12 @@
 package com.yelp.android.bento.test
 
 import androidx.recyclerview.widget.RecyclerView
-import com.yelp.android.bento.core.CarouselComponent
-import com.yelp.android.bento.core.CarouselComponentViewHolder
-import com.yelp.android.bento.core.CarouselViewModel
+import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
+import com.yelp.android.bento.components.CarouselComponent
+import com.yelp.android.bento.components.CarouselComponentViewHolder
+import com.yelp.android.bento.components.CarouselViewModel
+import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.core.ComponentGroup
-import com.yelp.android.bento.core.RecyclerViewComponentController
-import com.yelp.android.bento.core.SimpleComponent
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNull
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.yelp.android.bento.core;
+package com.yelp.android.bento.components;
 
 import static junit.framework.Assert.assertEquals;
 

@@ -1,9 +1,13 @@
-package com.yelp.android.bento.core
+package com.yelp.android.bento.components
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.yelp.android.bento.R
+import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
+import com.yelp.android.bento.core.Component
+import com.yelp.android.bento.core.ComponentGroup
+import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bento.utils.inflate
 
 /**
@@ -32,7 +36,9 @@ open class CarouselComponent(
     private val group = ComponentGroup()
     private var sharedPool: RecyclerView.RecycledViewPool? = null
 
-    final override fun getItem(position: Int) = CarouselViewModel(group, sharedPool)
+    final override fun getItem(position: Int) = CarouselViewModel(
+            group,
+            sharedPool)
 
     final override fun getPresenter(position: Int) = null
 

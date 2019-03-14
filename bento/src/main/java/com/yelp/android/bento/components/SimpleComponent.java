@@ -1,7 +1,10 @@
-package com.yelp.android.bento.core;
+package com.yelp.android.bento.components;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.yelp.android.bento.core.Component;
+import com.yelp.android.bento.core.ComponentController;
+import com.yelp.android.bento.core.ComponentViewHolder;
 
 /**
  * Component implementation that provides the bare minimum to be used with

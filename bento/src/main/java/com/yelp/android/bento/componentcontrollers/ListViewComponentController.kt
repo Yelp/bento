@@ -1,4 +1,4 @@
-package com.yelp.android.bento.core.support
+package com.yelp.android.bento.componentcontrollers
 
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +8,8 @@ import android.widget.FrameLayout
 import android.widget.ListAdapter
 import android.widget.ListView
 import com.yelp.android.bento.R
+import com.yelp.android.bento.components.support.ListAdapterComponent
+import com.yelp.android.bento.components.support.ListViewComponentViewHolder
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bento.core.ComponentGroup
@@ -26,7 +28,8 @@ class ListViewComponentController(val listView: ListView) :
     private val components = ComponentGroup()
     private var adapter: Adapter = Adapter()
     private val componentVisibilityListener =
-            ComponentVisibilityListener(ListViewLayoutManagerHelper(listView), components)
+            ComponentVisibilityListener(ListViewLayoutManagerHelper(
+                    listView), components)
     private var isRecreating: Boolean = false
 
     init {

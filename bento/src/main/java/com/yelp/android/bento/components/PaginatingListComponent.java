@@ -1,4 +1,4 @@
-package com.yelp.android.bento.core;
+package com.yelp.android.bento.components;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.yelp.android.bento.R;
+import com.yelp.android.bento.core.ComponentViewHolder;
 import io.reactivex.Observable;
 import io.reactivex.subjects.BehaviorSubject;
 

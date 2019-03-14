@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import androidx.viewpager.widget.ViewPager;
 
+import com.yelp.android.bento.componentcontrollers.ViewPagerComponentController;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 

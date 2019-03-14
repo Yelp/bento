@@ -1,9 +1,10 @@
 package com.yelp.android.bento.core;
 
+import static junit.framework.Assert.assertEquals;
+
+import com.yelp.android.bento.components.ListComponent;
 import org.junit.Before;
 import org.junit.Test;
-
-import static junit.framework.Assert.assertEquals;
 
 public class ComponentTest {
 

@@ -2,7 +2,7 @@ package com.yelp.android.bentosampleapp.components
 
 import android.view.View
 import android.widget.TextView
-import com.yelp.android.bento.core.SimpleComponentViewHolder
+import com.yelp.android.bento.componentcontrollers.SimpleComponentViewHolder
 import com.yelp.android.bentosampleapp.R
 
 class SimpleComponentExampleViewHolder : SimpleComponentViewHolder<Nothing?>(R.layout.simple_component_example) {

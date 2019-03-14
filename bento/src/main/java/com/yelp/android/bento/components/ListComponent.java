@@ -1,13 +1,15 @@
-package com.yelp.android.bento.core;
+package com.yelp.android.bento.components;
 
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import com.yelp.android.bento.R;
+import com.yelp.android.bento.core.Component;
+import com.yelp.android.bento.core.ComponentViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -3,9 +3,9 @@ package com.yelp.android.bentosampleapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.core.ComponentController
-import com.yelp.android.bento.core.ListComponent
-import com.yelp.android.bento.core.ViewPagerComponentController
+import com.yelp.android.bento.componentcontrollers.ViewPagerComponentController
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_view_pager.*
 

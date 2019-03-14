@@ -1,17 +1,17 @@
 package com.yelp.android.bentosampleapp
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
-import com.yelp.android.bento.core.CarouselComponent
+import androidx.appcompat.app.AppCompatActivity
+import com.yelp.android.bento.componentcontrollers.ListViewComponentController
+import com.yelp.android.bento.components.CarouselComponent
+import com.yelp.android.bento.components.ListComponent
+import com.yelp.android.bento.components.SimpleComponent
+import com.yelp.android.bento.components.support.ListAdapterComponent
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
-import com.yelp.android.bento.core.ListComponent
-import com.yelp.android.bento.core.SimpleComponent
-import com.yelp.android.bento.core.support.ListAdapterComponent
-import com.yelp.android.bento.core.support.ListViewComponentController
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
@@ -27,7 +27,8 @@ class ListViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_view)
 
-        controller = ListViewComponentController(listView)
+        controller =
+                ListViewComponentController(listView)
 
         setupListView(controller)
     }
@@ -80,7 +81,8 @@ class ListViewActivity : AppCompatActivity() {
 
 
     private fun addListComponent(controller: ComponentController) {
-        with(ListComponent(null, ListComponentExampleViewHolder::class.java)) {
+        with(ListComponent(null,
+                ListComponentExampleViewHolder::class.java)) {
             setStartGap(50)
             setData((1 until 42).map { "List element $it" })
             toggleDivider(false)

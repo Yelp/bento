@@ -1,4 +1,4 @@
-package com.yelp.android.bento.core;
+package com.yelp.android.bento.componentcontrollers;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +9,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import com.google.common.collect.HashBiMap;
+import com.yelp.android.bento.core.BentoLayoutManager;
+import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
+import com.yelp.android.bento.core.ComponentController;
+import com.yelp.android.bento.core.ComponentGroup;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
+import com.yelp.android.bento.core.ComponentViewHolder;
+import com.yelp.android.bento.core.ComponentVisibilityListener;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
-import com.yelp.android.bento.core.RecyclerViewComponentController.ViewHolderWrapper;
+import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController.ViewHolderWrapper;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import java.util.Collection;
 import java.util.HashMap;

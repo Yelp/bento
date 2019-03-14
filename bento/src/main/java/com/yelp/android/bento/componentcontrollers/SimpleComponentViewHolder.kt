@@ -1,9 +1,10 @@
-package com.yelp.android.bento.core
+package com.yelp.android.bento.componentcontrollers
 
-import androidx.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
+import com.yelp.android.bento.core.ComponentViewHolder
 
 /**
  * Abstract implementation of [ComponentViewHolder] that provides a default implementation for

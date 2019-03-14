@@ -2,10 +2,10 @@ package com.yelp.android.bento.test;
 
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import androidx.annotation.Nullable;
 import com.yelp.android.bento.core.ComponentViewHolder;
 
 /**

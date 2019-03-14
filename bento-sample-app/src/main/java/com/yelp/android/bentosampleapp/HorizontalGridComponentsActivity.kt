@@ -4,9 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
+import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.core.ComponentGroup
-import com.yelp.android.bento.core.ListComponent
-import com.yelp.android.bento.core.RecyclerViewComponentController
 import com.yelp.android.bentosampleapp.components.HorizontalComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import kotlinx.android.synthetic.main.activity_recycler_view.*
@@ -25,7 +25,7 @@ class HorizontalGridComponentsActivity: AppCompatActivity() {
     }
 
     private fun createSimplePaddedListComponent(rows: Int): ListComponent<out Any?, String> {
-        return ListComponent<Any, String>(null, HorizontalComponentExampleViewHolder::class.java).apply {
+        return ListComponent<Any, String>(null, HorizontalComponentExampleViewHolder::class.java, rows).apply {
             toggleDivider(false)
             setData((0..9).map { "$rows:$it" })
             setStartGap(50)

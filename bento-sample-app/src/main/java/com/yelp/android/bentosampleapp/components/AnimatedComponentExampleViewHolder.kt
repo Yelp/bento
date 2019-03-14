@@ -6,7 +6,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import com.yelp.android.bento.core.SimpleComponentViewHolder
+import com.yelp.android.bento.componentcontrollers.SimpleComponentViewHolder
 import com.yelp.android.bentosampleapp.R
 
 class AnimatedComponentExampleViewHolder : SimpleComponentViewHolder<Unit>(R.layout.simple_component_example) {
