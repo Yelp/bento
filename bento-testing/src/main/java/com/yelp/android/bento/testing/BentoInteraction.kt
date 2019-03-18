@@ -1,15 +1,16 @@
 package com.yelp.android.bento.testing
 
+import android.view.View
+import android.widget.ListView
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
-import androidx.recyclerview.widget.RecyclerView
-import android.view.View
-import android.widget.ListView
 import com.yelp.android.bento.R
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bento.core.asItemSequence
+import com.yelp.android.bento.utils.Sequenceable
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
@@ -103,8 +104,8 @@ class BentoInteraction private constructor(private val dataMatcher: Matcher<out 
 
         private val View.asItemSequence: Sequence<Any?>?
             get() = when {
-                this is RecyclerView && adapter is ComponentController -> {
-                    (adapter as? ComponentController)?.asItemSequence()
+                this is RecyclerView && adapter is Sequenceable -> {
+                    (adapter as? Sequenceable)?.asItemSequence()
                 }
                 this is ListView
                         && getTag(R.id.bento_list_component_controller) is ComponentController -> {

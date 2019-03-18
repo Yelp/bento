@@ -1,3 +1,4 @@
+@file:JvmName("ComponentControllerX")
 package com.yelp.android.bento.core
 
 fun ComponentController.asItemSequence(): Sequence<Any?> {

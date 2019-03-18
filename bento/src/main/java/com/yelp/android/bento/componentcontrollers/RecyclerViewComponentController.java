@@ -13,23 +13,26 @@ import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentController;
+import com.yelp.android.bento.core.ComponentControllerX;
 import com.yelp.android.bento.core.ComponentGroup;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.ComponentViewHolder;
 import com.yelp.android.bento.core.ComponentVisibilityListener;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
-import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController.ViewHolderWrapper;
 import com.yelp.android.bento.utils.AccordionList.Range;
+import com.yelp.android.bento.utils.Sequenceable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import kotlin.sequences.Sequence;
+import org.jetbrains.annotations.Nullable;
 
 /** Implementation of {@link ComponentController} for {@link RecyclerView}s. */
-public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHolderWrapper>
-        implements ComponentController {
+public class RecyclerViewComponentController implements ComponentController {
 
+    private final RecyclerView.Adapter<ViewHolderWrapper> mRecyclerViewAdapter;
     private final ComponentGroup mComponentGroup;
     private final Map<Component, Set<Class<? extends ComponentViewHolder>>>
             mComponentViewHolderSetMap;
@@ -61,36 +64,37 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
      */
     public RecyclerViewComponentController(RecyclerView recyclerView, @Orientation int orientation) {
         mOrientation = orientation;
+        mRecyclerViewAdapter = new RecyclerViewAdapter();
         mComponentGroup = new ComponentGroup();
         mComponentGroup.registerComponentDataObserver(
                 new ComponentDataObserver() {
                     @Override
                     public void onChanged() {
-                        notifyDataSetChanged();
+                        mRecyclerViewAdapter.notifyDataSetChanged();
                         setupComponentSpans();
                     }
 
                     @Override
                     public void onItemRangeChanged(int positionStart, int itemCount) {
-                        notifyItemRangeChanged(positionStart, itemCount);
+                        mRecyclerViewAdapter.notifyItemRangeChanged(positionStart, itemCount);
                         setupComponentSpans();
                     }
 
                     @Override
                     public void onItemRangeInserted(int positionStart, int itemCount) {
-                        notifyItemRangeInserted(positionStart, itemCount);
+                        mRecyclerViewAdapter.notifyItemRangeInserted(positionStart, itemCount);
                         setupComponentSpans();
                     }
 
                     @Override
                     public void onItemRangeRemoved(int positionStart, int itemCount) {
-                        notifyItemRangeRemoved(positionStart, itemCount);
+                        mRecyclerViewAdapter.notifyItemRangeRemoved(positionStart, itemCount);
                         setupComponentSpans();
                     }
 
                     @Override
                     public void onItemMoved(int fromPosition, int toPosition) {
-                        notifyItemMoved(fromPosition, toPosition);
+                        mRecyclerViewAdapter.notifyItemMoved(fromPosition, toPosition);
                         setupComponentSpans();
                     }
                 });
@@ -120,53 +124,11 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
                     }
                 };
 
-        mRecyclerView.setAdapter(this);
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecycledViewPool = mRecyclerView.getRecycledViewPool();
         setupComponentSpans();
         addVisibilityListener();
-    }
-
-    @NonNull
-    @SuppressWarnings("unchecked") // Unchecked Component generics.
-    @Override
-    public ViewHolderWrapper onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ComponentViewHolder viewHolder = constructViewHolder(mViewTypeMap.inverse().get(viewType));
-        return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
-    }
-
-    @SuppressWarnings("unchecked") // Unchecked Component generics.
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolderWrapper holder, int position) {
-        holder.bind(
-                mComponentGroup.getPresenter(position),
-                position,
-                mComponentGroup.getItem(position));
-    }
-
-    @Override
-    public int getItemCount() {
-        return mComponentGroup.getSpan();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return getViewTypeFromComponent(position);
-    }
-
-    @Override
-    public void onViewAttachedToWindow(@NonNull ViewHolderWrapper holder) {
-        holder.mViewHolder.onViewAttachedToWindow();
-    }
-
-    @Override
-    public void onViewDetachedFromWindow(@NonNull ViewHolderWrapper holder) {
-        holder.mViewHolder.onViewDetachedFromWindow();
-    }
-
-    @Override
-    public void onViewRecycled(@NonNull ViewHolderWrapper holder) {
-        holder.mViewHolder.onViewRecycled();
     }
 
     @Override
@@ -399,6 +361,69 @@ public class RecyclerViewComponentController extends RecyclerView.Adapter<ViewHo
 
     private void setupComponentSpans() {
         mLayoutManager.setSpanCount(mComponentGroup.getNumberLanes());
+    }
+
+    /**
+     * Rather than allowing the RecyclerViewComponentController to extend the
+     * RecyclerView.Adapter<ViewHolderWrapper> and exposing all of its public final methods that we
+     * can't control, we use this class to offer our own API for RecyclerView adapter operations.
+     * We do this so we can avoid clients calling things such as notifyDataSetChanged() which
+     * causes an entire invalidation of the contents of the ComponentController and underlying
+     * Adapter. Clients should only use methods that partially invalidate the contents for
+     * performance reasons. In the rare case where we do want to invalidate the entire list, this is
+     * still possible by passing a start index of 0 and end index the size of the list using the
+     * other methods.
+     */
+    private final class RecyclerViewAdapter
+            extends RecyclerView.Adapter<ViewHolderWrapper>
+            implements Sequenceable {
+        @NonNull
+        @SuppressWarnings("unchecked") // Unchecked Component generics.
+        @Override
+        public ViewHolderWrapper onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            ComponentViewHolder viewHolder = constructViewHolder(mViewTypeMap.inverse().get(viewType));
+            return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+        }
+
+        @SuppressWarnings("unchecked") // Unchecked Component generics.
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolderWrapper holder, int position) {
+            holder.bind(
+                    mComponentGroup.getPresenter(position),
+                    position,
+                    mComponentGroup.getItem(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mComponentGroup.getSpan();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return getViewTypeFromComponent(position);
+        }
+
+        @Override
+        public void onViewAttachedToWindow(@NonNull ViewHolderWrapper holder) {
+            holder.mViewHolder.onViewAttachedToWindow();
+        }
+
+        @Override
+        public void onViewDetachedFromWindow(@NonNull ViewHolderWrapper holder) {
+            holder.mViewHolder.onViewDetachedFromWindow();
+        }
+
+        @Override
+        public void onViewRecycled(@NonNull ViewHolderWrapper holder) {
+            holder.mViewHolder.onViewRecycled();
+        }
+
+        @Nullable
+        @Override
+        public Sequence<Object> asItemSequence() {
+            return ComponentControllerX.asItemSequence(RecyclerViewComponentController.this);
+        }
     }
 
     /**
