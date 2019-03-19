@@ -15,7 +15,10 @@ import com.yelp.android.bento.componentcontrollers.ViewPagerComponentController;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import java.util.Collection;
 
-/** A component to easily add other components to a view pager. */
+/**
+ * A component to easily add other components to a view pager. A lot of the functionality is
+ * delegated to a private {@link ViewPagerComponentController} that keeps track of the components.
+ */
 public class ViewPagerComponent extends Component implements ComponentController {
 
     private ViewPagerComponentController mComponentController;
@@ -138,6 +141,11 @@ public class ViewPagerComponent extends Component implements ComponentController
         return ViewPagerViewHolder.class;
     }
 
+    /**
+     * The ViewPager view holder used to display components that are added.
+     * @param <P> The type of the Presenter for each page.
+     * @param <T> The data element for each page that extends {@link ViewPagerComponentController}
+     */
     public static class ViewPagerViewHolder<P, T extends ViewPagerComponentController>
             extends ComponentViewHolder<P, T> {
 

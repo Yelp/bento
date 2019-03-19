@@ -214,7 +214,14 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
      */
     public static class Range {
 
+        /**
+         * The lower endpoint (inclusive)
+         */
         public final int mLower;
+
+        /**
+         * The upper endpoint (exclusive)
+         */
         public final int mUpper;
 
         /**
@@ -226,7 +233,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
          *
          * @param lower The lower endpoint (inclusive)
          * @param upper The upper endpoint (exclusive)
-         * @throws IllegalArgumentException if {@code lower} >= {@code upper}
+         * @throws IllegalArgumentException if {@code lower} > {@code upper}
          */
         public Range(int lower, int upper) {
             this.mLower = lower;
@@ -237,10 +244,19 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
             }
         }
 
+        /**
+         * @return The number of integers in the range. eg. {@code new Range(2, 5).getSize()}
+         * returns 3 since the values 2, 3 and 4 are represented by this range.
+         */
         public int getSize() {
             return mUpper - mLower;
         }
 
+        /**
+         * @param offset Some integer by which we want to offset the range of values.
+         * @return A new {@link Range} that represents the values at the offset provided. eg.
+         * {@code new Range(2, 5).offset(3)} returns a new range that represents [5, 8).
+         */
         public Range offset(int offset) {
             return new Range(mLower + offset, mUpper + offset);
         }
@@ -274,7 +290,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
 
         @Override
         public String toString() {
-            return "[" + mLower + ", " + mUpper + "]";
+            return "[" + mLower + ", " + mUpper + ")";
         }
     }
 

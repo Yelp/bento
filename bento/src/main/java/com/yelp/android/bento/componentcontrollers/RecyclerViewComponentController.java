@@ -314,6 +314,12 @@ public class RecyclerViewComponentController implements ComponentController {
         return mViewTypeMap.get(holderType);
     }
 
+    /**
+     * Run after a component is removed from the controller. It cleans up different references to
+     * the component in view type maps.
+     *
+     * @param component The component that was removed.
+     */
     private void cleanupComponent(Component component) {
         Set<Class<? extends ComponentViewHolder>> viewHolderSet =
                 mComponentViewHolderSetMap.get(component);
@@ -332,6 +338,12 @@ public class RecyclerViewComponentController implements ComponentController {
         mComponentViewHolderSetMap.remove(component);
     }
 
+    /**
+     * Allows you to share the view pool of the RecyclerView this component controller is managing
+     * with another component (such as a carousel component).
+     *
+     * @param component The component that you want to use the RecyclerView's pool.
+     */
     private void shareViewPool(@NonNull Component component) {
         if (component instanceof SharesViewPool) {
             ((SharesViewPool) component).sharePool(mRecycledViewPool);

@@ -20,6 +20,10 @@ import com.yelp.android.bento.utils.AccordionList
 private const val MAX_ITEM_TYPES_PER_ADAPTER = 4096
 private const val SMOOTH_SCROLL_DURATION = 300 // In milliseconds.
 
+/**
+ * Used to support Bento and [ListView]s. Existing list views can be wrapped in Bento using the
+ * [ListAdapterComponent].
+ */
 class ListViewComponentController(val listView: ListView) :
         ComponentController, AbsListView.OnScrollListener {
     override val span: Int get() = components.span
@@ -42,7 +46,6 @@ class ListViewComponentController(val listView: ListView) :
         listView.setTag(R.id.bento_list_component_controller, this)
     }
 
-    // Component controller
     override fun get(index: Int) = components[index]
 
     override fun contains(component: Component) = component in components
@@ -138,6 +141,9 @@ class ListViewComponentController(val listView: ListView) :
         isRecreating = false
     }
 
+    /**
+     * The internal adapter used to manage the position of components in the list view.
+     */
     inner class Adapter : BaseAdapter() {
         private val itemViewTypes = mutableListOf<Any>()
         internal val itemTypes = mutableMapOf<Int, Int>()

@@ -29,11 +29,21 @@ public class ListComponent<P, T> extends Component {
     private Class<? extends DividerViewHolder> mDividerViewHolder = DefaultDividerViewHolder.class;
     private int mNumberLanes;
 
+    /**
+     * @param presenter The presenter used for {@link ListComponent} interactions.
+     * @param listItemViewHolder The view holder used for each item in the list.
+     */
     public ListComponent(
             P presenter, Class<? extends ComponentViewHolder<P, T>> listItemViewHolder) {
         this(presenter, listItemViewHolder, 1);
     }
 
+    /**
+     * @param presenter The presenter used for {@link ListComponent} interactions.
+     * @param listItemViewHolder The view holder used for each item in the list.
+     * @param numberLanes The number of cross-axis lanes in the list if we want to make a grid-like
+     *                    component.
+     */
     public ListComponent(
             P presenter,
             Class<? extends ComponentViewHolder<P, T>> listItemViewHolder,
@@ -48,12 +58,22 @@ public class ListComponent<P, T> extends Component {
         return mNumberLanes;
     }
 
+    /**
+     * Updates the data items used in the list to create views.
+     *
+     * @param data The new data list to use.
+     */
     public void setData(@NonNull List<T> data) {
         mData.clear();
         mData.addAll(data);
         notifyDataChanged();
     }
 
+    /**
+     * Adds more list items to the end of the list by adding more data items.
+     *
+     * @param data The new data list items to add.
+     */
     public void appendData(@NonNull List<T> data) {
         int oldSize = mData.size();
         int sizeChange = data.size();
@@ -61,8 +81,13 @@ public class ListComponent<P, T> extends Component {
         notifyItemRangeInserted(oldSize, sizeChange);
     }
 
-    public void removeData(T object) {
-        int index = mData.indexOf(object);
+    /**
+     * Removes the provided data items from the list.
+     *
+     * @param data The data item to remove from the list.
+     */
+    public void removeData(T data) {
+        int index = mData.indexOf(data);
         // Check if the object indeed is in the list.
         if (index != -1) {
             mData.remove(index);
@@ -70,11 +95,17 @@ public class ListComponent<P, T> extends Component {
         }
     }
 
+    /**
+     * @param shouldShowDivider True if we want to show a divider between list items.
+     */
     public void toggleDivider(boolean shouldShowDivider) {
         mShouldShowDivider = shouldShowDivider;
         notifyDataChanged();
     }
 
+    /**
+     * @param dividerViewHolder The {@link DividerViewHolder} to use for dividers in the list.
+     */
     public void setDividerViewHolder(
             @NonNull Class<? extends DividerViewHolder> dividerViewHolder) {
         mDividerViewHolder = dividerViewHolder;
@@ -180,10 +211,18 @@ public class ListComponent<P, T> extends Component {
         return mData.get(position);
     }
 
+    /**
+     * @param position The position of the item in the list, including dividers.
+     * @return True when the item at the provided position is not a list divider.
+     */
     private boolean isListItem(int position) {
         return !mShouldShowDivider || position % 2 == 0;
     }
 
+    /**
+     * @param size The number of items in the list excluding dividers.
+     * @return The number of items in the list including dividers.
+     */
     private int getTotalSizeWithSeparators(int size) {
         return size == 0 ? 0 : size * 2 - 1;
     }

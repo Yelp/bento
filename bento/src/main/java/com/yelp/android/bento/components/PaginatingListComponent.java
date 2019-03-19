@@ -81,6 +81,10 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
         }
     }
 
+    /**
+     * @param loadingFooter The view holder to use for the loading indicator in the footer of the
+     *                      list.
+     */
     public void setLoadingFooter(@NonNull Class<? extends LoadingFooterViewHolder> loadingFooter) {
         mLoadingFooter = loadingFooter;
         if (mShouldShowFooter) {

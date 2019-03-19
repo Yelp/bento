@@ -16,12 +16,22 @@ import android.view.ViewGroup
  */
 abstract class ComponentViewHolder<P, T> {
 
+    /**
+     * Called to inflate the layout needed to render the view. This is a good place to use
+     * findViewById to get references to the different points in your view that you want to bind
+     * data and click listeners to.
+     */
     abstract fun inflate(parent: ViewGroup): View
 
     /**
-     * Using FindViewById is a heavy and non-performant method and should never be called in the
-     * bind method. You should have fields for any views you wish to modify during the bind method
-     * and instantiate them during inflation.
+     * Called to bind the component item's presenter and data item to the view. This is a
+     * performance sensitive operation since it's called every time a view is recycled back
+     * into the view port of the device. Try to front-load work into the building of the data item
+     * or in [ComponentViewHolder.inflate].
+     *
+     * NOTE: Using FindViewById is a heavy and non-performant method and should never be called in
+     * the bind method. You should have fields for any views you wish to modify during the bind
+     * method and instantiate them during inflation.
      */
     abstract fun bind(presenter: P, element: T)
 

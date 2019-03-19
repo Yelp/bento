@@ -10,6 +10,14 @@ import com.google.common.cache.LoadingCache
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentViewHolder
 
+/**
+ * A component that displays the content of a traditional ListView using a ListAdapter. Useful for
+ * adding Bento support to screens that are still using ListViews. With this component, you can
+ * start converting views in the original list view at the top or bottom, and render the rest of the
+ * list that hasn't been converted yet as a ListAdapterComponent.
+ *
+ * NOTE: This should only be used with a [ListViewComponentController]
+ */
 class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
     private val presenters: LoadingCache<Int, Wrapper> =
             CacheBuilder.newBuilder().build(object : CacheLoader<Int, Wrapper>() {
@@ -42,6 +50,7 @@ class ListAdapterComponent(private val listAdapter: ListAdapter) : Component() {
         }
     }
 
+    /** @see ListAdapter.isEnabled */
     fun isEnabled(position: Int) = listAdapter.isEnabled(position)
 
     class ListAdapterHolderType : ListViewComponentViewHolder<Any?>() {

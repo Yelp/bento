@@ -38,6 +38,7 @@ TODO(SEARCHUX-7508): Three or four examples, plus a link to a Bento Cookbook wit
 - SimpleComponent
 - ListComponent
 - Complex Custom Component
+- Component with Lanes
 - Inter-Component Communication
 - Testing a Component
 - Testing a screen with bento-testing

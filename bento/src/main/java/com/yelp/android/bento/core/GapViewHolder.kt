@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Space
 
-
+/**
+ * A view holder class for gaps that go before and after components.
+ */
 class GapViewHolder : ComponentViewHolder<Nothing?, Int>() {
 
     private lateinit var itemView: View

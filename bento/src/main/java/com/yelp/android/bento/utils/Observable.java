@@ -3,7 +3,6 @@ package com.yelp.android.bento.utils;
 import java.util.ArrayList;
 
 /**
- *
  * Provides methods for registering or unregistering arbitrary observers in an {@link ArrayList}.
  *
  * This abstract class is intended to be subclassed and specialized to maintain
