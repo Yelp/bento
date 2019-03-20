@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+
+ext.projectName = 'Bento Testing'
+ext.projectDescription = 'A library for testing Android user interfaces created with Bento.'
+
 apply from: "$rootDir/publishing.gradle"
 
 android {

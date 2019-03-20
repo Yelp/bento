@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <item
         android:id="@+id/scroll"
@@ -19,5 +20,6 @@
         android:icon="@drawable/ic_layers_clear_black_24dp"
         android:title="@string/clear"
         app:iconTint="@android:color/white"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource" />
 </menu>
