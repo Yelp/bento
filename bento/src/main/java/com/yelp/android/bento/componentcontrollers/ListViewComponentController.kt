@@ -86,13 +86,13 @@ class ListViewComponentController(val listView: ListView) :
         return this
     }
 
-    override fun setComponent(index: Int, component: Component): ComponentController {
-        components.setComponent(index, component)
+    override fun replaceComponent(index: Int, component: Component): ComponentController {
+        components.replaceComponent(index, component)
         return this
     }
 
-    override fun setComponent(index: Int, componentGroup: ComponentGroup): ComponentController {
-        components.setComponent(index, componentGroup)
+    override fun replaceComponent(index: Int, componentGroup: ComponentGroup): ComponentController {
+        components.replaceComponent(index, componentGroup)
         return this
     }
 

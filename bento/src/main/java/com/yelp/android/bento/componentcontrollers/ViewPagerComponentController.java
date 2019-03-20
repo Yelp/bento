@@ -116,14 +116,14 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     }
 
     @Override
-    public ComponentController setComponent(int index, @NonNull Component component) {
-        mComponentGroup.setComponent(index, component);
+    public ComponentController replaceComponent(int index, @NonNull Component component) {
+        mComponentGroup.replaceComponent(index, component);
         return this;
     }
 
     @Override
-    public ComponentController setComponent(int index, @NonNull ComponentGroup componentGroup) {
-        mComponentGroup.setComponent(index, componentGroup);
+    public ComponentController replaceComponent(int index, @NonNull ComponentGroup componentGroup) {
+        mComponentGroup.replaceComponent(index, componentGroup);
         return this;
     }
 

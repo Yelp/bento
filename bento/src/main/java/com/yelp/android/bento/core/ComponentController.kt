@@ -91,7 +91,7 @@ interface ComponentController {
      * @param component [Component] to insert
      * @return Reference to this controller
      */
-    fun setComponent(index: Int, component: Component): ComponentController
+    fun replaceComponent(index: Int, component: Component): ComponentController
 
     /**
      * Replaces the [ComponentGroup] at the specified position in this controller.
@@ -100,7 +100,7 @@ interface ComponentController {
      * @param componentGroup [ComponentGroup] to insert
      * @return Reference to this controller
      */
-    fun setComponent(index: Int, componentGroup: ComponentGroup): ComponentController
+    fun replaceComponent(index: Int, componentGroup: ComponentGroup): ComponentController
 
     /**
      * Removes the [Component] at the specified position from this controller.

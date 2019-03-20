@@ -213,15 +213,15 @@ public class RecyclerViewComponentController implements ComponentController {
 
     @NonNull
     @Override
-    public RecyclerViewComponentController setComponent(int index, @NonNull Component component) {
-        mComponentGroup.setComponent(index, component);
+    public RecyclerViewComponentController replaceComponent(int index, @NonNull Component component) {
+        mComponentGroup.replaceComponent(index, component);
         return this;
     }
 
     @NonNull
     @Override
-    public ComponentController setComponent(int index, @NonNull ComponentGroup componentGroup) {
-        mComponentGroup.setComponent(index, componentGroup);
+    public ComponentController replaceComponent(int index, @NonNull ComponentGroup componentGroup) {
+        mComponentGroup.replaceComponent(index, componentGroup);
         return this;
     }
 

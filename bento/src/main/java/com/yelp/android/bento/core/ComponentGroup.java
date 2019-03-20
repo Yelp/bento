@@ -194,27 +194,12 @@ public class ComponentGroup extends Component {
      * @param component The new {@link Component} to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the replacement took place in.
      */
-    public ComponentGroup setComponent(int index, @NonNull Component component) {
+    public ComponentGroup replaceComponent(int index, @NonNull Component component) {
         if (mComponentIndexMap.containsKey(component)) {
             throw new IllegalArgumentException("Component " + component + " already added.");
         }
-
-        RangedValue<Component> originalComponentRangedValue = mComponentAccordionList.get(index);
-        Range oldRange = originalComponentRangedValue.mRange;
-        Component oldComponent = originalComponentRangedValue.mValue;
-        addComponentAndUpdateIndices(index, component);
-
-        ComponentDataObserver componentDataObserver = new ChildComponentDataObserver(component);
-        component.registerComponentDataObserver(componentDataObserver);
-        mComponentDataObserverMap.put(component, componentDataObserver);
-
-        int newSize = component.getCountInternal();
-        mComponentAccordionList.set(index, component, newSize);
-        mComponentIndexMap.put(component, index);
-
-        notifyRangeUpdated(oldRange, newSize);
-        cleanupComponent(oldComponent);
-        mObservable.notifyOnChanged();
+        addComponent(index, component);
+        remove(mComponentAccordionList.get(index + 1).mValue);
         return this;
     }
 
@@ -226,8 +211,8 @@ public class ComponentGroup extends Component {
      * @param componentGroup The new {@link ComponentGroup} to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the replacement took place in.
      */
-    public ComponentGroup setComponent(int index, @NonNull ComponentGroup componentGroup) {
-        return setComponent(index, (Component) componentGroup);
+    public ComponentGroup replaceComponent(int index, @NonNull ComponentGroup componentGroup) {
+        return replaceComponent(index, (Component) componentGroup);
     }
 
     /**

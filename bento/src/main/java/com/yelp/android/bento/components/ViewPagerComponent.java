@@ -85,13 +85,13 @@ public class ViewPagerComponent extends Component implements ComponentController
     }
 
     @Override
-    public ComponentController setComponent(int index, @NonNull Component component) {
-        return mComponentController.setComponent(index, component);
+    public ComponentController replaceComponent(int index, @NonNull Component component) {
+        return mComponentController.replaceComponent(index, component);
     }
 
     @Override
-    public ComponentController setComponent(int index, @NonNull ComponentGroup componentGroup) {
-        return mComponentController.setComponent(index, componentGroup);
+    public ComponentController replaceComponent(int index, @NonNull ComponentGroup componentGroup) {
+        return mComponentController.replaceComponent(index, componentGroup);
     }
 
     @NonNull

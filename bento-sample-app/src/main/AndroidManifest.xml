@@ -19,6 +19,7 @@
         <activity android:name=".GridComponentsActivity" />
         <activity android:name=".HorizontalGridComponentsActivity" />
         <activity android:name=".RecyclerViewActivity" />
+        <activity android:name=".ComponentReplacementActivity" />
         <activity android:name=".ListViewActivity" />
         <activity android:name=".ListVisibilityActivity" />
         <activity android:name=".ViewPagerActivity" />
