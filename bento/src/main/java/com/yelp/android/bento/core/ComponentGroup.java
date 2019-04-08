@@ -2,6 +2,7 @@ package com.yelp.android.bento.core;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.utils.AccordionList;
 import com.yelp.android.bento.utils.AccordionList.Range;
@@ -76,6 +77,7 @@ public class ComponentGroup extends Component {
      * {@link ComponentGroup}.
      * @return The {@link Component} associated with the range this position belongs to.
      */
+    @NonNull
     public Component componentAt(int position) {
         return mComponentAccordionList.valueAt(position);
     }
@@ -102,6 +104,7 @@ public class ComponentGroup extends Component {
      * @param component The {@link Component} to retrieve the range of in the {@link ComponentGroup}
      * @return The {@link Range} of the internal items associated with the provided {@link Component}.
      */
+    @Nullable
     public Range rangeOf(@NonNull Component component) {
         Integer index = mComponentIndexMap.get(component);
         return index == null ? null : mComponentAccordionList.get(index).mRange;
@@ -113,6 +116,7 @@ public class ComponentGroup extends Component {
      * @param component The {@link Component} to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the {@link Component} was added to.
      */
+    @NonNull
     public ComponentGroup addComponent(@NonNull Component component) {
         return addComponent(getSize(), component);
     }
@@ -123,6 +127,7 @@ public class ComponentGroup extends Component {
      * @param componentGroup The {@link ComponentGroup} to add to this {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the provided {@link ComponentGroup} was added to.
      */
+    @NonNull
     public ComponentGroup addComponent(@NonNull ComponentGroup componentGroup) {
         return addComponent(getSize(), componentGroup);
     }
@@ -137,6 +142,7 @@ public class ComponentGroup extends Component {
      * @param component The {@link Component} to add in the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the {@link Component} was added to.
      */
+    @NonNull
     public ComponentGroup addComponent(int index, @NonNull final Component component) {
         if (mComponentIndexMap.containsKey(component)) {
             throw new IllegalArgumentException("Component " + component + " already added.");
@@ -168,6 +174,7 @@ public class ComponentGroup extends Component {
      * @param componentGroup The {@link ComponentGroup} to add in the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the provided {@link ComponentGroup} was added to.
      */
+    @NonNull
     public ComponentGroup addComponent(int index, @NonNull ComponentGroup componentGroup) {
         return addComponent(index, (Component) componentGroup);
     }
@@ -178,6 +185,7 @@ public class ComponentGroup extends Component {
      * @param components The {@link Component}s to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the {@link Component}s were added to.
      */
+    @NonNull
     public ComponentGroup addAll(@NonNull Collection<? extends Component> components) {
         for (Component comp : components) {
             addComponent(comp);
@@ -194,6 +202,7 @@ public class ComponentGroup extends Component {
      * @param component The new {@link Component} to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the replacement took place in.
      */
+    @NonNull
     public ComponentGroup replaceComponent(int index, @NonNull Component component) {
         if (mComponentIndexMap.containsKey(component)) {
             throw new IllegalArgumentException("Component " + component + " already added.");
@@ -211,6 +220,7 @@ public class ComponentGroup extends Component {
      * @param componentGroup The new {@link ComponentGroup} to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the replacement took place in.
      */
+    @NonNull
     public ComponentGroup replaceComponent(int index, @NonNull ComponentGroup componentGroup) {
         return replaceComponent(index, (Component) componentGroup);
     }
@@ -268,6 +278,7 @@ public class ComponentGroup extends Component {
      * @param position The position of the internal item in the {@link Component} of this {@link ComponentGroup}.
      * @return The view holder type for the internal component item at the provided position.
      */
+    @Nullable
     @Override
     public Object getPresenter(int position) {
         RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);
@@ -305,7 +316,7 @@ public class ComponentGroup extends Component {
      * @param observer The component group data observer that will react to changes to
      * {@link Component}s in the {@link ComponentGroup}.
      */
-    public void registerComponentGroupObserver(ComponentGroupDataObserver observer) {
+    public void registerComponentGroupObserver(@NonNull ComponentGroupDataObserver observer) {
         mObservable.registerObserver(observer);
     }
 
@@ -316,7 +327,7 @@ public class ComponentGroup extends Component {
      * @param observer The component group data observer that is currently reacting to changes to
      * in the {@link Component}s of the {@link ComponentGroup} and should stop.
      */
-    public void unregisterComponentGroupObserver(ComponentGroupDataObserver observer) {
+    public void unregisterComponentGroupObserver(@NonNull ComponentGroupDataObserver observer) {
         mObservable.unregisterObserver(observer);
     }
 
@@ -361,6 +372,7 @@ public class ComponentGroup extends Component {
         return componentAtPos.getNumberLanesAtPosition(position - rangeOf(componentAtPos).mLower);
     }
 
+    @NonNull
     @Override
     public SpanSizeLookup getSpanSizeLookup() {
         return mSpanSizeLookup;
@@ -474,7 +486,7 @@ public class ComponentGroup extends Component {
      * to do change animations instead of removal animations.
      * </pre>
      */
-    private void notifyRangeUpdated(Range originalRange, int newSize) {
+    private void notifyRangeUpdated(@NonNull Range originalRange, int newSize) {
         int oldSize = originalRange.getSize();
         int sizeChange = newSize - oldSize;
         if (sizeChange == 0) {
@@ -514,7 +526,7 @@ public class ComponentGroup extends Component {
      * @param component The component to be removed from this ComponentGroup.
      * @return
      */
-    private boolean remove(int index, Component component) {
+    private boolean remove(int index, @Nullable Component component) {
         Range range = mComponentAccordionList.get(index).mRange;
         mComponentAccordionList.remove(index);
         notifyItemRangeRemoved(range.mLower, range.getSize());
@@ -533,7 +545,7 @@ public class ComponentGroup extends Component {
      *
      * @param component The component that has been removed.
      */
-    private void cleanupComponent(Component component) {
+    private void cleanupComponent(@NonNull Component component) {
         component.unregisterComponentDataObserver(mComponentDataObserverMap.get(component));
         mComponentDataObserverMap.remove(component);
 
@@ -556,7 +568,7 @@ public class ComponentGroup extends Component {
 
         private final Component mComponent;
 
-        private ChildComponentDataObserver(Component component) {
+        private ChildComponentDataObserver(@NonNull Component component) {
             mComponent = component;
         }
 
@@ -627,7 +639,7 @@ public class ComponentGroup extends Component {
             }
         }
 
-        void notifyOnComponentRemoved(Component component) {
+        void notifyOnComponentRemoved(@NonNull Component component) {
             // Iterate in reverse to avoid problems if an observer detaches itself when onChanged()
             // is called.
             for (int i = mObservers.size() - 1; i >= 0; i--) {
@@ -646,6 +658,6 @@ public class ComponentGroup extends Component {
         void onChanged();
 
         /** Called whenever a {@link Component} is removed. */
-        void onComponentRemoved(Component component);
+        void onComponentRemoved(@NonNull Component component);
     }
 }

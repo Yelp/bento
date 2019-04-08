@@ -1,5 +1,6 @@
 package com.yelp.android.bento.utils;
 
+import androidx.annotation.NonNull;
 import java.util.ArrayList;
 
 /**
@@ -29,10 +30,7 @@ public abstract class Observable<T> {
      * @throws IllegalArgumentException the observer is null
      * @throws IllegalStateException    the observer is already registered
      */
-    public void registerObserver(T observer) {
-        if (observer == null) {
-            throw new IllegalArgumentException("The observer is null.");
-        }
+    public void registerObserver(@NonNull T observer) {
         synchronized (mObservers) {
             if (mObservers.contains(observer)) {
                 throw new IllegalStateException("Observer " + observer + " is already registered.");
@@ -49,10 +47,7 @@ public abstract class Observable<T> {
      * @throws IllegalArgumentException the observer is null
      * @throws IllegalStateException    the observer is not yet registered
      */
-    public void unregisterObserver(T observer) {
-        if (observer == null) {
-            throw new IllegalArgumentException("The observer is null.");
-        }
+    public void unregisterObserver(@NonNull T observer) {
         synchronized (mObservers) {
             int index = mObservers.indexOf(observer);
             if (index == -1) {

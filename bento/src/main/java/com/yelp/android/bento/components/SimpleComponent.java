@@ -15,7 +15,7 @@ public class SimpleComponent<P> extends Component {
     private Class<? extends ComponentViewHolder> mViewHolderType;
     private P mPresenter;
 
-    public SimpleComponent(Class<? extends ComponentViewHolder> viewHolderType) {
+    public SimpleComponent(@NonNull Class<? extends ComponentViewHolder> viewHolderType) {
         this(null, viewHolderType);
     }
 
@@ -23,11 +23,14 @@ public class SimpleComponent<P> extends Component {
      * Constructor that allows a Presenter to be passed in if the View needs to respond to certain
      * behaviour.
      */
-    public SimpleComponent(P presenter, Class<? extends ComponentViewHolder> viewHolderType) {
+    public SimpleComponent(
+            @NonNull P presenter,
+            @NonNull Class<? extends ComponentViewHolder> viewHolderType) {
         mPresenter = presenter;
         mViewHolderType = viewHolderType;
     }
 
+    @Nullable
     @Override
     public Object getPresenter(int position) {
         return mPresenter;
@@ -50,5 +53,4 @@ public class SimpleComponent<P> extends Component {
     public Object getItem(int position) {
         return null;
     }
-
 }

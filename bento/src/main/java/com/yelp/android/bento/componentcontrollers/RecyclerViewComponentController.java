@@ -52,7 +52,7 @@ public class RecyclerViewComponentController implements ComponentController {
      * the {@link RecyclerView}. In order to make the lanes, this component controller will set
      * the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do it manually.
      */
-    public RecyclerViewComponentController(RecyclerView recyclerView) {
+    public RecyclerViewComponentController(@NonNull RecyclerView recyclerView) {
         this(recyclerView, RecyclerView.VERTICAL);
     }
 
@@ -62,7 +62,10 @@ public class RecyclerViewComponentController implements ComponentController {
      * controller will set the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do 
      * it manually.
      */
-    public RecyclerViewComponentController(RecyclerView recyclerView, @Orientation int orientation) {
+    public RecyclerViewComponentController(
+            @NonNull RecyclerView recyclerView,
+            @Orientation int orientation
+    ) {
         mOrientation = orientation;
         mRecyclerViewAdapter = new RecyclerViewAdapter();
         mComponentGroup = new ComponentGroup();
@@ -445,7 +448,7 @@ public class RecyclerViewComponentController implements ComponentController {
      *
      * @param <T> The type of data the wrapped {@link ComponentViewHolder} uses.
      */
-    static class ViewHolderWrapper<P, T> extends RecyclerView.ViewHolder {
+    private static class ViewHolderWrapper<P, T> extends RecyclerView.ViewHolder {
 
         private ComponentViewHolder<P, T> mViewHolder;
 

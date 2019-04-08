@@ -2,9 +2,9 @@ package com.yelp.android.bentosampleapp.components;
 
 import android.view.View;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import com.yelp.android.bento.componentcontrollers.SimpleComponentViewHolder;
 import com.yelp.android.bentosampleapp.R;
-import org.jetbrains.annotations.NotNull;
 
 public class SimpleJavaComponentExampleViewHolder extends SimpleComponentViewHolder<Void> {
     private TextView mTextView;
@@ -14,12 +14,12 @@ public class SimpleJavaComponentExampleViewHolder extends SimpleComponentViewHol
     }
 
     @Override
-    protected void onViewCreated(@NotNull View itemView) {
+    protected void onViewCreated(@NonNull View itemView) {
         mTextView = itemView.findViewById(R.id.text);
     }
 
     @Override
-    public void bind(@NotNull Void presenter) {
+    public void bind(@NonNull Void presenter) {
         mTextView.setText("This is a simple component written in Java.");
     }
 }

@@ -1,13 +1,13 @@
 package com.yelp.android.bento.componentcontrollers;
 
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
-import android.view.ViewGroup;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
 import com.yelp.android.bento.core.ComponentController;
@@ -85,42 +85,49 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         return mComponentGroup.rangeOf(component);
     }
 
+    @NonNull
     @Override
     public ComponentController addComponent(@NonNull Component component) {
         mComponentGroup.addComponent(component);
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController addComponent(@NonNull ComponentGroup componentGroup) {
         mComponentGroup.addComponent(componentGroup);
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController addComponent(int index, @NonNull Component component) {
         mComponentGroup.addComponent(index, component);
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController addComponent(int index, @NonNull ComponentGroup componentGroup) {
         mComponentGroup.addComponent(index, componentGroup);
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController addAll(@NonNull Collection<? extends Component> components) {
         mComponentGroup.addAll(components);
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController replaceComponent(int index, @NonNull Component component) {
         mComponentGroup.replaceComponent(index, component);
         return this;
     }
 
+    @NonNull
     @Override
     public ComponentController replaceComponent(int index, @NonNull ComponentGroup componentGroup) {
         mComponentGroup.replaceComponent(index, componentGroup);
@@ -180,8 +187,9 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         return view == mComponentViewMap.get(component);
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         Component component = mComponentGroup.get(position);
 
         ComponentController componentController;
@@ -204,7 +212,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object component) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object component) {
         if (mComponentViewMap.get(component) == null) {
             // No matches for this component.
             return;

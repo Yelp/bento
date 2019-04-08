@@ -1,6 +1,7 @@
 package com.yelp.android.bento.utils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
     /**
      * Returns an iterator for the AccordionList. Not concurrent modification safe.
      */
+    @NonNull
     @Override
     public Iterator<RangedValue<T>> iterator() {
         return new AccordionListIterator();
@@ -79,6 +81,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
      * Returns the span of the {@link AccordionList}, which corresponds to the sum of all entry
      * sizes.
      */
+    @NonNull
     public Range span() {
         return new Range(
                 0, mRangeList.isEmpty() ? 0 : mRangeList.get(mRangeList.size() - 1).mRange.mUpper);
@@ -127,7 +130,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
         }
     }
 
-    public void addAll(AccordionList<T> values) {
+    public void addAll(@NonNull AccordionList<T> values) {
         for (RangedValue<T> value : values) {
             add(value.mValue, value.mRange.getSize());
         }
@@ -179,6 +182,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
             return mRemaining != 0;
         }
 
+        @NonNull
         @Override
         public RangedValue<T> next() {
             if (mRemaining == 0) {
@@ -257,6 +261,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
          * @return A new {@link Range} that represents the values at the offset provided. eg.
          * {@code new Range(2, 5).offset(3)} returns a new range that represents [5, 8).
          */
+        @NonNull
         public Range offset(int offset) {
             return new Range(mLower + offset, mUpper + offset);
         }
@@ -288,6 +293,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
             return new HashCodeBuilder().append(mLower).append(mUpper).toHashCode();
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "[" + mLower + ", " + mUpper + ")";
@@ -304,11 +310,12 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
         public final V mValue;
         public final Range mRange;
 
-        public RangedValue(@NonNull V value, Range range) {
+        public RangedValue(@NonNull V value, @NonNull Range range) {
             mValue = value;
             mRange = range;
         }
 
+        @NonNull
         public RangedValue<V> offset(int offset) {
             return new RangedValue<>(mValue, mRange.offset(offset));
         }
@@ -322,7 +329,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
         }
 
         @Override
-        public boolean equals(Object object) {
+        public boolean equals(@Nullable Object object) {
             if (object == null) {
                 return false;
             }
@@ -348,6 +355,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
             return new HashCodeBuilder().append(mValue).append(mRange).toHashCode();
         }
 
+        @NonNull
         @Override
         public String toString() {
             return "Range: " + mRange + "\nValue: " + mValue;

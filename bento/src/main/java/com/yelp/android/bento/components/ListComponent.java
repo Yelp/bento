@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.R;
@@ -34,7 +35,8 @@ public class ListComponent<P, T> extends Component {
      * @param listItemViewHolder The view holder used for each item in the list.
      */
     public ListComponent(
-            P presenter, Class<? extends ComponentViewHolder<P, T>> listItemViewHolder) {
+            @Nullable P presenter,
+            @NonNull Class<? extends ComponentViewHolder<P, T>> listItemViewHolder) {
         this(presenter, listItemViewHolder, 1);
     }
 
@@ -45,8 +47,8 @@ public class ListComponent<P, T> extends Component {
      *                    component.
      */
     public ListComponent(
-            P presenter,
-            Class<? extends ComponentViewHolder<P, T>> listItemViewHolder,
+            @Nullable P presenter,
+            @NonNull Class<? extends ComponentViewHolder<P, T>> listItemViewHolder,
             int numberLanes) {
         mPresenter = presenter;
         mListItemViewHolder = listItemViewHolder;
@@ -86,7 +88,7 @@ public class ListComponent<P, T> extends Component {
      *
      * @param data The data item to remove from the list.
      */
-    public void removeData(T data) {
+    public void removeData(@NonNull T data) {
         int index = mData.indexOf(data);
         // Check if the object indeed is in the list.
         if (index != -1) {
@@ -152,6 +154,7 @@ public class ListComponent<P, T> extends Component {
     protected void onGetListItem(int position) {
     }
 
+    @Nullable
     @Override
     public Object getItem(int position) {
         if (mShouldShowDivider) {
@@ -161,6 +164,7 @@ public class ListComponent<P, T> extends Component {
         return getListItem(position);
     }
 
+    @Nullable
     @Override
     public P getPresenter(int position) {
         return mPresenter;
@@ -177,6 +181,7 @@ public class ListComponent<P, T> extends Component {
         return isListItem(position) ? mListItemViewHolder : mDividerViewHolder;
     }
 
+    @NonNull
     @Override
     public SpanSizeLookup getSpanSizeLookup() {
         if (mSpanSizeLookup == null) {
@@ -192,7 +197,7 @@ public class ListComponent<P, T> extends Component {
      * @param spanSizeLookup The new {@link SpanSizeLookup} to add.
      */
     @Override
-    public void setSpanSizeLookup(final SpanSizeLookup spanSizeLookup) {
+    public void setSpanSizeLookup(@NonNull final SpanSizeLookup spanSizeLookup) {
         mSpanSizeLookup = new SpanSizeLookup() {
             // If there is a gap in the list component, we want it to span the entire width.
             // Otherwise, return the requested span size lookup.
@@ -206,6 +211,7 @@ public class ListComponent<P, T> extends Component {
         };
     }
 
+    @NonNull
     private T getListItem(int position) {
         onGetListItem(position);
         return mData.get(position);
@@ -231,7 +237,7 @@ public class ListComponent<P, T> extends Component {
     public abstract static class DividerViewHolder extends ComponentViewHolder {
 
         @Override
-        public final void bind(Object presenter, Object element) {
+        public final void bind(@Nullable Object presenter, @Nullable Object element) {
             // Force do nothing.
         }
     }

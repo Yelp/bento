@@ -155,7 +155,7 @@ public abstract class Component {
      * @param observer The component data observer that will react to changes to internal items in
      *                 the {@link Component}.
      */
-    public void registerComponentDataObserver(ComponentDataObserver observer) {
+    public void registerComponentDataObserver(@NonNull ComponentDataObserver observer) {
         mObservable.registerObserver(observer);
     }
 
@@ -166,7 +166,7 @@ public abstract class Component {
      * @param observer The component data observer that is currently reacting to changes to
      *                 internal items in the {@link Component} and should stop.
      */
-    public void unregisterComponentDataObserver(ComponentDataObserver observer) {
+    public void unregisterComponentDataObserver(@NonNull ComponentDataObserver observer) {
         mObservable.unregisterObserver(observer);
     }
 
@@ -286,6 +286,7 @@ public abstract class Component {
     /**
      * @return The span size lookup that manages components with multiple lanes.
      */
+    @NonNull
     public SpanSizeLookup getSpanSizeLookup() {
         return mSpanSizeLookup;
     }
@@ -293,7 +294,7 @@ public abstract class Component {
     /**
      * @param lookup The new lookup that will manage components with multiple lanes
      */
-    public void setSpanSizeLookup(SpanSizeLookup lookup) {
+    public void setSpanSizeLookup(@NonNull SpanSizeLookup lookup) {
         mSpanSizeLookup = lookup;
     }
 

@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.Nullable;
 import com.yelp.android.bento.R;
 import com.yelp.android.bento.core.ComponentViewHolder;
 import io.reactivex.Observable;
@@ -24,10 +25,12 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
             DefaultLoadingFooterViewHolder.class;
 
     public PaginatingListComponent(
-            P presenter, Class<? extends ComponentViewHolder<P, T>> listItemViewHolder) {
+            @NonNull P presenter,
+            @NonNull Class<? extends ComponentViewHolder<P, T>> listItemViewHolder) {
         super(presenter, listItemViewHolder);
     }
 
+    @Nullable
     @Override
     public P getPresenter(int position) {
         return mShouldShowFooter && position == (getCount() - 1)
@@ -35,6 +38,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
                 : super.getPresenter(position);
     }
 
+    @Nullable
     @Override
     public Object getItem(int position) {
         return mShouldShowFooter && position == (getCount() - 1) ? null : super.getItem(position);
@@ -67,6 +71,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
      * Returns an {@link Observable} that fires every time a list item with a new furthest index is
      * retrieved.
      */
+    @NonNull
     public Observable<Integer> getFurthestObservable() {
         return mFurthestObservable;
     }
@@ -96,7 +101,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
     public abstract static class LoadingFooterViewHolder extends ComponentViewHolder {
 
         @Override
-        public final void bind(Object presenter, Object element) {
+        public final void bind(@Nullable Object presenter, @Nullable Object element) {
             // Force do nothing.
         }
     }
