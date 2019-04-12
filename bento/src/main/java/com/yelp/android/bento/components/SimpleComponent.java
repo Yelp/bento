@@ -24,7 +24,7 @@ public class SimpleComponent<P> extends Component {
      * behaviour.
      */
     public SimpleComponent(
-            @NonNull P presenter,
+            @Nullable P presenter,
             @NonNull Class<? extends ComponentViewHolder> viewHolderType) {
         mPresenter = presenter;
         mViewHolderType = viewHolderType;
