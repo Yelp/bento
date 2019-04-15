@@ -46,9 +46,22 @@ TODO(SEARCHUX-7508): Three or four examples, plus a link to a Bento Cookbook wit
 
 ## Installation
 
-Bento can be installed using Gradle:
+Bento can be setup with Gradle:
 
-TODO(SEARCHUX-7527): Add gradle code with link to maven package
+```groovy
+// Top level build.gradle
+allprojects {
+	repositories {
+		mavenCentral()
+	}
+}
+
+// Module level build.gradle
+dependencies {
+    implementation "com.yelp.android:bento:<version-number>"
+    androidTestImplementation "com.yelp.android:bento-testing:<version-number>"
+}
+```
 
 ## Contributing
 
