@@ -102,7 +102,7 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
      * should have a height of wrap_content.
      */
     open fun createRecyclerView(parent: ViewGroup): RecyclerView {
-        return parent.inflate(R.layout.recycler_view)
+        return parent.inflate(R.layout.bento_recycler_view)
     }
 }
 

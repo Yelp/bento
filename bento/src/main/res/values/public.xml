@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <public name="list_divider_line_height" type="dimen" />
+    <public name="bento_list_divider_line_height" type="dimen" />
 </resources>

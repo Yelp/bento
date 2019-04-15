@@ -5,6 +5,6 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_divider_line_height"
+        android:layout_height="@dimen/bento_list_divider_line_height"
         android:background="@android:color/darker_gray" />
 </FrameLayout>
