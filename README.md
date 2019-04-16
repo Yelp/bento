@@ -33,11 +33,11 @@ The Bento framework makes it easy to break down complex interfaces into a set of
 
 ## Examples
 
-TODO(SEARCHUX-7508): Three or four examples, plus a link to a Bento Cookbook with lots of examples.
+We're compiling a list of examples of how to use Bento. Here's what we have currently and some of the examples we plan to add in the future:
 
-- SimpleComponent
-- ListComponent
-- Complex Custom Component
+- [SimpleComponent](documentation/ComponentExample.md)
+- [ListComponent](documentation/ListComponentExample.md)
+- [Component User Interaction](documentation/UserInteractionExample.md)
 - Component with Lanes
 - Inter-Component Communication
 - Testing a Component
