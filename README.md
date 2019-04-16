@@ -69,7 +69,46 @@ We highly encourage contributions from the community, even if you've never contr
 
 ### Steps for Contributing
 
-- TODO(SEARCHUX-7506): Steps for how to checkout the code, run tests, submit a pull request and deploy.
+#### 0. Requirements
+
+There are a few requirements to compile Bento.
+
+- Python is needed for the [pre-commit](https://pre-commit.com/) hooks to run
+- Java and Kotlin are needed to actually compile the project
+- Android Studio (we recommend >= 3.3.2)
+
+#### 1. Get the code
+
+Fork the this repository, and then clone the code to your local machine.
+
+#### 2. Prepare the git hooks
+
+Once you have the repo on your machine, run the following command from the root of the project.
+
+```
+$ make install hooks
+```
+
+These git hooks will make sure you're not committing private keys to the repository. In the future we might add more functionality.
+
+#### 3. Create a new branch
+
+We usually like branches to be named:
+
+- `username/issue-number/what-it-do`
+- `targo/24/fix-item-range`
+
+#### 4. Build, change, test, commit
+
+Repeat as necessary. The project should build from within Android Studio and if it doesn't, see the help section below. You should also be able to compile and run the `bento-sample-app` to test your changes.
+
+You can also run `./gradlew publishToMavenLocal` to publish the package to your local maven repo on your machine. From there you can add `mavenLocal()` before other maven repositories. That way your project can load in the version of Bento you're working on.
+
+We follow [semver](https://semver.org/) so the version number in `GlobalDependencies.kt` should be updated to reflect the changes.
+
+#### 5. Push your changes and open a pull request
+
+Push your branch with the new commits to your cloned repo, then open a pull request through GitHub. Once Travis CI gives it a green light along with a member of our team, it will be merged and the new version will be deployed to Maven Central.
 
 ## Help
 
