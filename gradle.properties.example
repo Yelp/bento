@@ -1,0 +1,8 @@
+# An example of what ~/.gradle/gradle.properties should look like when trying to publish to Maven Central.
+
+signing.keyId=<key_id>
+signing.password=<key_passphrase>
+signing.secretKeyRingFile=/Users/<your_local_user_name>/.gnupg/secring.gpg
+
+ossrhUsername=<UserAccountInOSSRH>
+ossrhPassword=<UserPasswordInOSSRH>

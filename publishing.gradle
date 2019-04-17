@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import java.util.function.Consumer
 
+=======
+apply plugin: 'signing'
+>>>>>>> targo/SEARCHUX-7501/build-travis-refless
 apply plugin: 'digital.wup.android-maven-publish'
 apply plugin: 'net.linguica.maven-settings'
 
@@ -86,19 +90,82 @@ publishing {
     publications {
         mavenAar(MavenPublication) {
             from components.android
+<<<<<<< HEAD
             artifact sourcesJar
+=======
+            groupId = Publishing.GROUP
+            version = Publishing.VERSION
+            artifact sourcesJar
+
+            pom {
+                name = projectName
+                description = projectDescription
+                url = 'https://github.com/Yelp/bento'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        name = 'Yelp'
+                        email = '?'
+                    }
+
+                    developer {
+                        id = 'targo'
+                        name = 'Tyler Argo'
+                        email = 'targo@yelp.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git@github.com:Yelp/bento.git'
+                    developerConnection = 'scm:git:git@github.com:Yelp/bento.git'
+                    url = 'https://github.com/Yelp/bento'
+                }
+            }
+>>>>>>> targo/SEARCHUX-7501/build-travis-refless
         }
     }
 
     repositories {
         maven {
+<<<<<<< HEAD
             if (Publishing.VERSION.endsWith("-SNAPSHOT")) {
                 name "nexus-snapshots"
                 url SNAPSHOT_NEXUS_URL
             } else {
                 name "nexus-releases"
                 url RELEASE_NEXUS_URL
+=======
+            if (isReleaseBuild()) {
+                name "SonatypeRelease"
+                url RELEASE_SONATYPE_URL
+            } else {
+                name "SonatypeSnapshot"
+                url SNAPSHOT_SONATYPE_URL
+            }
+            if (project.hasProperty("signing.keyId")) {
+                credentials {
+                    username = ossrhUsername
+                    password = ossrhPassword
+                }
+>>>>>>> targo/SEARCHUX-7501/build-travis-refless
             }
         }
     }
 }
+<<<<<<< HEAD
+=======
+
+// Allows people to publish to their local maven even if they don't have signing keys.
+signing {
+    required { project.hasProperty("signing.keyId") }
+    sign publishing.publications.mavenAar
+}
+
+def isReleaseBuild() {
+    return !Publishing.VERSION.endsWith("-SNAPSHOT")
+}
+>>>>>>> targo/SEARCHUX-7501/build-travis-refless
