@@ -1,0 +1,43 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+<<<<<<< HEAD
+        // We declare the proxy of external repositories first so Gradle will check those before
+        // resorting to the actual external repositories.
+        maven { Repos.yelpEverything(it) }
+
+=======
+>>>>>>> targo/SEARCHUX-7501/build-travis-refless
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath BuildScriptLibs.ANDROID
+        classpath BuildScriptLibs.KOTLIN
+    }
+}
+
+plugins {
+    id "digital.wup.android-maven-publish" version "3.6.2" apply false
+    id "net.linguica.maven-settings" version "0.5" apply false
+}
+
+subprojects {
+    repositories {
+<<<<<<< HEAD
+        // We declare the proxy of external repositories first so Gradle will check those before
+        // resorting to the actual external repositories.
+        maven { Repos.yelpEverything(it) }
+
+=======
+>>>>>>> targo/SEARCHUX-7501/build-travis-refless
+        google()
+        jcenter()
+    }
+}
+
+// If you want to update the Gradle version, change this number and then run `./gradlew wrapper`.
+tasks.withType(Wrapper) {
+    gradleVersion = Versions.GRADLE
+    distributionType = Wrapper.DistributionType.ALL
+}
