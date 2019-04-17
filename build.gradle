@@ -1,13 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     repositories {
-<<<<<<< HEAD
-        // We declare the proxy of external repositories first so Gradle will check those before
-        // resorting to the actual external repositories.
-        maven { Repos.yelpEverything(it) }
-
-=======
->>>>>>> targo/SEARCHUX-7501/build-travis-refless
         google()
         jcenter()
     }
@@ -24,13 +17,6 @@ plugins {
 
 subprojects {
     repositories {
-<<<<<<< HEAD
-        // We declare the proxy of external repositories first so Gradle will check those before
-        // resorting to the actual external repositories.
-        maven { Repos.yelpEverything(it) }
-
-=======
->>>>>>> targo/SEARCHUX-7501/build-travis-refless
         google()
         jcenter()
     }

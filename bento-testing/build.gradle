@@ -1,12 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-<<<<<<< HEAD
-=======
 
 ext.projectName = 'Bento Testing'
 ext.projectDescription = 'A library for testing Android user interfaces created with Bento.'
 
->>>>>>> targo/SEARCHUX-7501/build-travis-refless
 apply from: "$rootDir/publishing.gradle"
 
 android {

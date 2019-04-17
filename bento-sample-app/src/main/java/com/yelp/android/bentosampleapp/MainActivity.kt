@@ -30,11 +30,7 @@ class MainActivity : AppCompatActivity() {
                 "View Pager" to ViewPagerActivity::class.java,
                 "Visibility Listener" to ListVisibilityActivity::class.java,
                 "Grid View Pager" to ViewPagerGridActivity::class.java,
-<<<<<<< HEAD
-                "Component Replacement" to ComponentReplacementActivity::class.java,
-=======
                 "Component Replacement" to ComponentReplacementActivity::class.java
->>>>>>> targo/SEARCHUX-7501/build-travis-refless
         ))
         componentController.addComponent(listComponent)
     }

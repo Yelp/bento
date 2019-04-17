@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-<<<<<<< HEAD
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-=======
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
->>>>>>> targo/SEARCHUX-7501/build-travis-refless
 
     <item
         android:id="@+id/scroll"
@@ -24,10 +20,6 @@
         android:icon="@drawable/ic_layers_clear_black_24dp"
         android:title="@string/clear"
         app:iconTint="@android:color/white"
-<<<<<<< HEAD
-        app:showAsAction="ifRoom" />
-=======
         app:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
->>>>>>> targo/SEARCHUX-7501/build-travis-refless
 </menu>
