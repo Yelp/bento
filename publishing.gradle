@@ -129,9 +129,11 @@ publishing {
                 name "SonatypeSnapshot"
                 url SNAPSHOT_SONATYPE_URL
             }
-            credentials {
-                username = ossrhUsername
-                password = ossrhPassword
+            if (project.hasProperty("signing.keyId")) {
+                credentials {
+                    username = ossrhUsername
+                    password = ossrhPassword
+                }
             }
         }
     }
