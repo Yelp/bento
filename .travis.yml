@@ -13,7 +13,7 @@ android:
   - android-28
 
 before_install:
-    - yes | sdkmanager "platforms;android-28"
+    - yes | sdkmanager "build-tools;platforms;android-28"
 
 before_cache:
 - rm -f  ${HOME}/.gradle/caches/modules-2/modules-2.lock
