@@ -1,8 +1,11 @@
-# Bento
+# Bento 🍱
 
 ## A delicious framework for building modularized Android user interfaces, by Yelp.
 
-[![License](https://img.shields.io/badge/license-Apache2.0%20License-orange.svg)](LICENSE) [![Twitter](https://img.shields.io/badge/Twitter-@YelpEngineering-blue.svg)](https://twitter.com/YelpEngineering)
+![Maven Central](https://img.shields.io/maven-central/v/com.yelp.android/bento.svg)
+[![Build Status](https://travis-ci.org/Yelp/bento.svg?branch=master)](https://travis-ci.org/Yelp/bento)
+[![Twitter](https://img.shields.io/badge/Twitter-@YelpEngineering-blue.svg)](https://twitter.com/YelpEngineering)
+[![License](https://img.shields.io/badge/license-Apache2.0%20License-orange.svg)](LICENSE)
 
 Bento is a framework inspired by [Epoxy](https://github.com/airbnb/epoxy) for building complex, modularized Android user interfaces. By leveraging the mechanics and best practices behind RecyclerViews on Android, Bento makes it easy to compose various resusable visual components into a single screen. At Yelp, we've been using Bento for our most critical and complex screens in both our consumer and business owner Android applications.
 
