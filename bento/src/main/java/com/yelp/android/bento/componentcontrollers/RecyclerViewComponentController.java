@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import com.google.common.collect.HashBiMap;
@@ -42,15 +43,15 @@ public class RecyclerViewComponentController implements ComponentController {
     private final RecyclerView.RecycledViewPool mRecycledViewPool;
     private ComponentVisibilityListener mComponentVisibilityListener;
     private OnScrollListener mOnScrollListener;
+    private AdapterDataObserver mAdapterDataObserver;
     private BentoLayoutManager mLayoutManager;
     private LinearSmoothScroller mSmoothScroller;
-    @RecyclerView.Orientation
-    private int mOrientation;
+    @RecyclerView.Orientation private int mOrientation;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
-     * the {@link RecyclerView}. In order to make the lanes, this component controller will set
-     * the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do it manually.
+     * the {@link RecyclerView}. In order to make the lanes, this component controller will set the
+     * {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do it manually.
      */
     public RecyclerViewComponentController(@NonNull RecyclerView recyclerView) {
         this(recyclerView, RecyclerView.VERTICAL);
@@ -59,13 +60,11 @@ public class RecyclerViewComponentController implements ComponentController {
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
      * the {@link RecyclerView}. In order to make the lanes (columns / rows), this component
-     * controller will set the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do 
+     * controller will set the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do
      * it manually.
      */
     public RecyclerViewComponentController(
-            @NonNull RecyclerView recyclerView,
-            @Orientation int orientation
-    ) {
+            @NonNull RecyclerView recyclerView, @Orientation int orientation) {
         mOrientation = orientation;
         mRecyclerViewAdapter = new RecyclerViewAdapter();
         mComponentGroup = new ComponentGroup();
@@ -118,7 +117,8 @@ public class RecyclerViewComponentController implements ComponentController {
         mViewTypeReferenceCounts = new HashMap<>();
         mViewTypeMap = HashBiMap.create();
         mRecyclerView = recyclerView;
-        mLayoutManager = new BentoLayoutManager(recyclerView.getContext(), mComponentGroup, mOrientation);
+        mLayoutManager =
+                new BentoLayoutManager(recyclerView.getContext(), mComponentGroup, mOrientation);
         mSmoothScroller =
                 new LinearSmoothScroller(mRecyclerView.getContext()) {
                     @Override
@@ -216,7 +216,8 @@ public class RecyclerViewComponentController implements ComponentController {
 
     @NonNull
     @Override
-    public RecyclerViewComponentController replaceComponent(int index, @NonNull Component component) {
+    public RecyclerViewComponentController replaceComponent(
+            int index, @NonNull Component component) {
         mComponentGroup.replaceComponent(index, component);
         return this;
     }
@@ -244,6 +245,7 @@ public class RecyclerViewComponentController implements ComponentController {
         mComponentGroup.clear();
         mRecyclerView.removeOnScrollListener(mOnScrollListener);
         mComponentGroup.unregisterComponentDataObserver(mComponentVisibilityListener);
+        mRecyclerViewAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
         addVisibilityListener();
     }
 
@@ -284,8 +286,29 @@ public class RecyclerViewComponentController implements ComponentController {
                         mComponentVisibilityListener.onScrolled();
                     }
                 };
+        mAdapterDataObserver =
+                new AdapterDataObserver() {
+                    @Override
+                    public void onItemRangeInserted(int positionStart, int itemCount) {
+                        int firstVisibleItemPosition =
+                                mLayoutManager.findFirstVisibleItemPosition();
+
+                        if (firstVisibleItemPosition == positionStart
+                                && firstVisibleItemPosition == 0) {
+                            mRecyclerView.post(
+                                    new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mLayoutManager.scrollToPosition(0);
+                                        }
+                                    });
+                        }
+                    }
+                };
+
         mRecyclerView.addOnScrollListener(mOnScrollListener);
         mComponentGroup.registerComponentDataObserver(mComponentVisibilityListener);
+        mRecyclerViewAdapter.registerAdapterDataObserver(mAdapterDataObserver);
     }
 
     /**
@@ -381,22 +404,22 @@ public class RecyclerViewComponentController implements ComponentController {
     /**
      * Rather than allowing the RecyclerViewComponentController to extend the
      * RecyclerView.Adapter<ViewHolderWrapper> and exposing all of its public final methods that we
-     * can't control, we use this class to offer our own API for RecyclerView adapter operations.
-     * We do this so we can avoid clients calling things such as notifyDataSetChanged() which
-     * causes an entire invalidation of the contents of the ComponentController and underlying
-     * Adapter. Clients should only use methods that partially invalidate the contents for
-     * performance reasons. In the rare case where we do want to invalidate the entire list, this is
-     * still possible by passing a start index of 0 and end index the size of the list using the
-     * other methods.
+     * can't control, we use this class to offer our own API for RecyclerView adapter operations. We
+     * do this so we can avoid clients calling things such as notifyDataSetChanged() which causes an
+     * entire invalidation of the contents of the ComponentController and underlying Adapter.
+     * Clients should only use methods that partially invalidate the contents for performance
+     * reasons. In the rare case where we do want to invalidate the entire list, this is still
+     * possible by passing a start index of 0 and end index the size of the list using the other
+     * methods.
      */
-    private final class RecyclerViewAdapter
-            extends RecyclerView.Adapter<ViewHolderWrapper>
+    private final class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolderWrapper>
             implements Sequenceable {
         @NonNull
         @SuppressWarnings("unchecked") // Unchecked Component generics.
         @Override
         public ViewHolderWrapper onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            ComponentViewHolder viewHolder = constructViewHolder(mViewTypeMap.inverse().get(viewType));
+            ComponentViewHolder viewHolder =
+                    constructViewHolder(mViewTypeMap.inverse().get(viewType));
             return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
         }
 
