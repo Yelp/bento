@@ -89,7 +89,7 @@ Fork the this repository, and then clone the code to your local machine.
 Once you have the repo on your machine, run the following command from the root of the project.
 
 ```
-$ make install hooks
+$ make install-hooks
 ```
 
 These git hooks will make sure you're not committing private keys to the repository. In the future we might add more functionality.
