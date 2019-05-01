@@ -1,4 +1,4 @@
-# Bento 🍱
+![Bento Logo](./documentation/images/bento_logo.png)
 
 ## A delicious framework for building modularized Android user interfaces, by Yelp.
 
