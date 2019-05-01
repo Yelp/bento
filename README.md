@@ -1,4 +1,4 @@
-![Bento Logo](./documentation/images/bento_logo.png)
+<img src="./documentation/images/bento_logo.png" style="max-width: 75%"/>
 
 ## A delicious framework for building modularized Android user interfaces, by Yelp.
 
