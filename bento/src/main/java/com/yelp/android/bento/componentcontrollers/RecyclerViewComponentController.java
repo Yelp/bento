@@ -131,7 +131,7 @@ public class RecyclerViewComponentController implements ComponentController {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecycledViewPool = mRecyclerView.getRecycledViewPool();
         setupComponentSpans();
-        addVisibilityListener();
+        addVisibilityListeners();
     }
 
     @Override
@@ -243,10 +243,8 @@ public class RecyclerViewComponentController implements ComponentController {
     @Override
     public void clear() {
         mComponentGroup.clear();
-        mRecyclerView.removeOnScrollListener(mOnScrollListener);
-        mComponentGroup.unregisterComponentDataObserver(mComponentVisibilityListener);
-        mRecyclerViewAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
-        addVisibilityListener();
+        removeVisibilityListeners();
+        addVisibilityListeners();
     }
 
     @Override
@@ -270,7 +268,7 @@ public class RecyclerViewComponentController implements ComponentController {
         }
     }
 
-    private void addVisibilityListener() {
+    private void addVisibilityListeners() {
         mComponentVisibilityListener =
                 new ComponentVisibilityListener(
                         new RecyclerViewLayoutManagerHelper(mLayoutManager), mComponentGroup);
@@ -309,6 +307,12 @@ public class RecyclerViewComponentController implements ComponentController {
         mRecyclerView.addOnScrollListener(mOnScrollListener);
         mComponentGroup.registerComponentDataObserver(mComponentVisibilityListener);
         mRecyclerViewAdapter.registerAdapterDataObserver(mAdapterDataObserver);
+    }
+
+    private void removeVisibilityListeners(){
+        mRecyclerView.removeOnScrollListener(mOnScrollListener);
+        mComponentGroup.unregisterComponentDataObserver(mComponentVisibilityListener);
+        mRecyclerViewAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);
     }
 
     /**

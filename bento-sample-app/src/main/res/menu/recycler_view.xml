@@ -12,7 +12,7 @@
     <item
         android:id="@+id/scroll_with_offset"
         android:title="@string/scroll_with_offset" />
-    
+
     <item
         android:id="@+id/insert_at_zero"
         android:title="@string/insert_at_zero" />
