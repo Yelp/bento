@@ -65,17 +65,29 @@ class RecyclerViewActivity : AppCompatActivity() {
                 componentController.scrollToComponentWithOffset(componentToScrollTo, 100)
                 true
             }
+            R.id.insert_at_zero -> {
+                addSimpleComponent(componentController, false, 0)
+                true
+            }
             else -> false
         }
     }
 
-    private fun addSimpleComponent(controller: ComponentController, hasGap: Boolean) {
+    private fun addSimpleComponent(
+            controller: ComponentController,
+            hasGap: Boolean,
+            index: Int? = null
+    ) {
         val simpleComponent = SimpleComponent<Nothing>(
                 SimpleComponentExampleViewHolder::class.java)
         if (hasGap) {
             simpleComponent.setStartGap(500)
         }
-        controller.addComponent(simpleComponent)
+        if (index != null) {
+            controller.addComponent(index, simpleComponent)
+        } else {
+            controller.addComponent(simpleComponent)
+        }
     }
 
     private fun addListComponent(controller: ComponentController) {

@@ -7,4 +7,5 @@
     <string name="clear">Clear</string>
     <string name="remove_component">Remove component</string>
     <string name="add_component">Add component</string>
+    <string name="insert_at_zero">Insert component at index 0</string>
 </resources>
