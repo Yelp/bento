@@ -1,4 +1,4 @@
-<img src="./documentation/images/bento_logo.png" height="150"/>
+<img src="./documentation/images/bento_logo.png" width="80%"/>
 
 ## A delicious framework for building modularized Android user interfaces, by Yelp.
 
