@@ -1,6 +1,9 @@
 package com.yelp.android.bento.components;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
@@ -13,7 +16,7 @@ public class ListComponentTest {
     private ListComponent<Void, Object> mListComponent;
 
     @Test
-    public void test_RemoveItemGettersFiveItemsFirstItemNoDividers_FirstItemCountOne() {
+    public void removeItemGettersFiveItemsFirstItemNoDividers_FirstItemCountOne() {
         setup(5);
         mListComponent.toggleDivider(false);
 
@@ -25,7 +28,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_RemoveItemGettersFiveItemsMiddleItemNoDividers_MiddleItemCountOne() {
+    public void removeItemGettersFiveItemsMiddleItemNoDividers_MiddleItemCountOne() {
         setup(5);
         mListComponent.toggleDivider(false);
 
@@ -37,7 +40,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_RemoveItemGettersFiveItemsLastItemNoDividers_LastItemCountOne() {
+    public void removeItemGettersFiveItemsLastItemNoDividers_LastItemCountOne() {
         setup(5);
         mListComponent.toggleDivider(false);
 
@@ -49,7 +52,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_RemoveItemGettersSingleItemOnlyItemNoDividers_OnlyItemCountOne() {
+    public void removeItemGettersSingleItemOnlyItemNoDividers_OnlyItemCountOne() {
         setup(1);
         mListComponent.toggleDivider(false);
 
@@ -61,7 +64,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_RemoveItemGettersFiveItemsFirstItemWithDividers_FirstItemCountTwo() {
+    public void removeItemGettersFiveItemsFirstItemWithDividers_FirstItemCountTwo() {
         setup(5);
         mListComponent.toggleDivider(true);
 
@@ -73,8 +76,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void
-            test_RemoveItemGettersFiveItemsMiddleItemWithDividers_MiddleItemTimesTwoMinusOneCountTwo() {
+    public void removeItemGettersFiveItemsMiddleItemWithDividers_MiddleItemTimesTwoMinusOneCountTwo() {
         setup(5);
         mListComponent.toggleDivider(true);
 
@@ -86,8 +88,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void
-            test_RemoveItemGettersFiveItemsLastItemWithDividers_LastItemTimesTwoMinusOneCountTwo() {
+    public void removeItemGettersFiveItemsLastItemWithDividers_LastItemTimesTwoMinusOneCountTwo() {
         setup(5);
         mListComponent.toggleDivider(true);
 
@@ -99,7 +100,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_RemoveItemGettersSingleItemOnlyItemWithDividers_FirstItemCountOne() {
+    public void removeItemGettersSingleItemOnlyItemWithDividers_FirstItemCountOne() {
         setup(1);
         mListComponent.toggleDivider(true);
 
@@ -111,7 +112,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_GetSpanSizeLookupTwoColumnsGapItem_ReturnsTwo() {
+    public void getSpanSizeLookupTwoColumnsGapItem_ReturnsTwo() {
         setup(2, 2);
         mListComponent.setStartGap(10);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
@@ -119,7 +120,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_GetSpanSizeLookupTwoColumnsNonGapItem_ReturnsOne() {
+    public void getSpanSizeLookupTwoColumnsNonGapItem_ReturnsOne() {
         setup(2, 2);
         mListComponent.setStartGap(10);
         GridLayoutManager.SpanSizeLookup spanSizeLookup = mListComponent.getSpanSizeLookup();
@@ -127,7 +128,7 @@ public class ListComponentTest {
     }
 
     @Test
-    public void test_SetSpanSizeLookupCustomReturnsTen_ReturnsLookupWithTen() {
+    public void setSpanSizeLookupCustomReturnsTen_ReturnsLookupWithTen() {
         setup(2);
         SpanSizeLookup customLookup = new SpanSizeLookup() {
             @Override
@@ -141,8 +142,71 @@ public class ListComponentTest {
         assertEquals(10, mListComponent.getSpanSizeLookup().getSpanSize(0));
     }
 
+    @Test
+    public void whenDividerEnabledAndOnItemVisibleCalled_CallsOnListItemVisibleForCorrectIndices() {
+        int numberOfItems = 10;
+        setup(numberOfItems);
+
+        ListComponent spy = spy(mListComponent);
+        for (int i = 0; i < numberOfItems; i++) {
+            spy.onItemVisible(i);
+            // When the index is an odd number, onListItemVisible() should still have been called
+            // only once because the item in an even number index is a divider and we should no-op
+            // for dividers.
+            verify(spy).onListItemVisible(i / 2);
+            if (i > numberOfItems / 2) {
+                verify(spy, never()).onListItemVisible(i);
+            }
+        }
+    }
+
+    @Test
+    public void whenDividerDisabledAndOnItemVisibleCalled_CallsOnListItemVisibleForCorrectIndices() {
+        int numberOfItems = 10;
+        setup(numberOfItems);
+        mListComponent.toggleDivider(false);
+
+        ListComponent spy = spy(mListComponent);
+        for (int i = 0; i < numberOfItems; i++) {
+            spy.onItemVisible(i);
+            verify(spy).onListItemVisible(i);
+        }
+    }
+
+    @Test
+    public void whenDividerEnabledAndOnItemNotVisibleCalled_CallsOnListItemNotVisibleForCorrectIndices() {
+        int numberOfItems = 10;
+        setup(numberOfItems);
+
+        ListComponent spy = spy(mListComponent);
+        for (int i = 0; i < numberOfItems; i++) {
+            spy.onItemNotVisible(i);
+            // When the index is an odd number, onListItemNotVisible() should still have been called
+            // only once because the item in an even number index is a divider and we should no-op
+            // for dividers.
+            verify(spy).onListItemNotVisible(i / 2);
+            if (i > numberOfItems / 2) {
+                verify(spy, never()).onListItemNotVisible(i);
+            }
+        }
+    }
+
+    @Test
+    public void whenDividerDisabledAndOnItemNotVisibleCalled_CallsOnListItemNotVisibleForCorrectIndices() {
+        int numberOfItems = 10;
+        setup(numberOfItems);
+        mListComponent.toggleDivider(false);
+
+        ListComponent spy = spy(mListComponent);
+        for (int i = 0; i < numberOfItems; i++) {
+            spy.onItemNotVisible(i);
+            verify(spy).onListItemNotVisible(i);
+        }
+    }
+
     /**
      * Adds fake items to the list component.
+     *
      * @param count The number of items to add.
      * @param lanes The number of columns the list should have
      */

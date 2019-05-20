@@ -105,6 +105,48 @@ public class ListComponent<P, T> extends Component {
         notifyDataChanged();
     }
 
+    /** @inheritDoc */
+    @Override
+    public final void onItemVisible(int index) {
+        super.onItemVisible(index);
+        if (!mShouldShowDivider) {
+            onListItemVisible(index);
+        } else if (index % 2 == 0) {
+            // Call onListItemVisible() only for the actual items but not for the dividers.
+            onListItemVisible(index / 2);
+        }
+    }
+
+    /**
+     * Override this method when you want to take an action when a view in this component is (at
+     * least partially) visible on the screen. Contrary to onItemVisible(), this method only
+     * pertains to the items and not the dividers.
+     * @param index The index of the item in mData. Not including dividers.
+     */
+    public void onListItemVisible(int index) {
+    }
+
+    /** @inheritDoc */
+    @Override
+    public final void onItemNotVisible(int index) {
+        super.onItemNotVisible(index);
+        if (!mShouldShowDivider) {
+            onListItemNotVisible(index);
+        } else if (index % 2 == 0) {
+            // Call onListItemNotVisible() only for the actual items but not for the dividers.
+            onListItemNotVisible(index / 2);
+        }
+    }
+
+    /**
+     * Override this method when you want to take an action when a view in this component is no
+     * longer visible on the screen. Contrary to onItemNotVisible(), this method only pertains to
+     * the items and not the dividers.
+     * @param index The index of the item in mData. Not including dividers.
+     */
+    public void onListItemNotVisible(int index) {
+    }
+
     /**
      * @param dividerViewHolder The {@link DividerViewHolder} to use for dividers in the list.
      */
