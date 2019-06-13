@@ -28,6 +28,8 @@ public abstract class Component {
     @Px
     private int mEndGapSize = 0;
 
+    private boolean isReorderable = false;
+
     /**
      * Gets the object that is the brains of the internal item at the specified position. The
      * presenter will be passed in to the bind method in the
@@ -226,7 +228,8 @@ public abstract class Component {
      * @param index The index of the top visible item.
      */
     @CallSuper
-    public void onItemAtTop(int index) {}
+    public void onItemAtTop(int index) {
+    }
 
     /**
      * Similar to {@link #getPresenter(int)} but also accounts for Bento framework items such as
@@ -261,6 +264,15 @@ public abstract class Component {
 
         return getHolderType(position - getPositionOffset());
     }
+
+    public void setIsReorderable(boolean isReorderable) {
+        this.isReorderable = isReorderable;
+    }
+
+    public boolean isReorderable() {
+        return isReorderable;
+    }
+
 
     /**
      * Similar to {@link #getItem(int)} but also accounts for Bento framework items such as

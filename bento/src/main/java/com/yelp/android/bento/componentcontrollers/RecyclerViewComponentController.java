@@ -4,6 +4,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
@@ -20,6 +21,9 @@ import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.ComponentViewHolder;
 import com.yelp.android.bento.core.ComponentVisibilityListener;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
+import com.yelp.android.bento.core.ListItemTouchCallback;
+import com.yelp.android.bento.core.OnItemMovedCallback;
+import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.Sequenceable;
 import java.util.Collection;
@@ -30,8 +34,10 @@ import java.util.Set;
 import kotlin.sequences.Sequence;
 import org.jetbrains.annotations.Nullable;
 
-/** Implementation of {@link ComponentController} for {@link RecyclerView}s. */
-public class RecyclerViewComponentController implements ComponentController {
+/**
+ * Implementation of {@link ComponentController} for {@link RecyclerView}s.
+ */
+public class RecyclerViewComponentController implements ComponentController, OnItemMovedPositionListener {
 
     private final RecyclerView.Adapter<ViewHolderWrapper> mRecyclerViewAdapter;
     private final ComponentGroup mComponentGroup;
@@ -46,7 +52,11 @@ public class RecyclerViewComponentController implements ComponentController {
     private AdapterDataObserver mAdapterDataObserver;
     private BentoLayoutManager mLayoutManager;
     private LinearSmoothScroller mSmoothScroller;
-    @RecyclerView.Orientation private int mOrientation;
+    private ItemTouchHelper mItemTouchHelper;
+    private OnItemMovedCallback mOnItemMovedCallback;
+
+    @RecyclerView.Orientation
+    private int mOrientation;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
@@ -126,6 +136,10 @@ public class RecyclerViewComponentController implements ComponentController {
                         return LinearSmoothScroller.SNAP_TO_START;
                     }
                 };
+
+        mItemTouchHelper = new ItemTouchHelper(new ListItemTouchCallback(mComponentGroup, this));
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+
 
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -268,6 +282,24 @@ public class RecyclerViewComponentController implements ComponentController {
         }
     }
 
+    @Override
+    public void onItemMovedPosition(int oldIndex, int newIndex) {
+        Component component = mComponentGroup.componentAt(oldIndex);
+        Range range = rangeOf(component);
+        if (mOnItemMovedCallback != null && range != null) {
+            mOnItemMovedCallback.onItemMoved(component, oldIndex - range.mLower, newIndex - range.mLower);
+        }
+    }
+
+    public void setOnItemMovedCallback(OnItemMovedCallback callback) {
+        mOnItemMovedCallback = callback;
+    }
+
+    public void onItemPickedUp(Component component, int position) {
+        mItemTouchHelper.startDrag(mRecyclerView.findViewHolderForLayoutPosition(rangeOf(component).mLower + position));
+    }
+
+
     private void addVisibilityListeners() {
         mComponentVisibilityListener =
                 new ComponentVisibilityListener(
@@ -309,7 +341,7 @@ public class RecyclerViewComponentController implements ComponentController {
         mRecyclerViewAdapter.registerAdapterDataObserver(mAdapterDataObserver);
     }
 
-    private void removeVisibilityListeners(){
+    private void removeVisibilityListeners() {
         mRecyclerView.removeOnScrollListener(mOnScrollListener);
         mComponentGroup.unregisterComponentDataObserver(mComponentVisibilityListener);
         mRecyclerViewAdapter.unregisterAdapterDataObserver(mAdapterDataObserver);

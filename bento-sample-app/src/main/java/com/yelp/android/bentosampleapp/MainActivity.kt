@@ -30,7 +30,8 @@ class MainActivity : AppCompatActivity() {
                 "View Pager" to ViewPagerActivity::class.java,
                 "Visibility Listener" to ListVisibilityActivity::class.java,
                 "Grid View Pager" to ViewPagerGridActivity::class.java,
-                "Component Replacement" to ComponentReplacementActivity::class.java
+                "Component Replacement" to ComponentReplacementActivity::class.java,
+                "Reorder Items" to ReorderListActivity::class.java
         ))
         componentController.addComponent(listComponent)
     }
