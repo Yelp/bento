@@ -20,7 +20,6 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
 
     private lateinit var handleComponent: ListComponent<Presenter, ReorderElement>
     private lateinit var longPressComponent: ListComponent<Unit, String>
-    private val upperCase = (0..10).map { 'A'.plus(it).toString() }.toMutableList()
 
     private val componentController by lazy {
         RecyclerViewComponentController(recyclerView)
@@ -68,11 +67,8 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         handleComponent.setData((0..10).map { ReorderElement('A'.plus(it).toString(), it) })
         handleComponent.setOnItemMovedCallback(object : OnItemMovedCallback<ReorderElement> {
             override fun onItemMoved(oldIndex: Int, newIndex: Int, newData: List<ReorderElement>) {
-                upperCase.move(oldIndex, newIndex)
-                handleComponent.setData(upperCase.mapIndexed { index, item ->
-                    ReorderElement(item, index)
-                })
-                Log.i("Reordered", "New list ordering: $upperCase")
+                newData.forEachIndexed { index, reorderElement -> reorderElement.index = index }
+                Log.i("Reordered", "New list ordering: $newData")
             }
         })
         componentController.addComponent(handleComponent)
@@ -91,7 +87,7 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, ReorderElement>() {
 
     private lateinit var text: TextView
     private lateinit var presenter: Presenter
-    private var index: Int = 0
+    private lateinit var element: ReorderElement
 
     override fun inflate(parent: ViewGroup): View {
         return LayoutInflater.from(parent.context)
@@ -99,7 +95,7 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, ReorderElement>() {
                     text = findViewById(R.id.textview)
                     findViewById<View>(R.id.handle).setOnTouchListener { _, event ->
                         if (event.action == MotionEvent.ACTION_DOWN) {
-                            presenter.onStartDrag(index)
+                            presenter.onStartDrag(element.index)
                         }
                         false
                     }
@@ -108,14 +104,14 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, ReorderElement>() {
 
     override fun bind(presenter: Presenter, element: ReorderElement) {
         text.text = element.text
-        index = element.index
+        this.element = element
         this.presenter = presenter
     }
 }
 
 data class ReorderElement(
         val text: String,
-        val index: Int
+        var index: Int
 )
 
 fun <T> MutableList<T>.move(oldIndex: Int, newIndex: Int) {
