@@ -11,15 +11,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.components.OnItemMovedCallback
+import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponentViewHolder
 import kotlinx.android.synthetic.main.activity_recycler_view.*
 
 class ReorderListActivity : AppCompatActivity(), Presenter {
-
-    private lateinit var handleComponent: ListComponent<Presenter, ReorderElement>
-    private lateinit var longPressComponent: ListComponent<Unit, String>
 
     private val componentController by lazy {
         RecyclerViewComponentController(recyclerView)
@@ -45,7 +43,7 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
 
     private fun addLongPressOrderableListComponent() {
         componentController.addComponent(LabeledComponent("Long press to reorder"))
-        longPressComponent =
+        val longPressComponent =
                 ListComponent<Unit, String>(Unit, LabeledComponentViewHolder::class.java, 2)
         longPressComponent.setIsReorderable(true)
         longPressComponent.toggleDivider(false)
@@ -59,23 +57,25 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
     }
 
     private fun addHandleOrderableListComponent() {
-        componentController.addComponent(LabeledComponent("Drag handle to reorder"))
-        handleComponent =
-                ListComponent<Presenter, ReorderElement>(this, ReorderViewHolder::class.java, 2)
+        val handleComponent =
+                ListComponent<Presenter, String>(this, ReorderViewHolder::class.java, 2)
         handleComponent.setIsReorderable(true)
         handleComponent.toggleDivider(false)
-        handleComponent.setData((0..10).map { ReorderElement('A'.plus(it).toString(), it) })
-        handleComponent.setOnItemMovedCallback(object : OnItemMovedCallback<ReorderElement> {
-            override fun onItemMoved(oldIndex: Int, newIndex: Int, newData: List<ReorderElement>) {
-                newData.forEachIndexed { index, reorderElement -> reorderElement.index = index }
+        handleComponent.setData((0..10).map { 'A'.plus(it).toString() })
+        handleComponent.setOnItemMovedCallback(object : OnItemMovedCallback<String> {
+            override fun onItemMoved(oldIndex: Int, newIndex: Int, newData: List<String>) {
                 Log.i("Reordered", "New list ordering: $newData")
             }
         })
-        componentController.addComponent(handleComponent)
+        val componentGroup = ComponentGroup().apply {
+            addComponent(LabeledComponent("Drag handle to reorder"))
+            addComponent(handleComponent)
+        }
+        componentController.addComponent(componentGroup)
     }
 
     override fun onStartDrag(position: Int) {
-        componentController.onItemPickedUp(handleComponent, position)
+        componentController.onItemPickedUp(position)
     }
 }
 
@@ -83,11 +83,10 @@ interface Presenter {
     fun onStartDrag(position: Int)
 }
 
-class ReorderViewHolder : ComponentViewHolder<Presenter, ReorderElement>() {
+class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
 
     private lateinit var text: TextView
     private lateinit var presenter: Presenter
-    private lateinit var element: ReorderElement
 
     override fun inflate(parent: ViewGroup): View {
         return LayoutInflater.from(parent.context)
@@ -95,25 +94,15 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, ReorderElement>() {
                     text = findViewById(R.id.textview)
                     findViewById<View>(R.id.handle).setOnTouchListener { _, event ->
                         if (event.action == MotionEvent.ACTION_DOWN) {
-                            presenter.onStartDrag(element.index)
+                            presenter.onStartDrag(absolutePosition)
                         }
                         false
                     }
                 }
     }
 
-    override fun bind(presenter: Presenter, element: ReorderElement) {
-        text.text = element.text
-        this.element = element
+    override fun bind(presenter: Presenter, element: String) {
+        text.text = element
         this.presenter = presenter
     }
-}
-
-data class ReorderElement(
-        val text: String,
-        var index: Int
-)
-
-fun <T> MutableList<T>.move(oldIndex: Int, newIndex: Int) {
-    add(newIndex, removeAt(oldIndex))
 }

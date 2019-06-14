@@ -25,8 +25,8 @@ class BentoLayoutManager(
                 // columns.
                 // The span of a 2 column cell would be 1, but we need to multiply by 6/2=3
                 // to get the true span across the recycler view.
-                return component.spanSizeLookup.getSpanSize(position - range.mLower) * (spanCount / component.getNumberLanesAtPosition(
-                        position - range.mLower))
+                return component.spanSizeLookup.getSpanSize(position - range.mLower) * (spanCount / component.getLowestComponentAtIndex(
+                        position - range.mLower).numberLanes)
             }
         }
     }

@@ -17,6 +17,12 @@ import android.view.ViewGroup
 abstract class ComponentViewHolder<P, T> {
 
     /**
+     * Contains the absolute position within the entire [ComponentController]. This should only be
+     * set by the [ComponentController].
+     */
+    var absolutePosition: Int = -1
+
+    /**
      * Called to inflate the layout needed to render the view. This is a good place to use
      * findViewById to get references to the different points in your view that you want to bind
      * data and click listeners to.

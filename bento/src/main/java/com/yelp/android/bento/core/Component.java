@@ -1,10 +1,14 @@
 package com.yelp.android.bento.core;
 
+import android.view.MotionEvent;
+import android.view.View.OnTouchListener;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
+import com.yelp.android.bento.utils.AccordionList.Range;
+import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Observable;
 
 /**
@@ -27,8 +31,6 @@ public abstract class Component {
 
     @Px
     private int mEndGapSize = 0;
-
-    private boolean isReorderable = false;
 
     /**
      * Gets the object that is the brains of the internal item at the specified position. The
@@ -187,17 +189,6 @@ public abstract class Component {
     }
 
     /**
-     * Returns the number of lanes at a given position. This will usually return the same as
-     * {@link Component#getNumberLanes()}, but {@link ComponentGroup}s will want to return the
-     * number of lanes at a given index. For example, if you have a {@link ComponentGroup} with
-     * two {@link Component}s with a different number of lanes, this should return the number of
-     * lanes in the component that owns the position.
-     */
-    public int getNumberLanesAtPosition(int position) {
-        return getNumberLanes();
-    }
-
-    /**
      * Override this method when you want to take an action when a view in this component is (at
      * least partially) visible on the screen.
      * <p><p>
@@ -265,12 +256,17 @@ public abstract class Component {
         return getHolderType(position - getPositionOffset());
     }
 
-    public void setIsReorderable(boolean isReorderable) {
-        this.isReorderable = isReorderable;
-    }
-
+    /**
+     * Checks if a component is reorderable. If the component is reorderable,
+     * users can reorder by long pressing and dragging, or you can manually trigger a drag by
+     * calling {@link com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController#onItemPickedUp(Component, int)}
+     * during {@link OnTouchListener#onTouch(android.view.View, android.view.MotionEvent)} if
+     * {@link android.view.MotionEvent} is {@link MotionEvent#ACTION_DOWN}.
+     *
+     * @see Component#onItemsMoved(int, int)
+     */
     public boolean isReorderable() {
-        return isReorderable;
+        return false;
     }
 
 
@@ -312,11 +308,28 @@ public abstract class Component {
 
     /**
      * Override this method to handle reordering of items.
+     *
      * @param oldIndex The index the item was originally in.
      * @param newIndex The index the item was moved to.
+     * @see Component#isReorderable() (boolean)
      */
     public void onItemsMoved(int oldIndex, int newIndex) {
 
+    }
+
+    protected RangedValue<Component> getLowestRangeValue(int index) {
+        return new RangedValue<>(this, new Range(0, getCount()));
+    }
+
+    /**
+     * Returns the lowest component in the component tree. In general, a {@link ComponentGroup} will
+     * recursively call this method, removing the lower bound of its range each time. A
+     * {@link Component} should just return itself.
+     * @param index The index to search for.
+     * @return The lowest component (leaf) in the component tree.
+     */
+    public Component getLowestComponentAtIndex(int index) {
+        return this;
     }
 
     /**

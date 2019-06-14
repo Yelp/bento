@@ -25,6 +25,7 @@ import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelp
 import com.yelp.android.bento.core.ListItemTouchCallback;
 import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.utils.AccordionList.Range;
+import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Sequenceable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -284,23 +285,24 @@ public class RecyclerViewComponentController implements ComponentController,
 
     @Override
     public void onItemMovedPosition(int oldIndex, int newIndex) {
-        Component component = mComponentGroup.componentAt(oldIndex);
-        Range range = rangeOf(component);
-        if (range != null) {
-            component.onItemsMoved(oldIndex - range.mLower, newIndex - range.mLower);
+        RangedValue<Component> rangedValue = mComponentGroup.getLowestRangeValue(oldIndex);
+        rangedValue.mValue.onItemsMoved(oldIndex - rangedValue.mRange.mLower,
+                newIndex - rangedValue.mRange.mLower);
+
+        // bind is not called again, so we need to go through and properly set all the positions
+        int currentIndex = Math.min(oldIndex, newIndex);
+        int highIndex = Math.max(oldIndex, newIndex);
+        while (currentIndex <= highIndex) {
+            ((ViewHolderWrapper) mRecyclerView.findViewHolderForAdapterPosition(currentIndex)).mViewHolder.setAbsolutePosition(currentIndex++);
         }
     }
 
-    public void onItemPickedUp(Component component, int position) {
-        Range range = rangeOf(component);
-        if (range != null) {
-            ViewHolder holder = mRecyclerView.findViewHolderForLayoutPosition(range.mLower + position);
-            if (holder != null) {
-                mItemTouchHelper.startDrag(holder);
-            }
+    public void onItemPickedUp(int position) {
+        ViewHolder holder = mRecyclerView.findViewHolderForLayoutPosition(position);
+        if (holder != null) {
+            mItemTouchHelper.startDrag(holder);
         }
     }
-
 
     private void addVisibilityListeners() {
         mComponentVisibilityListener =
@@ -519,6 +521,7 @@ public class RecyclerViewComponentController implements ComponentController,
         }
 
         void bind(P presenter, int position, T element) {
+            mViewHolder.setAbsolutePosition(position);
             mViewHolder.bind(presenter, element);
         }
     }

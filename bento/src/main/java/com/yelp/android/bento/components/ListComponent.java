@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.R;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.ComponentViewHolder;
-import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,7 @@ public class ListComponent<P, T> extends Component {
     private Class<? extends DividerViewHolder> mDividerViewHolder = DefaultDividerViewHolder.class;
     private int mNumberLanes;
     private OnItemMovedCallback<T> mOnItemMovedCallback = null;
+    private boolean isReorderable = false;
 
     /**
      * @param presenter The presenter used for {@link ListComponent} interactions.
@@ -266,7 +266,7 @@ public class ListComponent<P, T> extends Component {
         }
     }
 
-    public void setOnItemMovedCallback(OnItemMovedCallback callback) {
+    public void setOnItemMovedCallback(OnItemMovedCallback<T> callback) {
         mOnItemMovedCallback = callback;
     }
 
@@ -274,6 +274,21 @@ public class ListComponent<P, T> extends Component {
     private T getListItem(int position) {
         onGetListItem(position);
         return mData.get(position);
+    }
+
+    @Override
+    public boolean isReorderable() {
+        return isReorderable;
+    }
+
+    /**
+     * Sets whether or not the list is reorderable.
+     *
+     * @param isReorderable If true, the list can be reordered. Otherwise false.
+     * @see Component#isReorderable()
+     */
+    public void setIsReorderable(boolean isReorderable) {
+        this.isReorderable = isReorderable;
     }
 
     /**

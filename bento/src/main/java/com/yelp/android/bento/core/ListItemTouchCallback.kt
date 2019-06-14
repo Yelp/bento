@@ -16,18 +16,19 @@ class ListItemTouchCallback(
             current: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
     ): Boolean {
-        // Only allow reorder if it is within a component.
-        return component.componentAt(current.adapterPosition) ==
-                component.componentAt(target.adapterPosition)
+        // Only allow reorder if it is within the same component.
+        return component.getLowestComponentAtIndex(current.adapterPosition) ==
+                component.getLowestComponentAtIndex(target.adapterPosition)
     }
 
+    // Always return true here. We will check if the component is reorderable in getMovementFlags().
     override fun isLongPressDragEnabled() = true
 
     override fun getMovementFlags(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
     ): Int {
-        if (component.componentAt(viewHolder.adapterPosition).isReorderable) {
+        if (component.getLowestComponentAtIndex(viewHolder.adapterPosition).isReorderable) {
             val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
                     ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             return makeMovementFlags(dragFlags, 0)
@@ -71,6 +72,15 @@ class ListItemTouchCallback(
     }
 }
 
+/**
+ * Interface for listening for drag and drop events directly from the RecyclerView.
+ */
 interface OnItemMovedPositionListener {
+
+    /**
+     * Called when the user drops an item in a new position.
+     * @param oldIndex The index of the item before a move.
+     * @param newIndex The index of the item after it has been moved.
+     */
     fun onItemMovedPosition(oldIndex: Int, newIndex: Int)
 }
