@@ -10,24 +10,20 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.ListComponent
-import com.yelp.android.bento.core.Component
+import com.yelp.android.bento.components.OnItemMovedCallback
 import com.yelp.android.bento.core.ComponentViewHolder
-import com.yelp.android.bento.core.OnItemMovedCallback
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponentViewHolder
 import kotlinx.android.synthetic.main.activity_recycler_view.*
 
-class ReorderListActivity : AppCompatActivity(), Presenter, OnItemMovedCallback {
+class ReorderListActivity : AppCompatActivity(), Presenter {
 
     private lateinit var handleComponent: ListComponent<Presenter, ReorderElement>
     private lateinit var longPressComponent: ListComponent<Unit, String>
-    private val lowerCase = (0..10).map { 'a'.plus(it).toString() }.toMutableList()
     private val upperCase = (0..10).map { 'A'.plus(it).toString() }.toMutableList()
 
     private val componentController by lazy {
-        RecyclerViewComponentController(recyclerView).also {
-            it.setOnItemMovedCallback(this)
-        }
+        RecyclerViewComponentController(recyclerView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,40 +46,40 @@ class ReorderListActivity : AppCompatActivity(), Presenter, OnItemMovedCallback 
 
     private fun addLongPressOrderableListComponent() {
         componentController.addComponent(LabeledComponent("Long press to reorder"))
-        longPressComponent = ListComponent<Unit, String>(Unit, LabeledComponentViewHolder::class.java, 2)
+        longPressComponent =
+                ListComponent<Unit, String>(Unit, LabeledComponentViewHolder::class.java, 2)
         longPressComponent.setIsReorderable(true)
         longPressComponent.toggleDivider(false)
-        longPressComponent.setData(lowerCase)
+        longPressComponent.setData((0..10).map { 'a'.plus(it).toString() })
+        longPressComponent.setOnItemMovedCallback(object : OnItemMovedCallback<String> {
+            override fun onItemMoved(oldIndex: Int, newIndex: Int, newData: List<String>) {
+                Log.i("Reordered", "New list ordering: $newData")
+            }
+        })
         componentController.addComponent(longPressComponent)
     }
 
     private fun addHandleOrderableListComponent() {
         componentController.addComponent(LabeledComponent("Drag handle to reorder"))
-        handleComponent = ListComponent<Presenter, ReorderElement>(this, ReorderViewHolder::class.java, 2)
+        handleComponent =
+                ListComponent<Presenter, ReorderElement>(this, ReorderViewHolder::class.java, 2)
         handleComponent.setIsReorderable(true)
         handleComponent.toggleDivider(false)
         handleComponent.setData((0..10).map { ReorderElement('A'.plus(it).toString(), it) })
-        componentController.addComponent(handleComponent)
-    }
-
-    override fun onStartDrag(position: Int) {
-        componentController.onItemPickedUp(handleComponent, position)
-    }
-
-    override fun onItemMoved(component: Component, oldIndex: Int, newIndex: Int) {
-        when (component) {
-            longPressComponent -> {
-                lowerCase.move(oldIndex, newIndex)
-                Log.i("Reordered", "New list ordering: $lowerCase")
-            }
-            handleComponent -> {
+        handleComponent.setOnItemMovedCallback(object : OnItemMovedCallback<ReorderElement> {
+            override fun onItemMoved(oldIndex: Int, newIndex: Int, newData: List<ReorderElement>) {
                 upperCase.move(oldIndex, newIndex)
                 handleComponent.setData(upperCase.mapIndexed { index, item ->
                     ReorderElement(item, index)
                 })
                 Log.i("Reordered", "New list ordering: $upperCase")
             }
-        }
+        })
+        componentController.addComponent(handleComponent)
+    }
+
+    override fun onStartDrag(position: Int) {
+        componentController.onItemPickedUp(handleComponent, position)
     }
 }
 

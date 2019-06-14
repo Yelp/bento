@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import com.yelp.android.bento.R;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.ComponentViewHolder;
+import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class ListComponent<P, T> extends Component {
     private boolean mShouldShowDivider = true;
     private Class<? extends DividerViewHolder> mDividerViewHolder = DefaultDividerViewHolder.class;
     private int mNumberLanes;
+    private OnItemMovedCallback<T> mOnItemMovedCallback = null;
 
     /**
      * @param presenter The presenter used for {@link ListComponent} interactions.
@@ -251,6 +253,21 @@ public class ListComponent<P, T> extends Component {
                 return spanSizeLookup.getSpanSize(position - getPositionOffset());
             }
         };
+    }
+
+    @Override
+    public void onItemsMoved(int oldIndex, int newIndex) {
+        super.onItemsMoved(oldIndex, newIndex);
+
+        mData.add(newIndex, mData.remove(oldIndex));
+
+        if (mOnItemMovedCallback != null) {
+            mOnItemMovedCallback.onItemMoved(oldIndex, newIndex, mData);
+        }
+    }
+
+    public void setOnItemMovedCallback(OnItemMovedCallback callback) {
+        mOnItemMovedCallback = callback;
     }
 
     @NonNull

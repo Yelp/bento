@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
@@ -22,7 +23,6 @@ import com.yelp.android.bento.core.ComponentViewHolder;
 import com.yelp.android.bento.core.ComponentVisibilityListener;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
 import com.yelp.android.bento.core.ListItemTouchCallback;
-import com.yelp.android.bento.core.OnItemMovedCallback;
 import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.Sequenceable;
@@ -37,7 +37,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Implementation of {@link ComponentController} for {@link RecyclerView}s.
  */
-public class RecyclerViewComponentController implements ComponentController, OnItemMovedPositionListener {
+public class RecyclerViewComponentController implements ComponentController,
+        OnItemMovedPositionListener {
 
     private final RecyclerView.Adapter<ViewHolderWrapper> mRecyclerViewAdapter;
     private final ComponentGroup mComponentGroup;
@@ -53,7 +54,6 @@ public class RecyclerViewComponentController implements ComponentController, OnI
     private BentoLayoutManager mLayoutManager;
     private LinearSmoothScroller mSmoothScroller;
     private ItemTouchHelper mItemTouchHelper;
-    private OnItemMovedCallback mOnItemMovedCallback;
 
     @RecyclerView.Orientation
     private int mOrientation;
@@ -286,17 +286,19 @@ public class RecyclerViewComponentController implements ComponentController, OnI
     public void onItemMovedPosition(int oldIndex, int newIndex) {
         Component component = mComponentGroup.componentAt(oldIndex);
         Range range = rangeOf(component);
-        if (mOnItemMovedCallback != null && range != null) {
-            mOnItemMovedCallback.onItemMoved(component, oldIndex - range.mLower, newIndex - range.mLower);
+        if (range != null) {
+            component.onItemsMoved(oldIndex - range.mLower, newIndex - range.mLower);
         }
     }
 
-    public void setOnItemMovedCallback(OnItemMovedCallback callback) {
-        mOnItemMovedCallback = callback;
-    }
-
     public void onItemPickedUp(Component component, int position) {
-        mItemTouchHelper.startDrag(mRecyclerView.findViewHolderForLayoutPosition(rangeOf(component).mLower + position));
+        Range range = rangeOf(component);
+        if (range != null) {
+            ViewHolder holder = mRecyclerView.findViewHolderForLayoutPosition(range.mLower + position);
+            if (holder != null) {
+                mItemTouchHelper.startDrag(holder);
+            }
+        }
     }
 
 

@@ -311,6 +311,15 @@ public abstract class Component {
     }
 
     /**
+     * Override this method to handle reordering of items.
+     * @param oldIndex The index the item was originally in.
+     * @param newIndex The index the item was moved to.
+     */
+    public void onItemsMoved(int oldIndex, int newIndex) {
+
+    }
+
+    /**
      * @return The count of all internal items in the component, including Bento framework items
      * like gap items.
      */
