@@ -302,8 +302,8 @@ public class RecyclerViewComponentController implements ComponentController,
         }
     }
 
-    public void onItemPickedUp(int position) {
-        ViewHolder holder = mRecyclerView.findViewHolderForLayoutPosition(position);
+    public void onItemPickedUp(ComponentViewHolder viewHolder) {
+        ViewHolder holder = mRecyclerView.findViewHolderForLayoutPosition(viewHolder.getAbsolutePosition());
         if (holder != null) {
             mItemTouchHelper.startDrag(holder);
         }

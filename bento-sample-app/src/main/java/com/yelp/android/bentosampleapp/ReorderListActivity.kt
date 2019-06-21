@@ -74,13 +74,13 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         componentController.addComponent(componentGroup)
     }
 
-    override fun onStartDrag(position: Int) {
-        componentController.onItemPickedUp(position)
+    override fun onStartDrag(viewHolder: ComponentViewHolder<Presenter, String>) {
+        componentController.onItemPickedUp(viewHolder)
     }
 }
 
 interface Presenter {
-    fun onStartDrag(position: Int)
+    fun onStartDrag(viewHolder: ComponentViewHolder<Presenter, String>)
 }
 
 class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
@@ -89,11 +89,11 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
     private lateinit var presenter: Presenter
 
     override fun inflate(parent: ViewGroup): View {
-        return parent.inflate<View>(R.layout.reorderable_view_holder).apply {
-                    text = findViewById(R.id.textview)
-                    findViewById<View>(R.id.handle).setOnTouchListener { _, event ->
+        return parent.inflate<View>(R.layout.reorderable_view_holder).also {
+                    text = it.findViewById(R.id.textview)
+                    it.findViewById<View>(R.id.handle).setOnTouchListener { _, event ->
                         if (event.action == MotionEvent.ACTION_DOWN) {
-                            presenter.onStartDrag(absolutePosition)
+                            presenter.onStartDrag(this)
                         }
                         false
                     }
