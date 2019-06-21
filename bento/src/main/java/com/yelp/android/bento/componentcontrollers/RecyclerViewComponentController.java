@@ -293,8 +293,12 @@ public class RecyclerViewComponentController implements ComponentController,
         int currentIndex = Math.min(oldIndex, newIndex);
         int highIndex = Math.max(oldIndex, newIndex);
         while (currentIndex <= highIndex) {
-            ((ViewHolderWrapper) mRecyclerView.findViewHolderForAdapterPosition(currentIndex))
-                    .mViewHolder.setAbsolutePosition(currentIndex++);
+            ViewHolderWrapper holder = ((ViewHolderWrapper) mRecyclerView
+                    .findViewHolderForAdapterPosition(currentIndex));
+            if (holder != null) {
+                    holder.mViewHolder.setAbsolutePosition(currentIndex);
+            }
+            currentIndex ++;
         }
     }
 
