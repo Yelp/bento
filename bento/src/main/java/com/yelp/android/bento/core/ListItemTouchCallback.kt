@@ -1,5 +1,6 @@
 package com.yelp.android.bento.core
 
+import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
@@ -28,6 +29,7 @@ class ListItemTouchCallback(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
     ): Int {
+        Log.i("Lowest", component.getLowestComponentAtIndex(viewHolder.adapterPosition).getItem(0).toString())
         if (component.getLowestComponentAtIndex(viewHolder.adapterPosition).isReorderable) {
             val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
                     ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -61,7 +63,9 @@ class ListItemTouchCallback(
         super.clearView(recyclerView, viewHolder)
 
         // This simply checks when the user "drops" an item. onMove is called anytime the item is
-        // held over a new position, but not necessarily dropped at that location. Shamelessly
+        // held over a new position, but not necessarily dropped at that location. clearView() is
+        // called once the item is dropped and the animation is completed. We are then checking if
+        // the user has moved the item. If they have, we call the listener. Shamelessly
         // stolen from https://stackoverflow.com/a/36275415
         if (dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
             callback.onItemMovedPosition(dragFrom, dragTo)

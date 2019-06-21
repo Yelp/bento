@@ -1,5 +1,6 @@
 package com.yelp.android.bento.componentcontrollers;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -289,11 +290,12 @@ public class RecyclerViewComponentController implements ComponentController,
         rangedValue.mValue.onItemsMoved(oldIndex - rangedValue.mRange.mLower,
                 newIndex - rangedValue.mRange.mLower);
 
-        // bind is not called again, so we need to go through and properly set all the positions
+        // Bind is not called again, so we need to go through and properly set all the positions.
         int currentIndex = Math.min(oldIndex, newIndex);
         int highIndex = Math.max(oldIndex, newIndex);
         while (currentIndex <= highIndex) {
-            ((ViewHolderWrapper) mRecyclerView.findViewHolderForAdapterPosition(currentIndex)).mViewHolder.setAbsolutePosition(currentIndex++);
+            ((ViewHolderWrapper) mRecyclerView.findViewHolderForAdapterPosition(currentIndex))
+                    .mViewHolder.setAbsolutePosition(currentIndex++);
         }
     }
 

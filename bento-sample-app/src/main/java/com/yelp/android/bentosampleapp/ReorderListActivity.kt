@@ -13,6 +13,7 @@ import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.components.OnItemMovedCallback
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ComponentViewHolder
+import com.yelp.android.bento.utils.inflate
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponentViewHolder
 import kotlinx.android.synthetic.main.activity_recycler_view.*
@@ -49,8 +50,8 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         longPressComponent.toggleDivider(false)
         longPressComponent.setData((0..10).map { 'a'.plus(it).toString() })
         longPressComponent.setOnItemMovedCallback(object : OnItemMovedCallback<String> {
-            override fun onItemMoved(oldIndex: Int, newIndex: Int, newData: List<String>) {
-                Log.i("Reordered", "New list ordering: $newData")
+            override fun onItemMoved(oldIndex: Int, newIndex: Int) {
+                Log.i("Reordered", "Item at $oldIndex moved to $newIndex")
             }
         })
         componentController.addComponent(longPressComponent)
@@ -63,8 +64,8 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         handleComponent.toggleDivider(false)
         handleComponent.setData((0..10).map { 'A'.plus(it).toString() })
         handleComponent.setOnItemMovedCallback(object : OnItemMovedCallback<String> {
-            override fun onItemMoved(oldIndex: Int, newIndex: Int, newData: List<String>) {
-                Log.i("Reordered", "New list ordering: $newData")
+            override fun onItemMoved(oldIndex: Int, newIndex: Int) {
+                Log.i("Reordered", "Item at $oldIndex moved to $newIndex")
             }
         })
         val componentGroup = ComponentGroup().apply {
@@ -89,8 +90,7 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
     private lateinit var presenter: Presenter
 
     override fun inflate(parent: ViewGroup): View {
-        return LayoutInflater.from(parent.context)
-                .inflate(R.layout.reorderable_view_holder, parent, false).apply {
+        return parent.inflate<View>(R.layout.reorderable_view_holder).apply {
                     text = findViewById(R.id.textview)
                     findViewById<View>(R.id.handle).setOnTouchListener { _, event ->
                         if (event.action == MotionEvent.ACTION_DOWN) {

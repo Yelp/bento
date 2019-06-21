@@ -1,5 +1,6 @@
 package com.yelp.android.bento.core;
 
+import android.util.Log;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -413,15 +414,8 @@ public class ComponentGroup extends Component {
      * @param index The index to search for.
      * @return The lowest component in the tree.
      */
-    @Override
     public Component getLowestComponentAtIndex(int index) {
-        Component componentAtPos = componentAt(index);
-        Range range = rangeOf(componentAtPos);
-        if (range == null) {
-            throw new IllegalStateException("Found component, but no range associated.");
-        }
-
-        return componentAtPos.getLowestComponentAtIndex(index - range.mLower);
+        return getLowestRangeValue(index).mValue;
     }
 
     /**
@@ -431,15 +425,19 @@ public class ComponentGroup extends Component {
      * @param index The index to search for.
      * @return Both a component and an absolute range over the entire controller.
      */
-    @Override
     public RangedValue<Component> getLowestRangeValue(int index) {
         RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
-        RangedValue<Component> childRange = rangedValue.mValue
-                .getLowestRangeValue(index - rangedValue.mRange.mLower);
+        Log.i("lowest range", rangedValue.mValue.toString());
 
-        return new RangedValue<>(childRange.mValue,
-                new Range(rangedValue.mRange.mLower + childRange.mRange.mLower,
-                        rangedValue.mRange.mLower + childRange.mRange.mUpper));
+        if (rangedValue.mValue instanceof ComponentGroup) {
+            RangedValue<Component> childRange = getLowestRangeValue(index - rangedValue.mRange.mLower);
+
+            return new RangedValue<>(childRange.mValue,
+                    new Range(rangedValue.mRange.mLower + childRange.mRange.mLower,
+                            rangedValue.mRange.mLower + childRange.mRange.mUpper));
+        } else {
+            return rangedValue;
+        }
     }
 
     /**

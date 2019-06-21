@@ -269,7 +269,6 @@ public abstract class Component {
         return false;
     }
 
-
     /**
      * Similar to {@link #getItem(int)} but also accounts for Bento framework items such as
      * gaps.
@@ -314,22 +313,6 @@ public abstract class Component {
      * @see Component#isReorderable() (boolean)
      */
     public void onItemsMoved(int oldIndex, int newIndex) {
-
-    }
-
-    protected RangedValue<Component> getLowestRangeValue(int index) {
-        return new RangedValue<>(this, new Range(0, getCount()));
-    }
-
-    /**
-     * Returns the lowest component in the component tree. In general, a {@link ComponentGroup} will
-     * recursively call this method, removing the lower bound of its range each time. A
-     * {@link Component} should just return itself.
-     * @param index The index to search for.
-     * @return The lowest component (leaf) in the component tree.
-     */
-    public Component getLowestComponentAtIndex(int index) {
-        return this;
     }
 
     /**

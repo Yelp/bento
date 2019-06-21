@@ -15,6 +15,7 @@ import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bento.core.ComponentVisibilityListener
+import com.yelp.android.bento.core.GapViewHolder
 import com.yelp.android.bento.utils.AccordionList
 
 private const val MAX_ITEM_TYPES_PER_ADAPTER = 4096

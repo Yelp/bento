@@ -262,18 +262,12 @@ public class ListComponent<P, T> extends Component {
         mData.add(newIndex, mData.remove(oldIndex));
 
         if (mOnItemMovedCallback != null) {
-            mOnItemMovedCallback.onItemMoved(oldIndex, newIndex, mData);
+            mOnItemMovedCallback.onItemMoved(oldIndex, newIndex);
         }
     }
 
     public void setOnItemMovedCallback(OnItemMovedCallback<T> callback) {
         mOnItemMovedCallback = callback;
-    }
-
-    @NonNull
-    private T getListItem(int position) {
-        onGetListItem(position);
-        return mData.get(position);
     }
 
     @Override
@@ -289,6 +283,12 @@ public class ListComponent<P, T> extends Component {
      */
     public void setIsReorderable(boolean isReorderable) {
         this.isReorderable = isReorderable;
+    }
+
+    @NonNull
+    private T getListItem(int position) {
+        onGetListItem(position);
+        return mData.get(position);
     }
 
     /**
