@@ -1,6 +1,5 @@
 package com.yelp.android.bento.core;
 
-import android.util.Log;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -419,18 +418,18 @@ public class ComponentGroup extends Component {
     }
 
     /**
-     * Similar to {@link #getLowestComponentAtIndex(int)}, but returns both the component and the
-     * absolute range within the controller.
+     * Returns both the component and the absolute range within the controller.
      *
      * @param index The index to search for.
      * @return Both a component and an absolute range over the entire controller.
      */
     public RangedValue<Component> getLowestRangeValue(int index) {
         RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
-        Log.i("lowest range", rangedValue.mValue.toString());
 
         if (rangedValue.mValue instanceof ComponentGroup) {
-            RangedValue<Component> childRange = getLowestRangeValue(index - rangedValue.mRange.mLower);
+            ComponentGroup group = (ComponentGroup) rangedValue.mValue;
+            RangedValue<Component> childRange = group.getLowestRangeValue(
+                    index - rangedValue.mRange.mLower);
 
             return new RangedValue<>(childRange.mValue,
                     new Range(rangedValue.mRange.mLower + childRange.mRange.mLower,

@@ -1,6 +1,5 @@
 package com.yelp.android.bento.core
 
-import android.util.Log
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
@@ -29,7 +28,6 @@ class ListItemTouchCallback(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
     ): Int {
-        Log.i("Lowest", component.getLowestComponentAtIndex(viewHolder.adapterPosition).getItem(0).toString())
         if (component.getLowestComponentAtIndex(viewHolder.adapterPosition).isReorderable) {
             val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
                     ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -45,7 +43,6 @@ class ListItemTouchCallback(
     ): Boolean {
         val fromPosition = viewHolder.adapterPosition
         val toPosition = target.adapterPosition
-
 
         if (dragFrom == -1) {
             dragFrom = fromPosition

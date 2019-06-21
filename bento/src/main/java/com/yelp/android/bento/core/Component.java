@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
-import com.yelp.android.bento.utils.AccordionList.Range;
-import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Observable;
 
 /**
