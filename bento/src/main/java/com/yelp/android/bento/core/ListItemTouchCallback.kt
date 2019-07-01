@@ -17,8 +17,8 @@ class ListItemTouchCallback(
             target: RecyclerView.ViewHolder
     ): Boolean {
         // Only allow reorder if it is within the same component.
-        return component.getLowestComponentAtIndex(current.adapterPosition) ==
-                component.getLowestComponentAtIndex(target.adapterPosition)
+        return component.findComponentWithIndex(current.adapterPosition) ==
+                component.findComponentWithIndex(target.adapterPosition)
     }
 
     // Always return true here. We will check if the component is reorderable in getMovementFlags().
@@ -28,7 +28,7 @@ class ListItemTouchCallback(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
     ): Int {
-        if (component.getLowestComponentAtIndex(viewHolder.adapterPosition).isReorderable) {
+        if (component.findComponentWithIndex(viewHolder.adapterPosition).isReorderable) {
             val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
                     ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
             return makeMovementFlags(dragFlags, 0)

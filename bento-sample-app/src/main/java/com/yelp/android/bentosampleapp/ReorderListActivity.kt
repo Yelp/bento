@@ -2,7 +2,6 @@ package com.yelp.android.bentosampleapp
 
 import android.os.Bundle
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -12,6 +11,7 @@ import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.components.OnItemMovedCallback
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ComponentViewHolder
+import com.yelp.android.bento.core.setOnDragStartListener
 import com.yelp.android.bento.utils.inflate
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponentViewHolder
@@ -58,7 +58,7 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
 
     private fun addHandleOrderableListComponent() {
         val handleComponent =
-                ListComponent<Presenter, String>(this, ReorderViewHolder::class.java, 2)
+                ListComponent(this, ReorderViewHolder::class.java, 2)
         handleComponent.setIsReorderable(true)
         handleComponent.toggleDivider(false)
         handleComponent.setData((0..10).map { 'A'.plus(it).toString() })
@@ -90,14 +90,11 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
 
     override fun inflate(parent: ViewGroup): View {
         return parent.inflate<View>(R.layout.reorderable_view_holder).also {
-                    text = it.findViewById(R.id.textview)
-                    it.findViewById<View>(R.id.handle).setOnTouchListener { _, event ->
-                        if (event.action == MotionEvent.ACTION_DOWN) {
-                            presenter.onStartDrag(this)
-                        }
-                        false
-                    }
-                }
+            text = it.findViewById(R.id.textview)
+            it.findViewById<View>(R.id.handle).setOnDragStartListener {
+                presenter.onStartDrag(this)
+            }
+        }
     }
 
     override fun bind(presenter: Presenter, element: String) {

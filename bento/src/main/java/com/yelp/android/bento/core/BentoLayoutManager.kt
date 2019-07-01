@@ -21,7 +21,7 @@ class BentoLayoutManager(
                 // to get the true span across the recycler view.
                 return componentGroup.spanSizeLookup.getSpanSize(position) *
                         (spanCount / componentGroup
-                                .getLowestComponentAtIndex(position).numberLanes)
+                                .findComponentWithIndex(position).numberLanes)
             }
         }
     }

@@ -285,13 +285,17 @@ public class RecyclerViewComponentController implements ComponentController,
 
     @Override
     public void onItemMovedPosition(int oldIndex, int newIndex) {
-        RangedValue<Component> rangedValue = mComponentGroup.getLowestRangeValue(oldIndex);
+        RangedValue<Component> rangedValue = mComponentGroup.findRangedComponentWithIndex(oldIndex);
         rangedValue.mValue.onItemsMoved(oldIndex - rangedValue.mRange.mLower,
                 newIndex - rangedValue.mRange.mLower);
 
         // Bind is not called again, so we need to go through and properly set all the positions.
-        int currentIndex = Math.min(oldIndex, newIndex);
-        int highIndex = Math.max(oldIndex, newIndex);
+        int currentIndex = Math.max(
+                Math.min(oldIndex, newIndex),
+                mLayoutManager.findFirstVisibleItemPosition());
+        int highIndex = Math.min(
+                Math.max(oldIndex, newIndex),
+                mLayoutManager.findLastVisibleItemPosition());
         while (currentIndex <= highIndex) {
             ViewHolderWrapper holder = ((ViewHolderWrapper) mRecyclerView
                     .findViewHolderForAdapterPosition(currentIndex));

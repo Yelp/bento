@@ -413,8 +413,8 @@ public class ComponentGroup extends Component {
      * @param index The index to search for.
      * @return The lowest component in the tree.
      */
-    public Component getLowestComponentAtIndex(int index) {
-        return getLowestRangeValue(index).mValue;
+    public Component findComponentWithIndex(int index) {
+        return findRangedComponentWithIndex(index).mValue;
     }
 
     /**
@@ -423,12 +423,12 @@ public class ComponentGroup extends Component {
      * @param index The index to search for.
      * @return Both a component and an absolute range over the entire controller.
      */
-    public RangedValue<Component> getLowestRangeValue(int index) {
+    public RangedValue<Component> findRangedComponentWithIndex(int index) {
         RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
 
         if (rangedValue.mValue instanceof ComponentGroup) {
             ComponentGroup group = (ComponentGroup) rangedValue.mValue;
-            RangedValue<Component> childRange = group.getLowestRangeValue(
+            RangedValue<Component> childRange = group.findRangedComponentWithIndex(
                     index - rangedValue.mRange.mLower);
 
             return new RangedValue<>(childRange.mValue,

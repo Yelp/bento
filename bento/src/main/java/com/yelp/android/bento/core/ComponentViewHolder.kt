@@ -1,5 +1,6 @@
 package com.yelp.android.bento.core
 
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 
@@ -58,4 +59,14 @@ abstract class ComponentViewHolder<P, T> {
      * See [android.support.v7.widget.RecyclerView.Adapter.onViewRecycled]
      */
     open fun onViewRecycled() {}
+}
+
+fun View.setOnDragStartListener(callback: () -> Unit) {
+    setOnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            callback.invoke()
+            return@setOnTouchListener true
+        }
+        false
+    }
 }
