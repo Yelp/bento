@@ -3,6 +3,9 @@ package com.yelp.android.bento.core
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
+const val DRAG_FLAGS = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
+        ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+
 class ListItemTouchCallback(
         private val component: ComponentGroup,
         private val callback: OnItemMovedPositionListener
@@ -17,8 +20,13 @@ class ListItemTouchCallback(
             target: RecyclerView.ViewHolder
     ): Boolean {
         // Only allow reorder if it is within the same component.
-        return component.findComponentWithIndex(current.adapterPosition) ==
-                component.findComponentWithIndex(target.adapterPosition)
+        val fromRangeComponent = component.findReorderTargetAtIndex(current.adapterPosition)
+        val toRangeComponent = component.findReorderTargetAtIndex(target.adapterPosition)
+
+        return toRangeComponent.mValue.canDropItem(
+                fromRangeComponent.mValue,
+                current.adapterPosition - fromRangeComponent.mRange.mLower,
+                target.adapterPosition - toRangeComponent.mRange.mLower)
     }
 
     // Always return true here. We will check if the component is reorderable in getMovementFlags().
@@ -28,10 +36,16 @@ class ListItemTouchCallback(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
     ): Int {
-        if (component.findComponentWithIndex(viewHolder.adapterPosition).isReorderable) {
-            val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
-                    ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-            return makeMovementFlags(dragFlags, 0)
+        val lowestComponent = component.findReorderTargetAtIndex(viewHolder.adapterPosition).mValue
+        if (lowestComponent.isReorderable) {
+            if (lowestComponent is ComponentGroup) {
+                for (index in (0 until lowestComponent.size)) {
+                    if (lowestComponent[index].count != 1) {
+                        return makeMovementFlags(0, 0)
+                    }
+                }
+            }
+            return makeMovementFlags(DRAG_FLAGS, 0)
         }
         return makeMovementFlags(0, 0)
     }

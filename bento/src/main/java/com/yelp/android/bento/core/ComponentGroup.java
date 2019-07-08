@@ -417,6 +417,26 @@ public class ComponentGroup extends Component {
         return findRangedComponentWithIndex(index).mValue;
     }
 
+    public RangedValue<Component> findReorderTargetAtIndex(int index) {
+        RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
+
+        if (rangedValue.mValue instanceof ComponentGroup) {
+            ComponentGroup group = (ComponentGroup) rangedValue.mValue;
+            RangedValue<Component> childRange = group.findRangedComponentWithIndex(
+                    index - rangedValue.mRange.mLower);
+
+            if (!(childRange.mValue instanceof ComponentGroup) && childRange.mValue.getCount() == 1) {
+                return rangedValue;
+            }
+
+            return new RangedValue<>(childRange.mValue,
+                    new Range(rangedValue.mRange.mLower + childRange.mRange.mLower,
+                            rangedValue.mRange.mLower + childRange.mRange.mUpper));
+        } else {
+            return rangedValue;
+        }
+    }
+
     /**
      * Returns both the component and the absolute range within the controller.
      *

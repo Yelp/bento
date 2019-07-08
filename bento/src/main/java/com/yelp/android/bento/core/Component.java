@@ -314,6 +314,17 @@ public abstract class Component {
     }
 
     /**
+     * Checks if a n item from one component can be dropped in this component at a given index.
+     * @param fromComponent The component that the dragged item is coming from.
+     * @param fromIndex The index the item is currently at in the fromComponent.
+     * @param toIndex The index where the user is attempting to drop the item in this component.
+     * @return true if this component will allow the other component to drop the item at this index.
+     */
+    public boolean canDropItem(Component fromComponent, int fromIndex, int toIndex) {
+        return fromComponent == this;
+    }
+
+    /**
      * @return The count of all internal items in the component, including Bento framework items
      * like gap items.
      */

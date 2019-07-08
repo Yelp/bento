@@ -31,11 +31,12 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         addUnorderableListComponent()
         addLongPressOrderableListComponent()
         addHandleOrderableListComponent()
+        addReorderComponentGroupComponent()
     }
 
     private fun addUnorderableListComponent() {
         componentController.addComponent(LabeledComponent("No reorder"))
-        val list = ListComponent<Unit, String>(Unit, LabeledComponentViewHolder::class.java, 2)
+        val list = ListComponent(Unit, LabeledComponentViewHolder::class.java, 2)
         list.toggleDivider(false)
         list.setData((0..10).map { it.toString() })
         componentController.addComponent(list)
@@ -43,8 +44,7 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
 
     private fun addLongPressOrderableListComponent() {
         componentController.addComponent(LabeledComponent("Long press to reorder"))
-        val longPressComponent =
-                ListComponent<Unit, String>(Unit, LabeledComponentViewHolder::class.java, 2)
+        val longPressComponent = ListComponent(Unit, LabeledComponentViewHolder::class.java, 2)
         longPressComponent.setIsReorderable(true)
         longPressComponent.toggleDivider(false)
         longPressComponent.setData((0..10).map { 'a'.plus(it).toString() })
@@ -74,6 +74,11 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         componentController.addComponent(componentGroup)
     }
 
+    private fun addReorderComponentGroupComponent() {
+        componentController.addComponent(LabeledComponent("Reorder in ComponentGroup"))
+        componentController.addComponent(ReorderableComponentGroup())
+    }
+
     override fun onStartDrag(viewHolder: ComponentViewHolder<Presenter, String>) {
         componentController.onItemPickedUp(viewHolder)
     }
@@ -101,4 +106,14 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
         text.text = element
         this.presenter = presenter
     }
+}
+
+class ReorderableComponentGroup : ComponentGroup() {
+    init {
+        for (number in (0..10)) {
+            addComponent(LabeledComponent("Component #$number"))
+        }
+    }
+
+    override fun isReorderable() = true
 }
