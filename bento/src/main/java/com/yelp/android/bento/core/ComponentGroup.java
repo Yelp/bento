@@ -431,11 +431,16 @@ public class ComponentGroup extends Component {
      * @return The {@link Component} the user is dragging as well as its range.
      */
     public RangedValue<Component> findReorderTargetAtIndex(int index) {
+
+        if (hasGap(index)) {
+            return new RangedValue<Component>(this, new Range(0, getCount()));
+        }
+
         RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
 
         if (rangedValue.mValue instanceof ComponentGroup) {
             ComponentGroup group = (ComponentGroup) rangedValue.mValue;
-            RangedValue<Component> childRange = group.findRangedComponentWithIndex(
+            RangedValue<Component> childRange = group.findReorderTargetAtIndex(
                     index - rangedValue.mRange.mLower);
 
             if (!(childRange.mValue instanceof ComponentGroup) &&
@@ -467,7 +472,7 @@ public class ComponentGroup extends Component {
 
         if (rangedValue.mValue instanceof ComponentGroup) {
             ComponentGroup group = (ComponentGroup) rangedValue.mValue;
-            RangedValue<Component> childRange = group.findRangedComponentWithIndex(
+            RangedValue<Component> childRange = group.findReorderTargetAtIndex(
                     index - rangedValue.mRange.mLower);
 
             return new RangedValue<>(childRange.mValue,
@@ -475,6 +480,22 @@ public class ComponentGroup extends Component {
                             rangedValue.mRange.mLower + childRange.mRange.mUpper));
         } else {
             return rangedValue;
+        }
+    }
+
+    @CallSuper
+    @Override
+    public void onItemsMoved(int oldIndex, int newIndex) {
+        super.onItemsMoved(oldIndex, newIndex);
+
+        RangedValue<Component> old = mComponentAccordionList.get(oldIndex);
+        mComponentAccordionList.remove(oldIndex);
+        mComponentAccordionList.add(newIndex, old.mValue, old.mRange.getSize());
+
+        int min = Math.min(oldIndex, newIndex);
+        int max = Math.max(oldIndex, newIndex);
+        for (int componentIndex = min; componentIndex <= max; componentIndex ++) {
+            mComponentIndexMap.put(get(componentIndex), componentIndex);
         }
     }
 

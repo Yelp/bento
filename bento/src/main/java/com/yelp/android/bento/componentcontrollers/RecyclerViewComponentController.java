@@ -285,7 +285,7 @@ public class RecyclerViewComponentController implements ComponentController,
 
     @Override
     public void onItemMovedPosition(int oldIndex, int newIndex) {
-        RangedValue<Component> rangedValue = mComponentGroup.findRangedComponentWithIndex(oldIndex);
+        RangedValue<Component> rangedValue = mComponentGroup.findReorderTargetAtIndex(oldIndex);
         rangedValue.mValue.onItemsMoved(oldIndex - rangedValue.mRange.mLower,
                 newIndex - rangedValue.mRange.mLower);
 

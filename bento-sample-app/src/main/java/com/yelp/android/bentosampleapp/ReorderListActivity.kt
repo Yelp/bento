@@ -78,9 +78,14 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
 
     private fun addReorderComponentGroupComponent() {
         componentController.addComponent(LabeledComponent("Reorder in ComponentGroup"))
-        componentController.addComponent(ReorderableComponentGroup().apply {
-            setEndGap(20)
-        })
+        componentController.addComponent(
+                ComponentGroup().apply {
+                    addComponent(ComponentGroup().apply {
+                        addComponent(ReorderableComponentGroup().apply {
+                            setEndGap(20)
+                        })
+                    })
+                })
     }
 
     private fun addReorderAllButLast() {
@@ -127,19 +132,15 @@ class ReorderableComponentGroup : ComponentGroup() {
     override fun canPickUpItem(index: Int) = true
 }
 
-class ReorderAllButLastComponent : Component() {
+class ReorderAllButLastComponent : ComponentGroup() {
 
-    override fun getPresenter(position: Int) = Unit
+    init {
+        for (i in (0 until 10)) {
+            addComponent(LabeledComponent(i.toString()))
+        }
 
-    override fun getItem(position: Int) = if (position == count - 1) {
-        "Last Item"
-    } else {
-        position.toString()
+        addComponent(LabeledComponent("Last item"))
     }
-
-    override fun getCount() = 10
-
-    override fun getHolderType(position: Int) = LabeledComponentViewHolder::class.java
 
     override fun canDropItem(fromComponent: Component?, fromIndex: Int, toIndex: Int): Boolean {
         return fromComponent == this && toIndex != count - 1
