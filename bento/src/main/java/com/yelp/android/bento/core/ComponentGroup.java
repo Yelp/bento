@@ -417,6 +417,16 @@ public class ComponentGroup extends Component {
         return findRangedComponentWithIndex(index).mValue;
     }
 
+    /**
+     * Finds the component the user is trying to reorder. This has two cases:
+     * 1. It will return the {@link ComponentGroup} the {@link Component} is in if the found
+     * {@link Component} has a size of 1 and its parent {@link ComponentGroup} is reorderable.
+     * 2. The the {@link Component} that owns the given index.
+     *
+     * @see ComponentGroup#findRangedComponentWithIndex(int)
+     * @param index The index to search for.
+     * @return The {@link Component} the user is dragging as well as its range.
+     */
     public RangedValue<Component> findReorderTargetAtIndex(int index) {
         RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
 
@@ -425,7 +435,9 @@ public class ComponentGroup extends Component {
             RangedValue<Component> childRange = group.findRangedComponentWithIndex(
                     index - rangedValue.mRange.mLower);
 
-            if (!(childRange.mValue instanceof ComponentGroup) && childRange.mValue.getCount() == 1) {
+            if (!(childRange.mValue instanceof ComponentGroup) &&
+                    childRange.mValue.getCount() == 1 &&
+                    rangedValue.mValue.isReorderable()) {
                 return rangedValue;
             }
 
