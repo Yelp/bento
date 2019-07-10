@@ -36,18 +36,11 @@ class ListItemTouchCallback(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
     ): Int {
-        val lowestComponent = component.findReorderTargetAtIndex(viewHolder.adapterPosition).mValue
-        if (lowestComponent.isReorderable) {
-            if (lowestComponent is ComponentGroup) {
-                for (index in (0 until lowestComponent.size)) {
-                    if (lowestComponent[index].count != 1) {
-                        return makeMovementFlags(0, 0)
-                    }
-                }
-            }
-            return makeMovementFlags(DRAG_FLAGS, 0)
+        return if (canReorderItemAtIndex(viewHolder.adapterPosition)) {
+            makeMovementFlags(DRAG_FLAGS, 0)
+        } else {
+            makeMovementFlags(0, 0)
         }
-        return makeMovementFlags(0, 0)
     }
 
     override fun onMove(
@@ -84,6 +77,23 @@ class ListItemTouchCallback(
 
         dragTo = -1
         dragFrom = dragTo
+    }
+
+    private fun canReorderItemAtIndex(index: Int) : Boolean {
+        val targetRangeValue = component.findReorderTargetAtIndex(index)
+        val targetComponent = targetRangeValue.mValue
+        if (targetComponent.canPickUpItem(index - targetRangeValue.mRange.mLower)) {
+            if (targetComponent is ComponentGroup) {
+                // Make sure all items have a count of 1
+                for (componentIndex in (0 until targetComponent.size)) {
+                    if (targetComponent[componentIndex].count != 1) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+        return false
     }
 }
 

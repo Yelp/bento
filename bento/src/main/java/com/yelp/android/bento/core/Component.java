@@ -1,7 +1,5 @@
 package com.yelp.android.bento.core;
 
-import android.view.MotionEvent;
-import android.view.View.OnTouchListener;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -255,19 +253,6 @@ public abstract class Component {
     }
 
     /**
-     * Checks if a component is reorderable. If the component is reorderable,
-     * users can reorder by long pressing and dragging, or you can manually trigger a drag by
-     * calling {@link com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController#onItemPickedUp(Component, int)}
-     * during {@link OnTouchListener#onTouch(android.view.View, android.view.MotionEvent)} if
-     * {@link android.view.MotionEvent} is {@link MotionEvent#ACTION_DOWN}.
-     *
-     * @see Component#onItemsMoved(int, int)
-     */
-    public boolean isReorderable() {
-        return false;
-    }
-
-    /**
      * Similar to {@link #getItem(int)} but also accounts for Bento framework items such as
      * gaps.
      *
@@ -308,7 +293,8 @@ public abstract class Component {
      *
      * @param oldIndex The index the item was originally in.
      * @param newIndex The index the item was moved to.
-     * @see Component#isReorderable() (boolean)
+     * @see Component#canPickUpItem(int) (boolean)
+     * @see Component#canDropItem(Component, int, int)
      */
     public void onItemsMoved(int oldIndex, int newIndex) {
     }
@@ -322,6 +308,10 @@ public abstract class Component {
      */
     public boolean canDropItem(Component fromComponent, int fromIndex, int toIndex) {
         return fromComponent == this;
+    }
+
+    public boolean canPickUpItem(int index) {
+        return false;
     }
 
     /**

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.components.OnItemMovedCallback
+import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bento.core.setOnDragStartListener
@@ -32,6 +33,7 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         addLongPressOrderableListComponent()
         addHandleOrderableListComponent()
         addReorderComponentGroupComponent()
+        addReorderAllButLast()
     }
 
     private fun addUnorderableListComponent() {
@@ -76,7 +78,14 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
 
     private fun addReorderComponentGroupComponent() {
         componentController.addComponent(LabeledComponent("Reorder in ComponentGroup"))
-        componentController.addComponent(ReorderableComponentGroup())
+        componentController.addComponent(ReorderableComponentGroup().apply {
+            setEndGap(20)
+        })
+    }
+
+    private fun addReorderAllButLast() {
+        componentController.addComponent(LabeledComponent("Reorder all but the last, fixed, item"))
+        componentController.addComponent(ReorderAllButLastComponent())
     }
 
     override fun onStartDrag(viewHolder: ComponentViewHolder<Presenter, String>) {
@@ -115,5 +124,28 @@ class ReorderableComponentGroup : ComponentGroup() {
         }
     }
 
-    override fun isReorderable() = true
+    override fun canPickUpItem(index: Int) = true
+}
+
+class ReorderAllButLastComponent : Component() {
+
+    override fun getPresenter(position: Int) = Unit
+
+    override fun getItem(position: Int) = if (position == count - 1) {
+        "Last Item"
+    } else {
+        position.toString()
+    }
+
+    override fun getCount() = 10
+
+    override fun getHolderType(position: Int) = LabeledComponentViewHolder::class.java
+
+    override fun canDropItem(fromComponent: Component?, fromIndex: Int, toIndex: Int): Boolean {
+        return fromComponent == this && toIndex != count - 1
+    }
+
+    override fun canPickUpItem(index: Int): Boolean {
+        return index != count - 1
+    }
 }

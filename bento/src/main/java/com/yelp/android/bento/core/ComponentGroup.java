@@ -44,6 +44,9 @@ public class ComponentGroup extends Component {
         mSpanSizeLookup = new SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
+                if (hasGap(position)) {
+                    return getNumberLanes();
+                }
                 RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(position);
                 return rangedValue.mValue
                         .getSpanSizeLookup()
@@ -436,8 +439,7 @@ public class ComponentGroup extends Component {
                     index - rangedValue.mRange.mLower);
 
             if (!(childRange.mValue instanceof ComponentGroup) &&
-                    childRange.mValue.getCount() == 1 &&
-                    rangedValue.mValue.isReorderable()) {
+                    childRange.mValue.getCount() == 1) {
                 return rangedValue;
             }
 
@@ -456,6 +458,11 @@ public class ComponentGroup extends Component {
      * @return Both a component and an absolute range over the entire controller.
      */
     public RangedValue<Component> findRangedComponentWithIndex(int index) {
+
+        if (hasGap(index)) {
+            return new RangedValue<Component>(this, new Range(0, getCount()));
+        }
+
         RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
 
         if (rangedValue.mValue instanceof ComponentGroup) {

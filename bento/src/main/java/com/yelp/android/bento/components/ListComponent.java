@@ -271,7 +271,7 @@ public class ListComponent<P, T> extends Component {
     }
 
     @Override
-    public boolean isReorderable() {
+    public boolean canPickUpItem(int index) {
         return isReorderable;
     }
 
@@ -279,7 +279,7 @@ public class ListComponent<P, T> extends Component {
      * Sets whether or not the list is reorderable.
      *
      * @param isReorderable If true, the list can be reordered. Otherwise false.
-     * @see Component#isReorderable()
+     * @see Component#canPickUpItem(int)
      */
     public void setIsReorderable(boolean isReorderable) {
         this.isReorderable = isReorderable;
