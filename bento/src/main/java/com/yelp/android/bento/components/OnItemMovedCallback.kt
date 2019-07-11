@@ -6,7 +6,7 @@ package com.yelp.android.bento.components
 interface OnItemMovedCallback<T> {
 
     /**
-     * Called when an item has been dropped somewhere else in the list.
+     * Called when an item has been dropped somewhere else in the component.
      * @param oldIndex The old index of the item.
      * @param newIndex The index where the item landed.
      */

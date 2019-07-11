@@ -256,7 +256,7 @@ public class ListComponent<P, T> extends Component {
     }
 
     @Override
-    public void onItemsMoved(
+    public final void onItemsMoved(
             int fromIndex,
             int toIndex) {
         super.onItemsMoved(fromIndex, toIndex);

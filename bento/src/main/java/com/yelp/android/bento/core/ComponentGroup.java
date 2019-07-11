@@ -44,9 +44,6 @@ public class ComponentGroup extends Component {
         mSpanSizeLookup = new SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (hasGap(position)) {
-                    return getNumberLanes();
-                }
                 RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(position);
                 return rangedValue.mValue
                         .getSpanSizeLookup()
@@ -427,7 +424,6 @@ public class ComponentGroup extends Component {
      * @return Both a component and an absolute range over the entire controller.
      */
     public RangedValue<Component> findRangedComponentWithIndex(int index) {
-
         if (hasGap(index)) {
             return new RangedValue<Component>(this, new Range(0, getCount()));
         }
