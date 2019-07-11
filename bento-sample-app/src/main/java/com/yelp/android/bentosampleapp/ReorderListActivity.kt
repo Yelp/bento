@@ -32,7 +32,6 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         addUnorderableListComponent()
         addLongPressOrderableListComponent()
         addHandleOrderableListComponent()
-        addReorderComponentGroupComponent()
         addReorderAllButLast()
     }
 
@@ -76,18 +75,6 @@ class ReorderListActivity : AppCompatActivity(), Presenter {
         componentController.addComponent(componentGroup)
     }
 
-    private fun addReorderComponentGroupComponent() {
-        componentController.addComponent(LabeledComponent("Reorder in ComponentGroup"))
-        componentController.addComponent(
-                ComponentGroup().apply {
-                    addComponent(ComponentGroup().apply {
-                        addComponent(ReorderableComponentGroup().apply {
-                            setEndGap(20)
-                        })
-                    })
-                })
-    }
-
     private fun addReorderAllButLast() {
         componentController.addComponent(LabeledComponent("Reorder all but the last, fixed, item"))
         componentController.addComponent(ReorderAllButLastComponent())
@@ -122,28 +109,22 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
     }
 }
 
-class ReorderableComponentGroup : ComponentGroup() {
-    init {
-        for (number in (0..10)) {
-            addComponent(LabeledComponent("Component #$number"))
-        }
+class ReorderAllButLastComponent : Component() {
+
+    override fun getPresenter(position: Int) = Unit
+
+    override fun getItem(position: Int) = if (position == count - 1) {
+        "Last Item. Can't move"
+    } else {
+        position.toString()
     }
 
-    override fun canPickUpItem(index: Int) = true
-}
+    override fun getCount(): Int = 10
 
-class ReorderAllButLastComponent : ComponentGroup() {
+    override fun getHolderType(position: Int) = LabeledComponentViewHolder::class.java
 
-    init {
-        for (i in (0 until 10)) {
-            addComponent(LabeledComponent(i.toString()))
-        }
-
-        addComponent(LabeledComponent("Last item"))
-    }
-
-    override fun canDropItem(fromComponent: Component?, fromIndex: Int, toIndex: Int): Boolean {
-        return fromComponent == this && toIndex != count - 1
+    override fun canDropItem(fromIndex: Int, toIndex: Int): Boolean {
+        return toIndex != count - 1
     }
 
     override fun canPickUpItem(index: Int): Boolean {

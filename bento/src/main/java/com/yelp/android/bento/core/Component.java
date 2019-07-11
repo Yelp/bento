@@ -291,23 +291,24 @@ public abstract class Component {
     /**
      * Override this method to handle reordering of items.
      *
-     * @param oldIndex The index the item was originally in.
-     * @param newIndex The index the item was moved to.
+     * @param fromIndex The index the item was originally in.
+     * @param toIndex The index the item was moved to.
      * @see Component#canPickUpItem(int) (boolean)
      * @see Component#canDropItem(Component, int, int)
      */
-    public void onItemsMoved(int oldIndex, int newIndex) {
+    public void onItemsMoved(
+            int fromIndex,
+            int toIndex) {
     }
 
     /**
      * Checks if an item from one component can be dropped in this component at a given index.
-     * @param fromComponent The component that the dragged item is coming from.
      * @param fromIndex The index the item is currently at in the fromComponent.
      * @param toIndex The index where the user is attempting to drop the item in this component.
      * @return true if this component will allow the other component to drop the item at this index.
      */
-    public boolean canDropItem(Component fromComponent, int fromIndex, int toIndex) {
-        return fromComponent == this;
+    public boolean canDropItem(int fromIndex, int toIndex) {
+        return true;
     }
 
     public boolean canPickUpItem(int index) {

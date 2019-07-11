@@ -256,13 +256,15 @@ public class ListComponent<P, T> extends Component {
     }
 
     @Override
-    public void onItemsMoved(int oldIndex, int newIndex) {
-        super.onItemsMoved(oldIndex, newIndex);
+    public void onItemsMoved(
+            int fromIndex,
+            int toIndex) {
+        super.onItemsMoved(fromIndex, toIndex);
 
-        mData.add(newIndex, mData.remove(oldIndex));
+        mData.add(toIndex, mData.remove(fromIndex));
 
         if (mOnItemMovedCallback != null) {
-            mOnItemMovedCallback.onItemMoved(oldIndex, newIndex);
+            mOnItemMovedCallback.onItemMoved(fromIndex, toIndex);
         }
     }
 

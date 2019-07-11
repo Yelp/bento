@@ -421,42 +421,6 @@ public class ComponentGroup extends Component {
     }
 
     /**
-     * Finds the component the user is trying to reorder. This has two cases:
-     * 1. It will return the {@link ComponentGroup} the {@link Component} is in if the found
-     * {@link Component} has a size of 1 and its parent {@link ComponentGroup} is reorderable.
-     * 2. The the {@link Component} that owns the given index.
-     *
-     * @see ComponentGroup#findRangedComponentWithIndex(int)
-     * @param index The index to search for.
-     * @return The {@link Component} the user is dragging as well as its range.
-     */
-    public RangedValue<Component> findReorderTargetAtIndex(int index) {
-
-        if (hasGap(index)) {
-            return new RangedValue<Component>(this, new Range(0, getCount()));
-        }
-
-        RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
-
-        if (rangedValue.mValue instanceof ComponentGroup) {
-            ComponentGroup group = (ComponentGroup) rangedValue.mValue;
-            RangedValue<Component> childRange = group.findReorderTargetAtIndex(
-                    index - rangedValue.mRange.mLower);
-
-            if (!(childRange.mValue instanceof ComponentGroup) &&
-                    childRange.mValue.getCount() == 1) {
-                return rangedValue;
-            }
-
-            return new RangedValue<>(childRange.mValue,
-                    new Range(rangedValue.mRange.mLower + childRange.mRange.mLower,
-                            rangedValue.mRange.mLower + childRange.mRange.mUpper));
-        } else {
-            return rangedValue;
-        }
-    }
-
-    /**
      * Returns both the component and the absolute range within the controller.
      *
      * @param index The index to search for.
@@ -472,7 +436,7 @@ public class ComponentGroup extends Component {
 
         if (rangedValue.mValue instanceof ComponentGroup) {
             ComponentGroup group = (ComponentGroup) rangedValue.mValue;
-            RangedValue<Component> childRange = group.findReorderTargetAtIndex(
+            RangedValue<Component> childRange = group.findRangedComponentWithIndex(
                     index - rangedValue.mRange.mLower);
 
             return new RangedValue<>(childRange.mValue,
@@ -480,22 +444,6 @@ public class ComponentGroup extends Component {
                             rangedValue.mRange.mLower + childRange.mRange.mUpper));
         } else {
             return rangedValue;
-        }
-    }
-
-    @CallSuper
-    @Override
-    public void onItemsMoved(int oldIndex, int newIndex) {
-        super.onItemsMoved(oldIndex, newIndex);
-
-        RangedValue<Component> old = mComponentAccordionList.get(oldIndex);
-        mComponentAccordionList.remove(oldIndex);
-        mComponentAccordionList.add(newIndex, old.mValue, old.mRange.getSize());
-
-        int min = Math.min(oldIndex, newIndex);
-        int max = Math.max(oldIndex, newIndex);
-        for (int componentIndex = min; componentIndex <= max; componentIndex ++) {
-            mComponentIndexMap.put(get(componentIndex), componentIndex);
         }
     }
 

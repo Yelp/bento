@@ -284,25 +284,28 @@ public class RecyclerViewComponentController implements ComponentController,
     }
 
     @Override
-    public void onItemMovedPosition(int oldIndex, int newIndex) {
-        RangedValue<Component> rangedValue = mComponentGroup.findReorderTargetAtIndex(oldIndex);
-        rangedValue.mValue.onItemsMoved(oldIndex - rangedValue.mRange.mLower,
-                newIndex - rangedValue.mRange.mLower);
+    public void onItemMovedPosition(int fromAbsoluteIndex, int toAbsoluteIndex) {
+        RangedValue<Component> componentMoved = mComponentGroup
+                .findRangedComponentWithIndex(fromAbsoluteIndex);
+
+        int fromIndex = fromAbsoluteIndex - componentMoved.mRange.mLower;
+        int toIndex = toAbsoluteIndex - componentMoved.mRange.mLower;
+        componentMoved.mValue.onItemsMoved(fromIndex, toIndex);
 
         // Bind is not called again, so we need to go through and properly set all the positions.
         int currentIndex = Math.max(
-                Math.min(oldIndex, newIndex),
+                Math.min(fromAbsoluteIndex, toAbsoluteIndex),
                 mLayoutManager.findFirstVisibleItemPosition());
         int highIndex = Math.min(
-                Math.max(oldIndex, newIndex),
+                Math.max(fromAbsoluteIndex, toAbsoluteIndex),
                 mLayoutManager.findLastVisibleItemPosition());
         while (currentIndex <= highIndex) {
             ViewHolderWrapper holder = ((ViewHolderWrapper) mRecyclerView
                     .findViewHolderForAdapterPosition(currentIndex));
             if (holder != null) {
-                    holder.mViewHolder.setAbsolutePosition(currentIndex);
+                holder.mViewHolder.setAbsolutePosition(currentIndex);
             }
-            currentIndex ++;
+            currentIndex++;
         }
     }
 

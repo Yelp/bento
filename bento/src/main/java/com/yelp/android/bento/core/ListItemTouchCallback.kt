@@ -20,13 +20,15 @@ class ListItemTouchCallback(
             target: RecyclerView.ViewHolder
     ): Boolean {
         // Only allow reorder if it is within the same component.
-        val fromRangeComponent = component.findReorderTargetAtIndex(current.adapterPosition)
-        val toRangeComponent = component.findReorderTargetAtIndex(target.adapterPosition)
+        val fromComponent = component.findRangedComponentWithIndex(current.adapterPosition)
+        val toComponent = component.findComponentWithIndex(target.adapterPosition)
+        if (fromComponent.mValue != toComponent) {
+            return false
+        }
 
-        return toRangeComponent.mValue.canDropItem(
-                fromRangeComponent.mValue,
-                current.adapterPosition - fromRangeComponent.mRange.mLower,
-                target.adapterPosition - toRangeComponent.mRange.mLower)
+        return fromComponent.mValue.canDropItem(
+                current.adapterPosition - fromComponent.mRange.mLower,
+                target.adapterPosition - fromComponent.mRange.mLower)
     }
 
     // Always return true here. We will check if the component is reorderable in getMovementFlags().
@@ -80,20 +82,9 @@ class ListItemTouchCallback(
     }
 
     private fun canReorderItemAtIndex(index: Int) : Boolean {
-        val targetRangeValue = component.findReorderTargetAtIndex(index)
+        val targetRangeValue = component.findRangedComponentWithIndex(index)
         val targetComponent = targetRangeValue.mValue
-        if (targetComponent.canPickUpItem(index - targetRangeValue.mRange.mLower)) {
-            if (targetComponent is ComponentGroup) {
-                // Make sure all items have a count of 1
-                for (componentIndex in (0 until targetComponent.size)) {
-                    if (targetComponent[componentIndex].count != 1) {
-                        return false
-                    }
-                }
-            }
-            return true
-        }
-        return false
+        return targetComponent.canPickUpItem(index - targetRangeValue.mRange.mLower)
     }
 }
 
