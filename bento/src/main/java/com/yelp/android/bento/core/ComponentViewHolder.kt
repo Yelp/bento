@@ -1,5 +1,6 @@
 package com.yelp.android.bento.core
 
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 
@@ -15,6 +16,12 @@ import android.view.ViewGroup
  * and provide a no-arg constructor.
  */
 abstract class ComponentViewHolder<P, T> {
+
+    /**
+     * Contains the absolute position within the entire [ComponentController]. This should only be
+     * set by the [ComponentController].
+     */
+    var absolutePosition: Int = -1
 
     /**
      * Called to inflate the layout needed to render the view. This is a good place to use
@@ -52,4 +59,14 @@ abstract class ComponentViewHolder<P, T> {
      * See [android.support.v7.widget.RecyclerView.Adapter.onViewRecycled]
      */
     open fun onViewRecycled() {}
+}
+
+fun View.setOnDragStartListener(callback: () -> Unit) {
+    setOnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            callback.invoke()
+            return@setOnTouchListener true
+        }
+        false
+    }
 }

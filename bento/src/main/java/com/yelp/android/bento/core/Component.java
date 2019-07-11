@@ -185,17 +185,6 @@ public abstract class Component {
     }
 
     /**
-     * Returns the number of lanes at a given position. This will usually return the same as
-     * {@link Component#getNumberLanes()}, but {@link ComponentGroup}s will want to return the
-     * number of lanes at a given index. For example, if you have a {@link ComponentGroup} with
-     * two {@link Component}s with a different number of lanes, this should return the number of
-     * lanes in the component that owns the position.
-     */
-    public int getNumberLanesAtPosition(int position) {
-        return getNumberLanes();
-    }
-
-    /**
      * Override this method when you want to take an action when a view in this component is (at
      * least partially) visible on the screen.
      * <p><p>
@@ -226,7 +215,8 @@ public abstract class Component {
      * @param index The index of the top visible item.
      */
     @CallSuper
-    public void onItemAtTop(int index) {}
+    public void onItemAtTop(int index) {
+    }
 
     /**
      * Similar to {@link #getPresenter(int)} but also accounts for Bento framework items such as
@@ -296,6 +286,33 @@ public abstract class Component {
      */
     public void setSpanSizeLookup(@NonNull SpanSizeLookup lookup) {
         mSpanSizeLookup = lookup;
+    }
+
+    /**
+     * Override this method to handle reordering of items.
+     *
+     * @param fromIndex The index the item was originally in.
+     * @param toIndex The index the item was moved to.
+     * @see Component#canPickUpItem(int) (boolean)
+     * @see Component#canDropItem(Component, int, int)
+     */
+    public void onItemsMoved(
+            int fromIndex,
+            int toIndex) {
+    }
+
+    /**
+     * Checks if an item from one component can be dropped in this component at a given index.
+     * @param fromIndex The index the item is currently at in the fromComponent.
+     * @param toIndex The index where the user is attempting to drop the item in this component.
+     * @return true if this component will allow the other component to drop the item at this index.
+     */
+    public boolean canDropItem(int fromIndex, int toIndex) {
+        return true;
+    }
+
+    public boolean canPickUpItem(int index) {
+        return false;
     }
 
     /**

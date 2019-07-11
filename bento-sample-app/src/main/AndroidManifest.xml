@@ -24,6 +24,7 @@
         <activity android:name=".ListVisibilityActivity" />
         <activity android:name=".ViewPagerActivity" />
         <activity android:name=".ViewPagerGridActivity" />
+        <activity android:name=".ReorderListActivity" />
     </application>
 
 </manifest>
