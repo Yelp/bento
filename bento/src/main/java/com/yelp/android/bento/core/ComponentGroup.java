@@ -44,6 +44,9 @@ public class ComponentGroup extends Component {
         mSpanSizeLookup = new SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
+                if (hasGap(position)) {
+                    return getNumberLanes();
+                }
                 RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(position);
                 return rangedValue.mValue
                         .getSpanSizeLookup()
