@@ -28,10 +28,14 @@ public class ComponentGroup extends Component {
      */
     private final AccordionList<Component> mComponentAccordionList = new AccordionList<>();
 
-    /** A map from a Component to its Index in the order of the ComponentGroup. */
+    /**
+     * A map from a Component to its Index in the order of the ComponentGroup.
+     */
     private final Map<Component, Integer> mComponentIndexMap = new HashMap<>();
 
-    /** A map from a Component to its corresponding {@link ComponentDataObserver}. */
+    /**
+     * A map from a Component to its corresponding {@link ComponentDataObserver}.
+     */
     private final Map<Component, ComponentDataObserver> mComponentDataObserverMap = new HashMap<>();
 
     private final ComponentGroupObservable mObservable = new ComponentGroupObservable();
@@ -77,7 +81,7 @@ public class ComponentGroup extends Component {
 
     /**
      * @param position The position of the internal components item across all components in the
-     * {@link ComponentGroup}.
+     *                 {@link ComponentGroup}.
      * @return The {@link Component} associated with the range this position belongs to.
      */
     @NonNull
@@ -141,7 +145,7 @@ public class ComponentGroup extends Component {
      * does the hard work of updating the data structures that track the positions and ranges of
      * components in the {@link ComponentGroup}.
      *
-     * @param index The index at which the {@link Component} should be added to the {@link ComponentGroup}.
+     * @param index     The index at which the {@link Component} should be added to the {@link ComponentGroup}.
      * @param component The {@link Component} to add in the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the {@link Component} was added to.
      */
@@ -172,8 +176,8 @@ public class ComponentGroup extends Component {
     /**
      * Adds a {@link Component} at the specified index to the {@link ComponentGroup}.
      *
-     * @param index The index at which the {@link ComponentGroup} should be added to the
-     * {@link ComponentGroup}.
+     * @param index          The index at which the {@link ComponentGroup} should be added to the
+     *                       {@link ComponentGroup}.
      * @param componentGroup The {@link ComponentGroup} to add in the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the provided {@link ComponentGroup} was added to.
      */
@@ -201,7 +205,7 @@ public class ComponentGroup extends Component {
      * Replaces the old {@link Component} at the specified index in the {@link ComponentGroup} with
      * the newly provided {@link Component}.
      *
-     * @param index The index at which the {@link Component} should be replace in the {@link ComponentGroup}.
+     * @param index     The index at which the {@link Component} should be replace in the {@link ComponentGroup}.
      * @param component The new {@link Component} to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the replacement took place in.
      */
@@ -219,7 +223,7 @@ public class ComponentGroup extends Component {
      * Replaces the old {@link Component} at the specified index in the {@link ComponentGroup} with
      * the newly provided {@link ComponentGroup}.
      *
-     * @param index The index at which the {@link Component} should be replace in the {@link ComponentGroup}.
+     * @param index          The index at which the {@link Component} should be replace in the {@link ComponentGroup}.
      * @param componentGroup The new {@link ComponentGroup} to add to the {@link ComponentGroup}.
      * @return The {@link ComponentGroup} that the replacement took place in.
      */
@@ -297,7 +301,9 @@ public class ComponentGroup extends Component {
         return mComponentAccordionList.span().mUpper;
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     @Override
     @CallSuper
     public void onItemVisible(int index) {
@@ -305,7 +311,9 @@ public class ComponentGroup extends Component {
         notifyVisibilityChange(index, true);
     }
 
-    /** @inheritDoc */
+    /**
+     * @inheritDoc
+     */
     @Override
     public void onItemNotVisible(int index) {
         super.onItemNotVisible(index);
@@ -317,7 +325,7 @@ public class ComponentGroup extends Component {
      * {@link Component}s in the {@link ComponentGroup}.
      *
      * @param observer The component group data observer that will react to changes to
-     * {@link Component}s in the {@link ComponentGroup}.
+     *                 {@link Component}s in the {@link ComponentGroup}.
      */
     public void registerComponentGroupObserver(@NonNull ComponentGroupDataObserver observer) {
         mObservable.registerObserver(observer);
@@ -328,7 +336,7 @@ public class ComponentGroup extends Component {
      * {@link Component}s in the {@link ComponentGroup}.
      *
      * @param observer The component group data observer that is currently reacting to changes to
-     * in the {@link Component}s of the {@link ComponentGroup} and should stop.
+     *                 in the {@link Component}s of the {@link ComponentGroup} and should stop.
      */
     public void unregisterComponentGroupObserver(@NonNull ComponentGroupDataObserver observer) {
         mObservable.unregisterObserver(observer);
@@ -336,7 +344,7 @@ public class ComponentGroup extends Component {
 
     /**
      * @param position The position of the internal item in the {@link Component} of the
-     * {@link ComponentGroup}.
+     *                 {@link ComponentGroup}.
      * @return The internal data item at the specified position.
      */
     @Override
@@ -353,26 +361,13 @@ public class ComponentGroup extends Component {
     @Override
     public final int getNumberLanes() {
         int[] childLanes = new int[mComponentAccordionList.size()];
-        for (int i = 0; i < mComponentAccordionList.size(); i ++) {
+        for (int i = 0; i < mComponentAccordionList.size(); i++) {
             childLanes[i] = mComponentAccordionList.get(i).mValue.getNumberLanes();
             if (childLanes[i] < 1) {
                 throw new IllegalStateException("A component returned a number of lanes less than one. All components must have at least one lane. " + mComponentAccordionList.get(i).mValue.toString());
             }
         }
         return MathUtils.lcm(childLanes);
-    }
-
-    /**
-     * At a given position, we want to determine the number of lanes the component that position
-     * belongs to has.
-     *
-     * @param position The position to lookup of the {@link Component}'s internal item.
-     * @return The number of lanes the owner of the position has.
-     */
-    @Override
-    public final int getNumberLanesAtPosition(int position) {
-        Component componentAtPos = componentAt(position);
-        return componentAtPos.getNumberLanesAtPosition(position - rangeOf(componentAtPos).mLower);
     }
 
     @NonNull
@@ -391,7 +386,7 @@ public class ComponentGroup extends Component {
      *
      * @param component the component to search for
      * @return the offset of the component, or -1 if the component does not belong in this group or
-     *     any of its children.
+     * any of its children.
      */
     public int findComponentOffset(@NonNull Component component) {
         int offset = 0;
@@ -413,6 +408,42 @@ public class ComponentGroup extends Component {
             offset = rangeOf(candidate).mUpper;
         }
         return -1;
+    }
+
+    /**
+     * Finds and returns the component at lowest level (leaf) that encompasses the index.
+     *
+     * @param index The index to search for.
+     * @return The lowest component in the tree.
+     */
+    public Component findComponentWithIndex(int index) {
+        return findRangedComponentWithIndex(index).mValue;
+    }
+
+    /**
+     * Returns both the component and the absolute range within the controller.
+     *
+     * @param index The index to search for.
+     * @return Both a component and an absolute range over the entire controller.
+     */
+    public RangedValue<Component> findRangedComponentWithIndex(int index) {
+        if (hasGap(index)) {
+            return new RangedValue<Component>(this, new Range(0, getCount()));
+        }
+
+        RangedValue<Component> rangedValue = mComponentAccordionList.rangedValueAt(index);
+
+        if (rangedValue.mValue instanceof ComponentGroup) {
+            ComponentGroup group = (ComponentGroup) rangedValue.mValue;
+            RangedValue<Component> childRange = group.findRangedComponentWithIndex(
+                    index - rangedValue.mRange.mLower);
+
+            return new RangedValue<>(childRange.mValue,
+                    new Range(rangedValue.mRange.mLower + childRange.mRange.mLower,
+                            rangedValue.mRange.mLower + childRange.mRange.mUpper));
+        } else {
+            return rangedValue;
+        }
     }
 
     /**
@@ -442,7 +473,7 @@ public class ComponentGroup extends Component {
      * NOTE: this is notifying the view is visible on screen, not that its Visibility property is
      * set to VISIBLE.
      *
-     * @param i The index of the view in the adapter whose visibility has changed.
+     * @param i       The index of the view in the adapter whose visibility has changed.
      * @param visible Whether the view is now visible or not
      */
     /* package */ void notifyVisibilityChange(int i, boolean visible) {
@@ -508,7 +539,7 @@ public class ComponentGroup extends Component {
      * and does the hard work of updating internal indices we use to order {@link Component}s
      * within the the {@link ComponentGroup}.
      *
-     * @param index The index at which to add the {@link Component}.
+     * @param index     The index at which to add the {@link Component}.
      * @param component The {@link Component} to add to this {@link ComponentGroup}.
      */
     private void addComponentAndUpdateIndices(int index, @NonNull Component component) {
@@ -525,7 +556,7 @@ public class ComponentGroup extends Component {
      * and does the hard work of updating internal indices we use to order {@link Component}s
      * within the the {@link ComponentGroup}.
      *
-     * @param index The index of the component to be removed.
+     * @param index     The index of the component to be removed.
      * @param component The component to be removed from this ComponentGroup.
      * @return
      */
@@ -631,7 +662,9 @@ public class ComponentGroup extends Component {
         }
     }
 
-    /** An observable for clients that want to subscribe to a {@link ComponentGroup}'s changes. */
+    /**
+     * An observable for clients that want to subscribe to a {@link ComponentGroup}'s changes.
+     */
     private static class ComponentGroupObservable extends Observable<ComponentGroupDataObserver> {
 
         void notifyOnChanged() {
@@ -652,7 +685,9 @@ public class ComponentGroup extends Component {
     }
 
 
-    /** An interface for clients that want to observe a {@link ComponentGroup}'s changes. */
+    /**
+     * An interface for clients that want to observe a {@link ComponentGroup}'s changes.
+     */
     public interface ComponentGroupDataObserver {
         /**
          * Called whenever there have been changes that affect the children of the
@@ -660,7 +695,9 @@ public class ComponentGroup extends Component {
          */
         void onChanged();
 
-        /** Called whenever a {@link Component} is removed. */
+        /**
+         * Called whenever a {@link Component} is removed.
+         */
         void onComponentRemoved(@NonNull Component component);
     }
 }

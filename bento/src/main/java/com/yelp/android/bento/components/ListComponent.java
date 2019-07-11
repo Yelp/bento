@@ -29,6 +29,8 @@ public class ListComponent<P, T> extends Component {
     private boolean mShouldShowDivider = true;
     private Class<? extends DividerViewHolder> mDividerViewHolder = DefaultDividerViewHolder.class;
     private int mNumberLanes;
+    private OnItemMovedCallback<T> mOnItemMovedCallback = null;
+    private boolean isReorderable = false;
 
     /**
      * @param presenter The presenter used for {@link ListComponent} interactions.
@@ -251,6 +253,38 @@ public class ListComponent<P, T> extends Component {
                 return spanSizeLookup.getSpanSize(position - getPositionOffset());
             }
         };
+    }
+
+    @Override
+    public final void onItemsMoved(
+            int fromIndex,
+            int toIndex) {
+        super.onItemsMoved(fromIndex, toIndex);
+
+        mData.add(toIndex, mData.remove(fromIndex));
+
+        if (mOnItemMovedCallback != null) {
+            mOnItemMovedCallback.onItemMoved(fromIndex, toIndex);
+        }
+    }
+
+    public void setOnItemMovedCallback(OnItemMovedCallback<T> callback) {
+        mOnItemMovedCallback = callback;
+    }
+
+    @Override
+    public boolean canPickUpItem(int index) {
+        return isReorderable;
+    }
+
+    /**
+     * Sets whether or not the list is reorderable.
+     *
+     * @param isReorderable If true, the list can be reordered. Otherwise false.
+     * @see Component#canPickUpItem(int)
+     */
+    public void setIsReorderable(boolean isReorderable) {
+        this.isReorderable = isReorderable;
     }
 
     @NonNull
