@@ -111,17 +111,23 @@ class ReorderViewHolder : ComponentViewHolder<Presenter, String>() {
 
 class ReorderAllButLastComponent : Component() {
 
+    val data = (0 until 10).toMutableList()
+
     override fun getPresenter(position: Int) = Unit
 
     override fun getItem(position: Int) = if (position == count - 1) {
         "Last Item. Can't move"
     } else {
-        position.toString()
+        data[position].toString()
     }
 
-    override fun getCount(): Int = 10
+    override fun getCount(): Int = data.size
 
     override fun getHolderType(position: Int) = LabeledComponentViewHolder::class.java
+
+    override fun onItemsMoved(fromIndex: Int, toIndex: Int) {
+        data.add(toIndex, data.removeAt(fromIndex))
+    }
 
     override fun canDropItem(fromIndex: Int, toIndex: Int): Boolean {
         return toIndex != count - 1
