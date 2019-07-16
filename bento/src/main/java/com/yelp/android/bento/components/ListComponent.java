@@ -89,14 +89,16 @@ public class ListComponent<P, T> extends Component {
      * Removes the provided data items from the list.
      *
      * @param data The data item to remove from the list.
+     * @return an int representing the index that the removed data occupied
      */
-    public void removeData(@NonNull T data) {
+    public int removeData(@NonNull T data) {
         int index = mData.indexOf(data);
         // Check if the object indeed is in the list.
         if (index != -1) {
             mData.remove(index);
             notifyItemRangeRemoved(getRemoveIndexStart(index), getRemoveItemCount());
         }
+        return index;
     }
 
     /**
