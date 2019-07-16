@@ -88,8 +88,8 @@ public class ListComponent<P, T> extends Component {
     /**
      * Inserts the specified data at the specified index in the component data.
      *
-     * @param index
-     * @param data
+     * @param index the index to insert the given data
+     * @param data the data to be inserted
      */
     public void insertData(int index, @NonNull T data) {
         mData.add(index, data);
