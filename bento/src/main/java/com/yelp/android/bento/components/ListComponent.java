@@ -86,6 +86,17 @@ public class ListComponent<P, T> extends Component {
     }
 
     /**
+     * Inserts the specified data at the specified index in the component data.
+     *
+     * @param index
+     * @param data
+     */
+    public void insertData(int index, @NonNull T data) {
+        mData.add(index, data);
+        notifyItemRangeInserted(index, index + 1);
+    }
+
+    /**
      * Removes the provided data items from the list.
      *
      * @param data The data item to remove from the list.
