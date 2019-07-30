@@ -55,6 +55,7 @@ dependencies {
     // Support library dependencies.
     implementation SupportLibs.APP_COMPAT
     implementation SupportLibs.RECYCLERVIEW
+    implementation SupportLibs.DESIGN
     androidTestImplementation TestLibs.SUPPORT_TEST_RULES
 
     // JUnit
