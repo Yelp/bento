@@ -36,7 +36,7 @@ public class TabViewPagerComponentViewHolder
         mContext = parent.getContext();
         View view =
                 LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.component_tab_view_pager, parent, false);
+                        .inflate(R.layout.bento_component_tab_view_pager, parent, false);
         mContainer = view.findViewById(R.id.tab_view_pager_parent);
         mTabLayout = view.findViewById(R.id.tab_layout);
         mViewPager = view.findViewById(R.id.view_pager);
