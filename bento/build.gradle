@@ -29,6 +29,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    resourcePrefix 'bento_'
 }
 
 task androidSourcesJar(type: Jar) {
