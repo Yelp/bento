@@ -1,9 +1,5 @@
 language: android
-
-jdk: oraclejdk8
-
-os:
-- linux
+dist: bionic
 
 android:
   components:
@@ -13,9 +9,6 @@ android:
   - build-tools-28.0.3
   - android-27
   - android-28
-
-before_install:
-    - yes | sdkmanager "build-tools;27.0.3" "build-tools;28.0.3" "platforms;android-27" "platforms;android-28"
 
 before_cache:
 - rm -f  ${HOME}/.gradle/caches/modules-2/modules-2.lock
