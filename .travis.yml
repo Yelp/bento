@@ -1,9 +1,5 @@
 language: android
-
-jdk: openjdk11
-
-os:
-- linux
+dist: bionic
 
 android:
   components:
