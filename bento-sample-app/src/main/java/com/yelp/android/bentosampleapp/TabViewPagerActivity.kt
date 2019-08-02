@@ -46,7 +46,7 @@ class TabViewPagerActivity: AppCompatActivity(),
         componentList.add(LabeledComponent("Tab 1 content"))
         titles.add("Tab 2")
         componentList.add(LabeledComponent("Tab 2 content"))
-        componentController.setPageTitles(titles)
+        componentController.pageTitles = titles
         componentController.addAll(componentList)
     }
 }
