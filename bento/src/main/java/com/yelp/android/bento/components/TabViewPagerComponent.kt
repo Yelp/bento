@@ -31,7 +31,6 @@ class TabViewPagerComponent(
 
     override fun getCount() = 1
 
-
     override fun getHolderType(position: Int): Class<out ComponentViewHolder<*, *>> =
         TabViewPagerComponentViewHolder::class.java
 

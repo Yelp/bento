@@ -40,9 +40,9 @@ dependencies {
 
     // Support library dependencies.
     implementation SupportLibs.APP_COMPAT
-    implementation SupportLibs.RECYCLERVIEW
     implementation SupportLibs.CONSTRAINT_LAYOUT
     implementation SupportLibs.DESIGN
+    implementation SupportLibs.RECYCLERVIEW
 
     // Espresso
     androidTestImplementation project(':bento-testing')
