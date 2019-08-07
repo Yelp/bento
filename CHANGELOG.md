@@ -1,5 +1,9 @@
 # Bento Releases
 
+## Version 15.1.2
+_2018-08-07_
+* New: Added TabViewPagerComponent to use both TabLayout and ViewPager in one view.
+
 ## Version 15.1.1
 _2018-07-11_
 * Fix: Add check for gap in ComponentGroup ([#20](https://github.com/Yelp/bento/pull/20))
