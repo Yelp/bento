@@ -2,6 +2,7 @@ package com.yelp.android.bento.components
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yelp.android.bento.R
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
@@ -35,10 +36,12 @@ open class CarouselComponent(
 
     private val group = ComponentGroup()
     private var sharedPool: RecyclerView.RecycledViewPool? = null
-
-    final override fun getItem(position: Int) = CarouselViewModel(
+    private val viewModel = CarouselViewModel(
             group,
-            sharedPool)
+            sharedPool
+    )
+
+    final override fun getItem(position: Int) = viewModel
 
     final override fun getPresenter(position: Int) = null
 
@@ -69,17 +72,40 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
 
     lateinit var recyclerView: RecyclerView
     lateinit var controller: RecyclerViewComponentController
+    lateinit var element: CarouselViewModel
     private var attachedPool = false
+
+    /**
+     * Saves the scroll position of the carousel to the view model so that it can be restored when
+     * the carousel recyclerView itself is recycled in the larger component list. Scroll position
+     * is saved when the scroll state of the carousel transitions to
+     * [RecyclerView.SCROLL_STATE_IDLE].
+     */
+    private fun saveScrollPosition() {
+        (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
+            element.scrollPosition = findFirstVisibleItemPosition()
+            element.scrollPositionOffset =
+                    recyclerView.getChildAt(0).left - recyclerView.paddingLeft
+        }
+    }
 
     final override fun inflate(parent: ViewGroup): View {
         return createRecyclerView(parent).apply {
             recyclerView = this
-            controller = RecyclerViewComponentController(this, RecyclerView.HORIZONTAL)
+            controller = RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL)
             isNestedScrollingEnabled = false
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        saveScrollPosition()
+                    }
+                }
+            })
         }
     }
 
     final override fun bind(presenter: Unit?, element: CarouselViewModel) {
+        this.element = element
         val (group, pool) = element
         if (!attachedPool) {
             pool?.let { recyclerView.setRecycledViewPool(it) }
@@ -92,6 +118,12 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
             }
         } else {
             controller.addComponent(group)
+        }
+
+        recyclerView.post {
+            (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
+                scrollToPositionWithOffset(element.scrollPosition, element.scrollPositionOffset)
+            }
         }
     }
 
@@ -108,5 +140,7 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
 
 data class CarouselViewModel(
         val group: ComponentGroup,
-        val sharedPool: RecyclerView.RecycledViewPool?
+        val sharedPool: RecyclerView.RecycledViewPool?,
+        var scrollPosition: Int = 0,
+        var scrollPositionOffset: Int = 0
 )
