@@ -1,5 +1,9 @@
 # Bento Releases
 
+## Version 15.3.0
+_2018-08-13_
+* Behavior change: CarouselComponent now remembers its scroll position when it's scrolled offscreen.
+
 ## Version 15.2.0
 _2018-08-07_
 * New: Added TabViewPagerComponent to use both TabLayout and ViewPager in one view.
