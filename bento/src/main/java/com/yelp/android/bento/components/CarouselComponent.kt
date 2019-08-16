@@ -75,20 +75,6 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
     lateinit var element: CarouselViewModel
     private var attachedPool = false
 
-    /**
-     * Saves the scroll position of the carousel to the view model so that it can be restored when
-     * the carousel recyclerView itself is recycled in the larger component list. Scroll position
-     * is saved when the scroll state of the carousel transitions to
-     * [RecyclerView.SCROLL_STATE_IDLE].
-     */
-    private fun saveScrollPosition() {
-        (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
-            element.scrollPosition = findFirstVisibleItemPosition()
-            element.scrollPositionOffset =
-                    recyclerView.getChildAt(0).left - recyclerView.paddingLeft
-        }
-    }
-
     final override fun inflate(parent: ViewGroup): View {
         return createRecyclerView(parent).apply {
             recyclerView = this
@@ -120,6 +106,8 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
             controller.addComponent(group)
         }
 
+        // The post is required because it's possible that the scroll will fail if the items in the
+        // carousel have not already been measured and laid out.
         recyclerView.post {
             (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
                 scrollToPositionWithOffset(element.scrollPosition, element.scrollPositionOffset)
@@ -135,6 +123,25 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
      */
     open fun createRecyclerView(parent: ViewGroup): RecyclerView {
         return parent.inflate(R.layout.bento_recycler_view)
+    }
+
+    /**
+     * Saves the scroll position of the carousel to the view model so that it can be restored when
+     * the carousel recyclerView itself is recycled in the larger component list. Scroll position
+     * is saved when the scroll state of the carousel transitions to
+     * [RecyclerView.SCROLL_STATE_IDLE].
+     */
+    private fun saveScrollPosition() {
+        if (recyclerView.childCount < 1) {
+            element.scrollPosition = 0
+            element.scrollPositionOffset = 0
+            return
+        }
+        (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
+            element.scrollPosition = findFirstVisibleItemPosition()
+            element.scrollPositionOffset =
+                    recyclerView.getChildAt(0).left - recyclerView.paddingLeft
+        }
     }
 }
 

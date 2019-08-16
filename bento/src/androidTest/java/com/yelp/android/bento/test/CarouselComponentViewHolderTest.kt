@@ -117,6 +117,23 @@ class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, Carous
             assertEquals(0, holder.element.scrollPositionOffset)
         }
     }
+
+    @Test
+    fun scrollingEmptyCarousel_SavesScrollPosition() {
+        val pool = RecyclerView.RecycledViewPool()
+
+        bindViewHolder(CarouselComponentViewHolder::class.java, null, CarouselViewModel(ComponentGroup(), pool))
+        val holder = getHolder<CarouselComponentViewHolder>()
+
+        val scrollToPosition = 3
+        holder.recyclerView.layoutManager?.smoothScrollToPosition(
+                holder.recyclerView, null, scrollToPosition)
+
+        RecyclerViewScrollStateIdlingResource(holder.recyclerView).registerIdleTransitionCallback {
+            assertEquals(0, holder.element.scrollPosition)
+            assertEquals(0, holder.element.scrollPositionOffset)
+        }
+    }
 }
 
 private class RecyclerViewScrollStateIdlingResource(recyclerView: RecyclerView) : IdlingResource {
