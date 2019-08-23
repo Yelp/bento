@@ -109,6 +109,8 @@ You can also run `./gradlew publishToMavenLocal` to publish the package to your 
 
 We follow [semver](https://semver.org/) so the version number in `GlobalDependencies.kt` should be updated to reflect the changes.
 
+Add a summary of your change to the `CHANGELOG.md` file.
+
 #### 5. Push your changes and open a pull request
 
 Push your branch with the new commits to your cloned repo, then open a pull request through GitHub. Once Travis CI gives it a green light along with a member of our team, it will be merged and the new version will be deployed to Maven Central.
