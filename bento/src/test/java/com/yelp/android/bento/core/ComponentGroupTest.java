@@ -2,13 +2,14 @@ package com.yelp.android.bento.core;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.spy;
 
 import com.yelp.android.bento.componentcontrollers.SimpleComponentViewHolder;
 import com.yelp.android.bento.components.ListComponent;
@@ -18,15 +19,10 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /** Unit tests for {@link ComponentGroup}. */
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ComponentGroup.class)
 public class ComponentGroupTest {
 
     private ComponentGroup mComponentGroup;
@@ -50,7 +46,7 @@ public class ComponentGroupTest {
     @Test
     public void componentGroupWithGap_MapsItemsPropery() {
         Component simpleComponent =
-                new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class);
+                new SimpleComponent<>(Integer.MAX_VALUE, SimpleComponentViewHolder.class);
         simpleComponent.setStartGap(250);
         simpleComponent.setEndGap(125);
         mComponentGroup.addComponent(simpleComponent);
@@ -63,11 +59,11 @@ public class ComponentGroupTest {
         assertEquals(1, mComponentGroup.getSize()); // SimpleComponent
 
         // Presenters
-        assertEquals(null, mComponentGroup.getPresenterInternal(0)); // Gap
-        assertEquals(null, mComponentGroup.getPresenterInternal(1)); // Gap
+        assertNull(mComponentGroup.getPresenterInternal(0)); // Gap
+        assertNull(mComponentGroup.getPresenterInternal(1)); // Gap
         assertEquals(
                 Integer.MAX_VALUE, mComponentGroup.getPresenterInternal(2)); // Actual component
-        assertEquals(null, mComponentGroup.getPresenterInternal(3)); // Gap
+        assertNull(mComponentGroup.getPresenterInternal(3)); // Gap
 
         // View Holders
         assertEquals(GapViewHolder.class, mComponentGroup.getHolderTypeInternal(0)); // Gap
@@ -80,7 +76,7 @@ public class ComponentGroupTest {
         // Items
         assertEquals(250, mComponentGroup.getItemInternal(0)); // Gap
         assertEquals(250, mComponentGroup.getItemInternal(1)); // Gap
-        assertEquals(null, mComponentGroup.getItemInternal(2)); // Actual component
+        assertNull(mComponentGroup.getItemInternal(2)); // Actual component
         assertEquals(125, mComponentGroup.getItemInternal(3)); // Gap
     }
 
@@ -88,7 +84,7 @@ public class ComponentGroupTest {
     public void componentGroupWithBottomGap_DoesntNotifyGaps() {
         mComponentGroup.setEndGap(250);
         Component simpleComponent =
-                spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+                spy(new SimpleComponent<>(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         mComponentGroup.addComponent(simpleComponent);
         // The system will tell the component group that the gap element is visible on the screen.
         mComponentGroup.notifyVisibilityChange(1, true);
@@ -100,7 +96,7 @@ public class ComponentGroupTest {
     public void componentGroupWithBottomGap_NotifiesChildren() {
         mComponentGroup.setEndGap(250);
         Component simpleComponent =
-                spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+                spy(new SimpleComponent<>(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         mComponentGroup.addComponent(simpleComponent);
         // The system will tell the component group that the gap element is visible on the screen.
         mComponentGroup.notifyVisibilityChange(0, true);
@@ -124,7 +120,7 @@ public class ComponentGroupTest {
     public void componentGroupWithTopGap_NotifiesChildren() {
         mComponentGroup.setStartGap(250);
         Component simpleComponent =
-                spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+                spy(new SimpleComponent<>(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         mComponentGroup.addComponent(simpleComponent);
         // The system will tell the component group that the gap element is visible on the screen.
         mComponentGroup.notifyVisibilityChange(1, true);
@@ -135,17 +131,17 @@ public class ComponentGroupTest {
     @Test
     public void componentGroupMultipleComponents_ProperVisibilityNotifications() {
         Component simpleComponent1 =
-                spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+                spy(new SimpleComponent<>(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         simpleComponent1.setStartGap(250);
         mComponentGroup.addComponent(simpleComponent1);
 
         Component simpleComponent2 =
-                spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+                spy(new SimpleComponent<>(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         simpleComponent2.setStartGap(250);
         mComponentGroup.addComponent(simpleComponent2);
 
         Component simpleComponent3 =
-                spy(new SimpleComponent(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
+                spy(new SimpleComponent<>(Integer.MAX_VALUE, SimpleComponentViewHolder.class));
         simpleComponent3.setStartGap(250);
         mComponentGroup.addComponent(simpleComponent3);
 
@@ -357,6 +353,7 @@ public class ComponentGroupTest {
         for (int i = 0; i < numComponents; i++) {
             Component mock = mock(Component.class);
             when(mock.getCount()).thenReturn(1);
+            when(mock.getCountInternal()).thenCallRealMethod();
             when(mock.getHolderType(anyInt()))
                     .thenAnswer(
                             new Answer<Class<TestComponentViewHolder>>() {

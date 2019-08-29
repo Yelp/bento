@@ -70,11 +70,6 @@ dependencies {
 
     // Mockito
     testImplementation TestLibs.MOCKITO
+    testImplementation TestLibs.MOCKITO_KOTLIN
     androidTestImplementation TestLibs.MOCKITO
-
-    // Power Mock
-    testImplementation TestLibs.POWERMOCK_JUNIT4
-    testImplementation TestLibs.POWERMOCK_JUNIT4_RULE
-    testImplementation TestLibs.POWERMOCK_MOCKITO2
-    testImplementation TestLibs.POWERMOCK_CLASSLOADING
 }

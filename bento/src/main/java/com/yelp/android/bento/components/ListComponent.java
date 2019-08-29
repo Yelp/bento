@@ -79,8 +79,8 @@ public class ListComponent<P, T> extends Component {
      * @param data The new data list items to add.
      */
     public void appendData(@NonNull List<T> data) {
-        int oldSize = mData.size();
-        int sizeChange = data.size();
+        int oldSize = mShouldShowDivider ? getTotalSizeWithSeparators(mData.size()) : mData.size();
+        int sizeChange = mShouldShowDivider ? data.size() * 2 : data.size();
         mData.addAll(data);
         notifyItemRangeInserted(oldSize, sizeChange);
     }

@@ -1,23 +1,29 @@
 # Bento Releases
 
+## Version 15.3.1
+_2019-08-29_
+* Fix: Fixed appending data to ListComponent.
+* Fix: Fixed issue where we were no longer sharing the RecyclePool in CarouselComponent.
+* Fix: Fixed unit and espresso tests. No more PowerMock.
+
 ## Version 15.3.0
-_2018-08-13_
+_2019-08-13_
 * Behavior change: CarouselComponent now remembers its scroll position when it's scrolled offscreen.
 
 ## Version 15.2.0
-_2018-08-07_
+_2019-08-07_
 * New: Added TabViewPagerComponent to use both TabLayout and ViewPager in one view.
 
 ## Version 15.1.1
-_2018-07-11_
+_2019-07-11_
 * Fix: Add check for gap in ComponentGroup ([#20](https://github.com/Yelp/bento/pull/20))
 
 ## Version 15.1.0
-_2018-07-11_
+_2019-07-11_
 * New: Add support for drag and drop for RecyclerViews.
 
 ## Version 15.0.0
-_2018-05-20_
+_2019-05-20_
 * Behavior change: ListComponent callback for onItemVisible will only be called on items, not on separators.
 
 ## Version 14.1.0 

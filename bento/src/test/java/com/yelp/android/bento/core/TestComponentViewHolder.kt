@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 
-class TestComponentViewHolder : ComponentViewHolder<Unit, Unit>() {
+class TestComponentViewHolder : ComponentViewHolder<Nothing?, Nothing?>() {
 
     override fun inflate(parent: ViewGroup): View {
         return LayoutInflater.from(parent.context)
@@ -14,5 +14,5 @@ class TestComponentViewHolder : ComponentViewHolder<Unit, Unit>() {
                 }
     }
 
-    override fun bind(presenter: Unit, element: Unit) = Unit
+    override fun bind(presenter: Nothing?, element: Nothing?) = Unit
 }

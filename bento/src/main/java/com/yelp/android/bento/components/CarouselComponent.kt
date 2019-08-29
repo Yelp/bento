@@ -35,11 +35,7 @@ open class CarouselComponent(
 ) : Component(), RecyclerViewComponentController.SharesViewPool {
 
     private val group = ComponentGroup()
-    private var sharedPool: RecyclerView.RecycledViewPool? = null
-    private val viewModel = CarouselViewModel(
-            group,
-            sharedPool
-    )
+    private val viewModel = CarouselViewModel(group)
 
     final override fun getItem(position: Int) = viewModel
 
@@ -50,7 +46,7 @@ open class CarouselComponent(
     final override fun getHolderType(position: Int) = carouselViewHolder
 
     final override fun sharePool(pool: RecyclerView.RecycledViewPool) {
-        sharedPool = pool
+        viewModel.sharedPool = pool
     }
 
     fun addComponent(component: Component) {
@@ -147,7 +143,7 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
 
 data class CarouselViewModel(
         val group: ComponentGroup,
-        val sharedPool: RecyclerView.RecycledViewPool?,
+        var sharedPool: RecyclerView.RecycledViewPool? = null,
         var scrollPosition: Int = 0,
         var scrollPositionOffset: Int = 0
 )
