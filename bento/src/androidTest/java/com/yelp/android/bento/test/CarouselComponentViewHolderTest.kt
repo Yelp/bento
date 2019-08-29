@@ -6,14 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.IdlingResource.ResourceCallback
+import androidx.test.platform.app.InstrumentationRegistry
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.CarouselComponent
 import com.yelp.android.bento.components.CarouselComponentViewHolder
 import com.yelp.android.bento.components.CarouselViewModel
 import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.core.ComponentGroup
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNull
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, CarouselViewModel>() {
@@ -36,7 +37,10 @@ class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, Carous
         val recyclerView = RecyclerView(context)
         val pool = recyclerView.recycledViewPool
 
-        val controller = RecyclerViewComponentController(recyclerView)
+        lateinit var controller: RecyclerViewComponentController
+        runOnMainSync {
+            controller = RecyclerViewComponentController(recyclerView)
+        }
         val carousel = CarouselComponent()
 
         assertNull(carousel.getItem(0).sharedPool)
@@ -50,7 +54,10 @@ class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, Carous
         val recyclerView = RecyclerView(context)
         val pool = recyclerView.recycledViewPool
 
-        val controller = RecyclerViewComponentController(recyclerView)
+        lateinit var controller: RecyclerViewComponentController
+        runOnMainSync {
+            controller = RecyclerViewComponentController(recyclerView)
+        }
         val carousels = (1..3).map { CarouselComponent() }
 
         val group = ComponentGroup().addAll(listOf(
@@ -133,6 +140,10 @@ class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, Carous
             assertEquals(0, holder.element.scrollPosition)
             assertEquals(0, holder.element.scrollPositionOffset)
         }
+    }
+
+    private fun runOnMainSync(block: () -> Unit) {
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(block)
     }
 }
 

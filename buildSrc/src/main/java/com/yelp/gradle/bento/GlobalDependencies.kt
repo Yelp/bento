@@ -5,7 +5,7 @@ import java.net.URI
 
 object Publishing {
     const val GROUP = "com.yelp.android"
-    const val VERSION = "15.3.0"
+    const val VERSION = "15.3.1"
 }
 
 object Versions {
@@ -30,7 +30,7 @@ object Versions {
     const val MAVEN_PUBLISH = "3.6.2"
     const val MAVEN_SETTINGS = "0.5"
     const val MOCKITO = "2.7.19"
-    const val MOCKITO_KOTLIN = "1.6.0"
+    const val MOCKITO_KOTLIN = "2.1.0"
     const val POWERMOCK = "1.7.4"
     const val RX_JAVA_2 = "2.1.13"
     const val SUPPORT_TEST = "1.0.2"
@@ -73,7 +73,7 @@ object TestLibs {
     const val MOCKITO = "org.mockito:mockito-core:${Versions.MOCKITO}"
     const val MOCKITO_ANDROID = "org.mockito:mockito-android:${Versions.MOCKITO}"
     const val MOCKITO_INLINE = "org.mockito:mockito-inline:${Versions.MOCKITO}"
-    const val MOCKITO_KOTLIN = "com.nhaarman:mockito-kotlin:${Versions.MOCKITO_KOTLIN}"
+    const val MOCKITO_KOTLIN = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.MOCKITO_KOTLIN}"
     const val POWERMOCK_JUNIT4 = "org.powermock:powermock-module-junit4:${Versions.POWERMOCK}"
     const val POWERMOCK_JUNIT4_RULE =
             "org.powermock:powermock-module-junit4-rule:${Versions.POWERMOCK}"
