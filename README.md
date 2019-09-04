@@ -78,7 +78,7 @@ There are a few requirements to compile Bento.
 
 - Python is needed for the [pre-commit](https://pre-commit.com/) hooks to run
 - Java and Kotlin are needed to actually compile the project
-- Android Studio (we recommend >= 3.3.2)
+- Android Studio (we recommend >= 3.5.0)
 
 #### 1. Get the code
 
