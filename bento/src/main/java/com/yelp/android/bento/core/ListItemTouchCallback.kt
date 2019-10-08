@@ -39,11 +39,11 @@ class ListItemTouchCallback(
             viewHolder: RecyclerView.ViewHolder
     ): Int {
         val currentIndex = viewHolder.adapterPosition
-        return if (currentIndex == RecyclerView.NO_POSITION ||
-                !canReorderItemAtIndex(currentIndex)) {
-            makeMovementFlags(0, 0)
-        } else {
+        return if (currentIndex != RecyclerView.NO_POSITION &&
+                canReorderItemAtIndex(currentIndex)) {
             makeMovementFlags(DRAG_FLAGS, 0)
+        } else {
+            makeMovementFlags(0, 0)
         }
     }
 
