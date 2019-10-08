@@ -38,7 +38,9 @@ class ListItemTouchCallback(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder
     ): Int {
-        return if (canReorderItemAtIndex(viewHolder.adapterPosition)) {
+        val currentIndex = viewHolder.adapterPosition
+        return if (currentIndex != RecyclerView.NO_POSITION &&
+                canReorderItemAtIndex(currentIndex)) {
             makeMovementFlags(DRAG_FLAGS, 0)
         } else {
             makeMovementFlags(0, 0)
@@ -81,7 +83,7 @@ class ListItemTouchCallback(
         dragFrom = dragTo
     }
 
-    private fun canReorderItemAtIndex(index: Int) : Boolean {
+    private fun canReorderItemAtIndex(index: Int): Boolean {
         val targetRangeValue = component.findRangedComponentWithIndex(index)
         val targetComponent = targetRangeValue.mValue
         return targetComponent.canPickUpItem(index - targetRangeValue.mRange.mLower)

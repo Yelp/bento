@@ -66,7 +66,16 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
      */
     @NonNull
     public RangedValue<T> rangedValueAt(int location) {
-        return mRangeList.get(Collections.binarySearch(mRangeList, location));
+        int foundLocation = Collections.binarySearch(mRangeList, location);
+
+        if (foundLocation < 0) {
+            throw new ArrayIndexOutOfBoundsException(
+                    "Could not find value at index: " + location + ".\n" +
+                            "BinarySearch returned: " + foundLocation + ".\n" +
+                            describeAccordionList()
+            );
+        }
+        return mRangeList.get(foundLocation);
     }
 
     /**
@@ -170,6 +179,20 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
         for (int i = entryIndex; i < mRangeList.size(); i++) {
             mRangeList.set(i, mRangeList.get(i).offset(offset));
         }
+    }
+
+    private String describeAccordionList() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("AccordionList has size: ")
+                .append(mRangeList.size())
+                .append(". /n")
+                .append("Items in AccordionList:\n");
+
+        for (RangedValue<T> range : mRangeList) {
+            builder.append(range.toString());
+        }
+
+        return builder.toString();
     }
 
     private class AccordionListIterator implements Iterator<RangedValue<T>> {
