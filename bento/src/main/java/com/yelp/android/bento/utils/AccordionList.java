@@ -66,7 +66,13 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
      */
     @NonNull
     public RangedValue<T> rangedValueAt(int location) {
-        return mRangeList.get(Collections.binarySearch(mRangeList, location));
+        int foundLocation = Collections.binarySearch(mRangeList, location);
+
+        if (foundLocation < 0) {
+            throw new ArrayIndexOutOfBoundsException("Could not find value at index: " + location +
+                    ". BinarySearch returned: " + foundLocation);
+        }
+        return mRangeList.get(foundLocation);
     }
 
     /**
