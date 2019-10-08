@@ -1,6 +1,6 @@
 # Bento Releases
 
-## Version 15.3.1
+## Version 15.3.2
 _2019-10-08_
 * Fix: Fixed bug in ListItemTouchCallback causing crash when viewHolder.adapterPosition is -1
 * Fix: Add detailed exception thrown when AccordionList.rangedValueAt is called with an incorrect value.
