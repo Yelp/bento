@@ -7,12 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.ViewPagerComponentController
 import com.yelp.android.bento.components.CarouselComponent
 import com.yelp.android.bento.components.ListComponent
+import com.yelp.android.bento.components.NestedComponent
+import com.yelp.android.bento.components.NestedViewModel
 import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedInnerComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedOuterExampleViewModel
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_view_pager.*
 
@@ -31,6 +36,7 @@ class ViewPagerActivity : AppCompatActivity() {
         addSimpleComponent(controller, false)
         addListComponent(controller)
         addCarouselComponent(controller)
+        addNestedComponent(controller)
         addSimpleComponent(controller, true)
         addListComponent(controller)
         addComponentToScrollTo(controller)
@@ -120,5 +126,15 @@ class ViewPagerActivity : AppCompatActivity() {
         })
         carousel.addAll((1..20).map { SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java) })
         controller.addComponent(carousel)
+    }
+
+    private fun addNestedComponent(controller: ComponentController) {
+        val nestedViewModel = NestedViewModel(
+                SimpleComponent<Nothing>(NestedInnerComponentExampleViewHolder::class.java),
+                NestedOuterComponentExampleViewHolder::class.java,
+                NestedOuterExampleViewModel("Nested component in ListView")
+        )
+        val nestedComponent = NestedComponent(nestedViewModel)
+        controller.addComponent(nestedComponent)
     }
 }

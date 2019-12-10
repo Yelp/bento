@@ -7,12 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.CarouselComponent
 import com.yelp.android.bento.components.ListComponent
+import com.yelp.android.bento.components.NestedComponent
+import com.yelp.android.bento.components.NestedViewModel
 import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedInnerComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedOuterExampleViewModel
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleJavaComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_recycler_view.*
@@ -37,6 +42,7 @@ class RecyclerViewActivity : AppCompatActivity() {
         addListComponent(componentController)
         addComponentToScrollTo(componentController)
         addCarouselComponent(componentController)
+        addNestedComponent(componentController)
         addListComponent(componentController)
         addAnimatedComponent(componentController)
         addCarouselComponent(componentController)
@@ -118,5 +124,15 @@ class RecyclerViewActivity : AppCompatActivity() {
         })
         carousel.addAll((1..20).map { SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java) })
         controller.addComponent(carousel)
+    }
+
+    private fun addNestedComponent(controller: ComponentController) {
+        val nestedViewModel = NestedViewModel(
+                SimpleComponent<Nothing>(NestedInnerComponentExampleViewHolder::class.java),
+                NestedOuterComponentExampleViewHolder::class.java,
+                NestedOuterExampleViewModel("Nested component in RecyclerView")
+        )
+        val nestedComponent = NestedComponent(nestedViewModel)
+        controller.addComponent(nestedComponent)
     }
 }
