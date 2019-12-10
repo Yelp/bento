@@ -18,7 +18,7 @@ import com.yelp.android.bento.utils.inflate
  * implement outerLayout and recyclerViewId to have it inflate the desired outer layout. Use
  * this new ViewHolder class to create the viewModel.
  */
-open class NestedComponent(private val viewModel: NestedViewModel) : Component() {
+open class NestedComponent(private val viewModel: NestedViewModel<*>) : Component() {
 
     override fun getPresenter(position: Int) = viewModel.innerComponent.getPresenter(position)
 
@@ -26,10 +26,10 @@ open class NestedComponent(private val viewModel: NestedViewModel) : Component()
 
     override fun getCount() = 1
 
-    override fun getHolderType(position: Int) = viewModel.outerComponentViewHolder::class.java
+    override fun getHolderType(position: Int) = viewModel.outerComponentViewHolder
 }
 
-abstract class NestedOuterComponentViewHolder : ComponentViewHolder<Any?, NestedViewModel>() {
+abstract class NestedOuterComponentViewHolder<T> : ComponentViewHolder<Any?, NestedViewModel<T>>() {
 
     lateinit var controller: RecyclerViewComponentController
 
@@ -54,7 +54,7 @@ abstract class NestedOuterComponentViewHolder : ComponentViewHolder<Any?, Nested
         }
     }
 
-    override fun bind(presenter: Any?, element: NestedViewModel) {
+    override fun bind(presenter: Any?, element: NestedViewModel<T>) {
         if (controller.size > 0) {
             if (controller[0] != element.innerComponent) {
                 controller.remove(controller[0])
@@ -66,7 +66,8 @@ abstract class NestedOuterComponentViewHolder : ComponentViewHolder<Any?, Nested
     }
 }
 
-data class NestedViewModel(
+data class NestedViewModel<T>(
         val innerComponent: Component,
-        val outerComponentViewHolder: NestedOuterComponentViewHolder
+        val outerComponentViewHolder: Class<out NestedOuterComponentViewHolder<T>>,
+        val outerComponentViewModel: T
 )
