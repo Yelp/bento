@@ -11,8 +11,12 @@ import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bento.utils.inflate
 
 /**
- * A {@link ListComponent} that supports nesting an inner component inside an outer viewHolder.
+ * A [Component] that supports nesting an inner Component inside an outer ViewHolder.
  * This can be used to add borders to components.
+ *
+ * To use it, create a ViewHolder class extending [NestedOuterComponentViewHolder] and
+ * implement outerLayout and recyclerViewId to have it inflate the desired outer layout. Use
+ * this new ViewHolder class to create the viewModel.
  */
 open class NestedComponent(private val viewModel: NestedViewModel) : Component() {
 
