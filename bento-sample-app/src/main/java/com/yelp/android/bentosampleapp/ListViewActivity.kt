@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.ListViewComponentController
 import com.yelp.android.bento.components.CarouselComponent
 import com.yelp.android.bento.components.ListComponent
+import com.yelp.android.bento.components.NestedComponent
+import com.yelp.android.bento.components.NestedViewModel
 import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.components.support.ListAdapterComponent
 import com.yelp.android.bento.core.Component
@@ -15,6 +17,8 @@ import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedInnerComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_list_view.*
 
@@ -38,6 +42,7 @@ class ListViewActivity : AppCompatActivity() {
         addAnimatedComponent(controller)
         addListComponent(controller)
         addCarouselComponent(controller)
+        addNestedComponent(controller)
         addArrayAdapterComponent(controller)
         addAnimatedComponent(controller)
         addComponentToScrollTo(controller)
@@ -117,5 +122,14 @@ class ListViewActivity : AppCompatActivity() {
         })
         carousel.addAll((1..20).map { SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java) })
         controller.addComponent(carousel)
+    }
+
+    private fun addNestedComponent(controller: ComponentController) {
+        val nestedViewModel = NestedViewModel(
+                SimpleComponent<Nothing>(NestedInnerComponentExampleViewHolder::class.java),
+                NestedOuterComponentExampleViewHolder()
+        )
+        val nestedComponent = NestedComponent(nestedViewModel)
+        controller.addComponent(nestedComponent)
     }
 }
