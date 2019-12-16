@@ -8,7 +8,7 @@ import com.yelp.android.bento.components.NestedViewModel
 import com.yelp.android.bentosampleapp.R
 
 class NestedOuterComponentExampleViewHolder :
-        NestedOuterComponentViewHolder<NestedOuterExampleViewModel>() {
+        NestedOuterComponentViewHolder<Nothing?, NestedOuterExampleViewModel>() {
 
     lateinit var textView: TextView
     override val outerLayout = R.layout.nested_component_example
@@ -20,7 +20,10 @@ class NestedOuterComponentExampleViewHolder :
         }
     }
 
-    override fun bind(presenter: Any?, element: NestedViewModel<NestedOuterExampleViewModel>) {
+    override fun bind(
+            presenter: Nothing?,
+            element: NestedViewModel<Nothing?, NestedOuterExampleViewModel>
+    ) {
         super.bind(presenter, element)
         textView.text = element.outerComponentViewModel.text
     }

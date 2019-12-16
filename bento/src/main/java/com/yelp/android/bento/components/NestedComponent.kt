@@ -2,6 +2,7 @@ package com.yelp.android.bento.components
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,7 @@ import com.yelp.android.bento.utils.inflate
  * implement outerLayout and recyclerViewId to have it inflate the desired outer layout. Use
  * this new ViewHolder class to create the viewModel.
  */
-open class NestedComponent(private val viewModel: NestedViewModel<*>) : Component() {
+open class NestedComponent(private val viewModel: NestedViewModel<*, *>) : Component() {
 
     override fun getPresenter(position: Int) = viewModel.innerComponent.getPresenter(position)
 
@@ -29,7 +30,8 @@ open class NestedComponent(private val viewModel: NestedViewModel<*>) : Componen
     override fun getHolderType(position: Int) = viewModel.outerComponentViewHolder
 }
 
-abstract class NestedOuterComponentViewHolder<T> : ComponentViewHolder<Any?, NestedViewModel<T>>() {
+abstract class NestedOuterComponentViewHolder<P, T> :
+        ComponentViewHolder<P, NestedViewModel<P, T>>() {
 
     lateinit var controller: RecyclerViewComponentController
 
@@ -47,6 +49,7 @@ abstract class NestedOuterComponentViewHolder<T> : ComponentViewHolder<Any?, Nes
     @get:IdRes
     abstract val recyclerViewId: Int
 
+    @CallSuper
     override fun inflate(parent: ViewGroup): View {
         return parent.inflate<View>(outerLayout).apply {
             val recyclerView: RecyclerView = findViewById(recyclerViewId)
@@ -54,7 +57,8 @@ abstract class NestedOuterComponentViewHolder<T> : ComponentViewHolder<Any?, Nes
         }
     }
 
-    override fun bind(presenter: Any?, element: NestedViewModel<T>) {
+    @CallSuper
+    override fun bind(presenter: P, element: NestedViewModel<P, T>) {
         if (controller.size > 0) {
             if (controller[0] != element.innerComponent) {
                 controller.remove(controller[0])
@@ -66,8 +70,8 @@ abstract class NestedOuterComponentViewHolder<T> : ComponentViewHolder<Any?, Nes
     }
 }
 
-data class NestedViewModel<T>(
+data class NestedViewModel<P, T>(
         val innerComponent: Component,
-        val outerComponentViewHolder: Class<out NestedOuterComponentViewHolder<T>>,
+        val outerComponentViewHolder: Class<out NestedOuterComponentViewHolder<P, T>>,
         val outerComponentViewModel: T
 )
