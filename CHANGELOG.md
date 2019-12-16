@@ -1,5 +1,9 @@
 # Bento Releases
 
+## Version 15.3.3
+_2019-12-16_
+* New: Add a NestedComponent that can be used for nesting a given inner Component inside a given outer ViewHolder.
+
 ## Version 15.3.2
 _2019-10-08_
 * Fix: Fixed bug in ListItemTouchCallback causing crash when viewHolder.adapterPosition is -1
