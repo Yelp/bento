@@ -1,7 +1,7 @@
 # Bento Releases
 
-## Version 15.3.3
-_2019-12-16_
+## Version 15.4.0
+_2019-12-18_
 * New: Add a NestedComponent that can be used for nesting a given inner Component inside a given outer ViewHolder.
 
 ## Version 15.3.2

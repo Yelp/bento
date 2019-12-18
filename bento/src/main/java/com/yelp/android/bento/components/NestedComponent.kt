@@ -51,9 +51,11 @@ abstract class NestedOuterComponentViewHolder<P, T> :
 
     @CallSuper
     override fun inflate(parent: ViewGroup): View {
-        return parent.inflate<View>(outerLayout).apply {
-            val recyclerView: RecyclerView = findViewById(recyclerViewId)
-            controller = RecyclerViewComponentController(recyclerView, RecyclerView.VERTICAL)
+        return parent.inflate<View>(outerLayout).also {
+            controller = RecyclerViewComponentController(
+                    it.findViewById(recyclerViewId),
+                    RecyclerView.VERTICAL
+            )
         }
     }
 
