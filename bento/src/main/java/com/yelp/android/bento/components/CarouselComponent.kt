@@ -58,6 +58,12 @@ open class CarouselComponent(
     }
 
     fun addAll(components: Collection<Component>) = components.forEach(::addComponent)
+
+    fun remove(index: Int) = group.remove(index)
+
+    fun remove(component: Component) = group.remove(component)
+
+    fun clear() = group.clear()
 }
 
 /**
