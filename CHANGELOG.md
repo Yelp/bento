@@ -1,5 +1,10 @@
 # Bento Releases
 
+## Version 15.5.0
+_2020-01-16_
+* New: Add remove() and clear() functions to CarouselComponent.
+* New: Add a unit test for testing CarouselComponent's add(), addAll(), remove(), and clear() functions.
+
 ## Version 15.4.0
 _2019-12-18_
 * New: Add a NestedComponent that can be used for nesting a given inner Component inside a given outer ViewHolder.
