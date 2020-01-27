@@ -1,5 +1,9 @@
 # Bento Releases
 
+## Version 15.6.0
+_2020-01-27_
+* Fix: Change NestedComponent to have separate presenter from its inner Component.
+
 ## Version 15.5.0
 _2020-01-16_
 * New: Add remove() and clear() functions to CarouselComponent.
