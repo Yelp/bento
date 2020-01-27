@@ -132,7 +132,7 @@ class RecyclerViewActivity : AppCompatActivity() {
                 NestedOuterComponentExampleViewHolder::class.java,
                 NestedOuterExampleViewModel("Nested component in RecyclerView")
         )
-        val nestedComponent = NestedComponent(nestedViewModel)
+        val nestedComponent = NestedComponent(null, nestedViewModel)
         controller.addComponent(nestedComponent)
     }
 }

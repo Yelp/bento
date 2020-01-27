@@ -19,9 +19,12 @@ import com.yelp.android.bento.utils.inflate
  * implement outerLayout and recyclerViewId to have it inflate the desired outer layout. Use
  * this new ViewHolder class to create the viewModel.
  */
-open class NestedComponent(private val viewModel: NestedViewModel<*, *>) : Component() {
+open class NestedComponent<P>(
+        private val presenter: P,
+        private val viewModel: NestedViewModel<*, *>
+) : Component() {
 
-    override fun getPresenter(position: Int) = viewModel.innerComponent.getPresenter(position)
+    override fun getPresenter(position: Int) = presenter
 
     override fun getItem(position: Int) = viewModel
 

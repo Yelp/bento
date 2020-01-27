@@ -131,7 +131,7 @@ class ListViewActivity : AppCompatActivity() {
                 NestedOuterComponentExampleViewHolder::class.java,
                 NestedOuterExampleViewModel("Nested component in ListView")
         )
-        val nestedComponent = NestedComponent(nestedViewModel)
+        val nestedComponent = NestedComponent(null, nestedViewModel)
         controller.addComponent(nestedComponent)
     }
 }
