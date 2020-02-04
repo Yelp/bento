@@ -142,6 +142,28 @@ class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, Carous
         }
     }
 
+    @Test
+    fun scrollCarousel_withItemVisibilityListener_getsCalledForEveryItem(){
+        val group = ComponentGroup()
+        group.addAll((1..20).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) })
+        var visibleCount = 0
+        group.registerItemVisibilityListener { index, isVisible ->
+            if(isVisible) visibleCount++
+        }
+        val pool = RecyclerView.RecycledViewPool()
+
+        bindViewHolder(CarouselComponentViewHolder::class.java, null, CarouselViewModel(group, pool))
+        val holder = getHolder<CarouselComponentViewHolder>()
+
+        val scrollToPosition = 20
+        holder.recyclerView.layoutManager?.smoothScrollToPosition(
+                holder.recyclerView, null, scrollToPosition)
+
+        RecyclerViewScrollStateIdlingResource(holder.recyclerView).registerIdleTransitionCallback {
+            assertEquals(20, visibleCount)
+        }
+    }
+
     private fun runOnMainSync(block: () -> Unit) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(block)
     }

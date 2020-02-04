@@ -5,36 +5,38 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
+
 import com.yelp.android.bento.utils.Observable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The building block of user interfaces in the Bento framework. Represents a self-contained
  * component to be used with a {@link ComponentController}.
  *
- * <p> A component is made up of a series of internal items that are rendered to the screen as
- * views. The number of internal items is specified by the {@link #getCount()} method. Typically,
- * unless a component repeats an identical view many times in a row or has multiple lanes, the
- * number of internal items in a component should be limited to just one. This makes it easier to
- * reason about a user interface as a series of modular components instead of a complicated set of
- * internal items whose state must be managed by the component.
+ * <p>A component is made up of a series of internal items that are rendered to the screen as views.
+ * The number of internal items is specified by the {@link #getCount()} method. Typically, unless a
+ * component repeats an identical view many times in a row or has multiple lanes, the number of
+ * internal items in a component should be limited to just one. This makes it easier to reason about
+ * a user interface as a series of modular components instead of a complicated set of internal items
+ * whose state must be managed by the component.
  */
 public abstract class Component {
 
     private final ComponentDataObservable mObservable = new ComponentDataObservable();
 
-    @Px
-    private int mStartGapSize = 0;
+    @Px private int mStartGapSize = 0;
 
-    @Px
-    private int mEndGapSize = 0;
+    @Px private int mEndGapSize = 0;
+    @NonNull private List<ItemVisibilityListener> mItemVisibilityListeners = new ArrayList<>();
 
     /**
      * Gets the object that is the brains of the internal item at the specified position. The
-     * presenter will be passed in to the bind method in the
-     * {@link ComponentViewHolder#bind(Object, Object)} that handles any logic associated with user
-     * interactions in the view.
+     * presenter will be passed in to the bind method in the {@link ComponentViewHolder#bind(Object,
+     * Object)} that handles any logic associated with user interactions in the view.
      *
-     * <p> Typically it ends up being the component class itself.
+     * <p>Typically it ends up being the component class itself.
      *
      * @param position The position of the internal item in the component.
      * @return The presenter associated with the internal item at the specified position.
@@ -44,8 +46,8 @@ public abstract class Component {
 
     /**
      * Gets the data item that will be bound to the view at the specified position. The data item
-     * (or "element") will be passed in to the bind method in the
-     * {@link ComponentViewHolder#bind(Object, Object)}.
+     * (or "element") will be passed in to the bind method in the {@link
+     * ComponentViewHolder#bind(Object, Object)}.
      *
      * @param position The position of the internal item in the component.
      * @return The data item associated with the internal item at the specified position.
@@ -55,16 +57,15 @@ public abstract class Component {
 
     /**
      * The count represents the number of internal items in a component. Each internal item in a
-     * component can have a different data item, presenter and view holder type used to create
-     * its associated view.
+     * component can have a different data item, presenter and view holder type used to create its
+     * associated view.
      *
-     * <p> Bento uses this count to render a component. It will call {@link #getItem(int)},
-     * {@link #getPresenter(int)} and {@link #getHolderType(int)} however many times the count
-     * specifies.
+     * <p>Bento uses this count to render a component. It will call {@link #getItem(int)}, {@link
+     * #getPresenter(int)} and {@link #getHolderType(int)} however many times the count specifies.
      *
-     * @return The count of internal items in the component. If zero, then the component will not
-     * be rendered. Currently this is the recommended way of hiding components without removing
-     * them from the list.
+     * @return The count of internal items in the component. If zero, then the component will not be
+     *     rendered. Currently this is the recommended way of hiding components without removing
+     *     them from the list.
      */
     public abstract int getCount();
 
@@ -79,19 +80,18 @@ public abstract class Component {
     @NonNull
     public abstract Class<? extends ComponentViewHolder> getHolderType(int position);
 
-    protected SpanSizeLookup mSpanSizeLookup = new SpanSizeLookup() {
-        @Override
-        public int getSpanSize(int position) {
-            if (hasGap(position)) {
-                return getNumberLanes();
-            }
-            return 1;
-        }
-    };
+    protected SpanSizeLookup mSpanSizeLookup =
+            new SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if (hasGap(position)) {
+                        return getNumberLanes();
+                    }
+                    return 1;
+                }
+            };
 
-    /**
-     * Notify observers that the {@link Component} data has changed.
-     */
+    /** Notify observers that the {@link Component} data has changed. */
     public final void notifyDataChanged() {
         mObservable.notifyChanged();
     }
@@ -103,30 +103,24 @@ public abstract class Component {
         mObservable.notifyItemRangeChanged(positionStart, itemCount);
     }
 
-    /**
-     * Notify observers that an internal item in the {@link Component} data has been inserted.
-     */
+    /** Notify observers that an internal item in the {@link Component} data has been inserted. */
     public final void notifyItemRangeInserted(int positionStart, int itemCount) {
         mObservable.notifyItemRangeInserted(positionStart, itemCount);
     }
 
-    /**
-     * Notify observers that an internal item in the {@link Component} data has been removed.
-     */
+    /** Notify observers that an internal item in the {@link Component} data has been removed. */
     public final void notifyItemRangeRemoved(int positionStart, int itemCount) {
         mObservable.notifyItemRangeRemoved(positionStart, itemCount);
     }
 
-    /**
-     * Notify observers that an internal item in the {@link Component} data has been moved.
-     */
+    /** Notify observers that an internal item in the {@link Component} data has been moved. */
     public final void notifyItemMoved(int fromPosition, int toPosition) {
         mObservable.notifyOnItemMoved(fromPosition, toPosition);
     }
 
     /**
      * @param gapSizePx The size of the gap that comes before the component (either horizontally or
-     *                  vertically) measured in pixels.
+     *     vertically) measured in pixels.
      */
     public void setStartGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
@@ -138,7 +132,7 @@ public abstract class Component {
 
     /**
      * @param gapSizePx The size of the gap that comes after the component (either horizontally or
-     *                  vertically) measured in pixels.
+     *     vertically) measured in pixels.
      */
     public void setEndGap(@Px int gapSizePx) {
         if (gapSizePx < 0) {
@@ -153,21 +147,29 @@ public abstract class Component {
      * the {@link Component}.
      *
      * @param observer The component data observer that will react to changes to internal items in
-     *                 the {@link Component}.
+     *     the {@link Component}.
      */
     public void registerComponentDataObserver(@NonNull ComponentDataObserver observer) {
         mObservable.registerObserver(observer);
     }
 
     /**
-     * Un-Registers a {@link ComponentDataObserver} to stop observing changes to the internal items in
-     * the {@link Component}.
+     * Un-Registers a {@link ComponentDataObserver} to stop observing changes to the internal items
+     * in the {@link Component}.
      *
-     * @param observer The component data observer that is currently reacting to changes to
-     *                 internal items in the {@link Component} and should stop.
+     * @param observer The component data observer that is currently reacting to changes to internal
+     *     items in the {@link Component} and should stop.
      */
     public void unregisterComponentDataObserver(@NonNull ComponentDataObserver observer) {
         mObservable.unregisterObserver(observer);
+    }
+
+    public void registerItemVisibilityListener(@NonNull ItemVisibilityListener listener) {
+        mItemVisibilityListeners.add(listener);
+    }
+
+    public void unregisterItemVisibilityListener(@NonNull ItemVisibilityListener listener) {
+        mItemVisibilityListeners.remove(listener);
     }
 
     /**
@@ -187,25 +189,38 @@ public abstract class Component {
     /**
      * Override this method when you want to take an action when a view in this component is (at
      * least partially) visible on the screen.
-     * <p><p>
-     * See {@link ComponentVisibilityListener} for more info.
+     *
+     * <p>
+     *
+     * <p>See {@link ComponentVisibilityListener} for more info.
      *
      * @param index Index of item that is now visible on screen.
      */
     @CallSuper
     public void onItemVisible(int index) {
+        for (ItemVisibilityListener listener : mItemVisibilityListeners) {
+            listener.onItemVisibilityChanged(index, true);
+        }
     }
 
     /**
      * Override this method when you want to take an action when a view in this component is no
      * longer visible on the screen.
-     * <p><p>
-     * See {@link ComponentVisibilityListener} for more info.
+     *
+     * <p>Alternatively, consider registering an {@link ItemVisibilityListener} using {@link
+     * #registerItemVisibilityListener(ItemVisibilityListener)} instead.
+     *
+     * <p>
+     *
+     * <p>See {@link ComponentVisibilityListener} for more info.
      *
      * @param index Index of item that is no longer visible on screen.
      */
     @CallSuper
     public void onItemNotVisible(int index) {
+        for (ItemVisibilityListener listener : mItemVisibilityListeners) {
+            listener.onItemVisibilityChanged(index, false);
+        }
     }
 
     /**
@@ -215,8 +230,7 @@ public abstract class Component {
      * @param index The index of the top visible item.
      */
     @CallSuper
-    public void onItemAtTop(int index) {
-    }
+    public void onItemAtTop(int index) {}
 
     /**
      * Similar to {@link #getPresenter(int)} but also accounts for Bento framework items such as
@@ -224,7 +238,7 @@ public abstract class Component {
      *
      * @param position The position to retrieve the presenter at.
      * @return The presenter for the internal item at the specified position, including gap
-     * components.
+     *     components.
      */
     @Nullable
     final Object getPresenterInternal(int position) {
@@ -241,7 +255,7 @@ public abstract class Component {
      *
      * @param position The position to retrieve the view holder class at.
      * @return The view holder class for the internal item at the specified position, including gap
-     * components.
+     *     components.
      */
     @NonNull
     public final Class<? extends ComponentViewHolder> getHolderTypeInternal(int position) {
@@ -253,12 +267,11 @@ public abstract class Component {
     }
 
     /**
-     * Similar to {@link #getItem(int)} but also accounts for Bento framework items such as
-     * gaps.
+     * Similar to {@link #getItem(int)} but also accounts for Bento framework items such as gaps.
      *
      * @param position The position to retrieve the data item at.
      * @return The view holder class for the internal item at the specified position, including gap
-     * components.
+     *     components.
      */
     @Nullable
     protected final Object getItemInternal(int position) {
@@ -273,17 +286,13 @@ public abstract class Component {
         return getItem(position - getPositionOffset());
     }
 
-    /**
-     * @return The span size lookup that manages components with multiple lanes.
-     */
+    /** @return The span size lookup that manages components with multiple lanes. */
     @NonNull
     public SpanSizeLookup getSpanSizeLookup() {
         return mSpanSizeLookup;
     }
 
-    /**
-     * @param lookup The new lookup that will manage components with multiple lanes
-     */
+    /** @param lookup The new lookup that will manage components with multiple lanes */
     public void setSpanSizeLookup(@NonNull SpanSizeLookup lookup) {
         mSpanSizeLookup = lookup;
     }
@@ -294,15 +303,13 @@ public abstract class Component {
      * @param fromIndex The index the item was originally in.
      * @param toIndex The index the item was moved to.
      * @see Component#canPickUpItem(int) (boolean)
-     * @see Component#canDropItem(Component, int, int)
+     * @see Component#canDropItem(int, int)
      */
-    public void onItemsMoved(
-            int fromIndex,
-            int toIndex) {
-    }
+    public void onItemsMoved(int fromIndex, int toIndex) {}
 
     /**
      * Checks if an item from one component can be dropped in this component at a given index.
+     *
      * @param fromIndex The index the item is currently at in the fromComponent.
      * @param toIndex The index where the user is attempting to drop the item in this component.
      * @return true if this component will allow the other component to drop the item at this index.
@@ -317,7 +324,7 @@ public abstract class Component {
 
     /**
      * @return The count of all internal items in the component, including Bento framework items
-     * like gap items.
+     *     like gap items.
      */
     protected final int getCountInternal() {
         int count = 0;
@@ -396,10 +403,12 @@ public abstract class Component {
                 || mEndGapSize > 0 && position == getCountInternal() - 1;
     }
 
-    /**
-     * @return The offset the position needs to be modified by to account for gaps.
-     */
+    /** @return The offset the position needs to be modified by to account for gaps. */
     protected int getPositionOffset() {
         return mStartGapSize > 0 ? 1 : 0;
+    }
+
+    public interface ItemVisibilityListener {
+        void onItemVisibilityChanged(int index, boolean isVisible);
     }
 }
