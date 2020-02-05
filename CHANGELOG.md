@@ -1,6 +1,6 @@
 # Bento Releases
 ## Version 15.7.0
-_<Date to specify>_
+_2020_02_05_
 * New: Add a registerItemVisibilityListener to Component, to avoid needing to override components simply for that. (Comes bundled with an unregister method)
 * Fix: Change CarouselComponent behavior so that it notifies it's nested Components when it becomes visible or invisible because of scrolling.
 
