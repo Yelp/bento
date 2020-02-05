@@ -17,7 +17,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, CarouselViewModel>() {
+class CarouselComponentViewHolderTest : ComponentViewHolderTestCase<Unit?, CarouselViewModel>() {
 
     @Test
     fun providingRecycledPool_SharesPool() {
@@ -142,6 +142,28 @@ class CarouselComponentViewHolderTest: ComponentViewHolderTestCase<Unit?, Carous
         }
     }
 
+    @Test
+    fun scrollCarousel_withItemVisibilityListener_getsCalledForEveryItem() {
+        val group = ComponentGroup()
+        group.addAll((1..20).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) })
+        var visibleCount = 0
+        group.registerItemVisibilityListener { index, isVisible ->
+            if (isVisible) visibleCount++
+        }
+        val pool = RecyclerView.RecycledViewPool()
+
+        bindViewHolder(CarouselComponentViewHolder::class.java, null, CarouselViewModel(group, pool))
+        val holder = getHolder<CarouselComponentViewHolder>()
+
+        val scrollToPosition = 20
+        holder.recyclerView.layoutManager?.smoothScrollToPosition(
+                holder.recyclerView, null, scrollToPosition)
+
+        RecyclerViewScrollStateIdlingResource(holder.recyclerView).registerIdleTransitionCallback {
+            assertEquals(20, visibleCount)
+        }
+    }
+
     private fun runOnMainSync(block: () -> Unit) {
         InstrumentationRegistry.getInstrumentation().runOnMainSync(block)
     }
@@ -167,7 +189,7 @@ private class RecyclerViewScrollStateIdlingResource(recyclerView: RecyclerView) 
         mResourceCallback = resourceCallback
     }
 
-    private inner class IdleScrollListener: RecyclerView.OnScrollListener() {
+    private inner class IdleScrollListener : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
             if (newState == SCROLL_STATE_IDLE) {
@@ -198,7 +220,7 @@ private class ViewAttachedToWindowIdlingResource(view: View) : IdlingResource {
         mResourceCallback = resourceCallback
     }
 
-    private inner class OnAttachListener: View.OnAttachStateChangeListener {
+    private inner class OnAttachListener : View.OnAttachStateChangeListener {
         override fun onViewDetachedFromWindow(v: View?) {
             // Do nothing.
         }

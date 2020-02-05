@@ -3,6 +3,7 @@ package com.yelp.android.bentosampleapp
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.CarouselComponent
@@ -46,6 +47,7 @@ class RecyclerViewActivity : AppCompatActivity() {
         addListComponent(componentController)
         addAnimatedComponent(componentController)
         addCarouselComponent(componentController)
+        addLabeledComponentWithItemVisibilityListener(componentController)
 
         componentController.addComponent(SimpleComponent<Nothing>(
                 SimpleJavaComponentExampleViewHolder::class.java))
@@ -96,6 +98,25 @@ class RecyclerViewActivity : AppCompatActivity() {
         }
     }
 
+    private fun addLabeledComponentWithItemVisibilityListener(
+            controller: ComponentController
+    ) {
+        val simpleComponent =
+                LabeledComponent("LabeledComponent with visibility callback").apply {
+                    registerItemVisibilityListener { _, isVisible ->
+                        val message = if (isVisible) "visible" else "invisible"
+
+                        Toast.makeText(
+                                this@RecyclerViewActivity,
+                                "SimpleComponent is $message",
+                                Toast.LENGTH_SHORT)
+                                .show()
+                    }
+                }
+
+        controller.addComponent(simpleComponent)
+    }
+
     private fun addListComponent(controller: ComponentController) {
         controller.addComponent(ListComponent(null,
                 ListComponentExampleViewHolder::class.java).apply {
@@ -123,6 +144,18 @@ class RecyclerViewActivity : AppCompatActivity() {
             setData((1..20).map { "List element $it" })
         })
         carousel.addAll((1..20).map { SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java) })
+        carousel.addComponent(LabeledComponent("Carousel Component with visibility callback").apply {
+            registerItemVisibilityListener { _, isVisible ->
+                val message = if (isVisible) "visible" else "invisible"
+
+                Toast.makeText(
+                        this@RecyclerViewActivity,
+                        "Component becomes $message",
+                        Toast.LENGTH_SHORT)
+                        .show()
+            }
+        })
+
         controller.addComponent(carousel)
     }
 

@@ -2,6 +2,7 @@ package com.yelp.android.bento.componentcontrollers;
 
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
@@ -27,19 +29,20 @@ import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Sequenceable;
+
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import kotlin.sequences.Sequence;
-import org.jetbrains.annotations.Nullable;
 
-/**
- * Implementation of {@link ComponentController} for {@link RecyclerView}s.
- */
-public class RecyclerViewComponentController implements ComponentController,
-        OnItemMovedPositionListener {
+import kotlin.sequences.Sequence;
+
+/** Implementation of {@link ComponentController} for {@link RecyclerView}s. */
+public class RecyclerViewComponentController
+        implements ComponentController, OnItemMovedPositionListener {
 
     private final RecyclerView.Adapter<ViewHolderWrapper> mRecyclerViewAdapter;
     private final ComponentGroup mComponentGroup;
@@ -56,8 +59,7 @@ public class RecyclerViewComponentController implements ComponentController,
     private LinearSmoothScroller mSmoothScroller;
     private ItemTouchHelper mItemTouchHelper;
 
-    @RecyclerView.Orientation
-    private int mOrientation;
+    @RecyclerView.Orientation private int mOrientation;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
@@ -140,7 +142,6 @@ public class RecyclerViewComponentController implements ComponentController,
 
         mItemTouchHelper = new ItemTouchHelper(new ListItemTouchCallback(mComponentGroup, this));
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
-
 
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -285,23 +286,26 @@ public class RecyclerViewComponentController implements ComponentController,
 
     @Override
     public void onItemMovedPosition(int fromAbsoluteIndex, int toAbsoluteIndex) {
-        RangedValue<Component> componentMoved = mComponentGroup
-                .findRangedComponentWithIndex(fromAbsoluteIndex);
+        RangedValue<Component> componentMoved =
+                mComponentGroup.findRangedComponentWithIndex(fromAbsoluteIndex);
 
         int fromIndex = fromAbsoluteIndex - componentMoved.mRange.mLower;
         int toIndex = toAbsoluteIndex - componentMoved.mRange.mLower;
         componentMoved.mValue.onItemsMoved(fromIndex, toIndex);
 
         // Bind is not called again, so we need to go through and properly set all the positions.
-        int currentIndex = Math.max(
-                Math.min(fromAbsoluteIndex, toAbsoluteIndex),
-                mLayoutManager.findFirstVisibleItemPosition());
-        int highIndex = Math.min(
-                Math.max(fromAbsoluteIndex, toAbsoluteIndex),
-                mLayoutManager.findLastVisibleItemPosition());
+        int currentIndex =
+                Math.max(
+                        Math.min(fromAbsoluteIndex, toAbsoluteIndex),
+                        mLayoutManager.findFirstVisibleItemPosition());
+        int highIndex =
+                Math.min(
+                        Math.max(fromAbsoluteIndex, toAbsoluteIndex),
+                        mLayoutManager.findLastVisibleItemPosition());
         while (currentIndex <= highIndex) {
-            ViewHolderWrapper holder = ((ViewHolderWrapper) mRecyclerView
-                    .findViewHolderForAdapterPosition(currentIndex));
+            ViewHolderWrapper holder =
+                    ((ViewHolderWrapper)
+                            mRecyclerView.findViewHolderForAdapterPosition(currentIndex));
             if (holder != null) {
                 holder.mViewHolder.setAbsolutePosition(currentIndex);
             }
@@ -309,8 +313,17 @@ public class RecyclerViewComponentController implements ComponentController,
         }
     }
 
+    public void onRecyclerViewDetachedFromWindow() {
+        mComponentVisibilityListener.onComponentGroupVisibilityChanged(false);
+    }
+
+    public void onRecyclerViewAttachedToWindow() {
+        mComponentVisibilityListener.onComponentGroupVisibilityChanged(true);
+    }
+
     public void onItemPickedUp(ComponentViewHolder viewHolder) {
-        ViewHolder holder = mRecyclerView.findViewHolderForLayoutPosition(viewHolder.getAbsolutePosition());
+        ViewHolder holder =
+                mRecyclerView.findViewHolderForLayoutPosition(viewHolder.getAbsolutePosition());
         if (holder != null) {
             mItemTouchHelper.startDrag(holder);
         }

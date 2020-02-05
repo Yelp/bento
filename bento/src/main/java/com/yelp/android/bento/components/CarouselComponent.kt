@@ -145,6 +145,16 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
                     recyclerView.getChildAt(0).left - recyclerView.paddingLeft
         }
     }
+
+    override fun onViewDetachedFromWindow() {
+        super.onViewDetachedFromWindow()
+        controller.onRecyclerViewDetachedFromWindow()
+    }
+
+    override fun onViewAttachedToWindow() {
+        super.onViewAttachedToWindow()
+        controller.onRecyclerViewAttachedToWindow()
+    }
 }
 
 data class CarouselViewModel(

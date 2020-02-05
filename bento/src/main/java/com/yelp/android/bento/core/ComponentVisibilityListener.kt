@@ -1,5 +1,8 @@
 package com.yelp.android.bento.core
 
+import kotlin.math.max
+import kotlin.math.min
+
 private const val NO_POSITION = -1
 
 /**
@@ -50,8 +53,8 @@ class ComponentVisibilityListener(
             // We want to iterate through the entire range of both, views that used to be
             // visible and views that are now visible, so we can notify them of their visibility
             // changes.
-            val start = Math.min(previousFirst, firstVisible)
-            val end = Math.max(previousLast, lastVisible)
+            val start = min(previousFirst, firstVisible)
+            val end = max(previousLast, lastVisible)
 
             var i = start
             while (i <= end) {
@@ -74,7 +77,7 @@ class ComponentVisibilityListener(
                     // We are iterating through the views that used to be visible and are still
                     // visible. Since we've already notified the items at these positions, we
                     // can skip them to make the loop (a little) faster,
-                    i = Math.min(previousLast, lastVisible)
+                    i = min(previousLast, lastVisible)
                 }
                 i++
             }
@@ -112,8 +115,8 @@ class ComponentVisibilityListener(
         // We want to iterate through the items that are the intersection of our visible items
         // and the items within the range of this component.
         // NOTE: Range is inclusive-exclusive so we must subtract 1 from mUpper.
-        val start = Math.max(firstVisible, range.mLower)
-        val end = Math.min(lastVisible, range.mUpper - 1)
+        val start = max(firstVisible, range.mLower)
+        val end = min(lastVisible, range.mUpper - 1)
 
         for (i in start..end) {
             componentGroup.notifyVisibilityChange(i, true)
@@ -130,6 +133,33 @@ class ComponentVisibilityListener(
     fun clear() {
         previousFirst = NO_POSITION
         previousLast = NO_POSITION
+    }
+
+    /**
+     * Helper method to call if the whole ComponentGroup's visibility change.
+     * This is useful for nested RecyclerViews, where we need to notify "manually"
+     * the ComponentGroup that it is being moved off screen.
+     */
+    fun onComponentGroupVisibilityChanged(isVisible: Boolean) {
+        when (isVisible) {
+            true -> {
+                // onScrolled also takes care of notifying any visible view when no views
+                // was previously notified.
+                onScrolled()
+            }
+            false -> {
+                if (previousFirst != NO_POSITION && previousLast != NO_POSITION) {
+                    val firstVisible = layoutManagerHelper.findFirstVisibleItemPosition()
+                    val lastVisible = layoutManagerHelper.findLastVisibleItemPosition()
+
+                    for (i in firstVisible..lastVisible) {
+                        componentGroup.notifyVisibilityChange(i, false)
+                    }
+                }
+
+                clear()
+            }
+        }
     }
 
     override fun onChanged() {
