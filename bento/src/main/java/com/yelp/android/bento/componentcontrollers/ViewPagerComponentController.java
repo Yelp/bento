@@ -222,6 +222,25 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         mComponentPageMap.remove(component);
     }
 
+    @Override
+    public boolean isScrollable() {
+        if (mViewPager != null) {
+            return mViewPager.isVerticalScrollBarEnabled()
+                    || mViewPager.isHorizontalScrollBarEnabled();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * The scrolling capacity of a {@link ViewPager} depends on the ViewPager itself. To make a
+     * ViewPager non scrollable, you must subclass the ViewPager itself.
+     *
+     * @param isScrollable Ignored by Bento.
+     */
+    @Override
+    public void setScrollable(boolean isScrollable) {} // Do nothing.
+
     @VisibleForTesting
     public void setComponentGroup(ComponentGroup componentGroup) {
         mComponentGroup = componentGroup;

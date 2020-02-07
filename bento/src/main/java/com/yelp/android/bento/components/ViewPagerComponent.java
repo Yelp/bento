@@ -141,8 +141,28 @@ public class ViewPagerComponent extends Component implements ComponentController
         return ViewPagerViewHolder.class;
     }
 
+    @Override
+    public boolean isScrollable() {
+        return mComponentController.isScrollable();
+    }
+
+    /**
+     * The scrolling capacity of a {@link ViewPager} depends on the ViewPager itself. To make a
+     * ViewPager non scrollable, you must subclass the ViewPager itself.
+     *
+     * <p>Even though we call the delegated {@link
+     * ViewPagerComponentController#setScrollable(boolean)} method, nothing will happen.
+     *
+     * @param isScrollable Ignored by Bento.
+     */
+    @Override
+    public void setScrollable(boolean isScrollable) {
+        mComponentController.setScrollable(isScrollable);
+    }
+
     /**
      * The ViewPager view holder used to display components that are added.
+     *
      * @param <P> The type of the Presenter for each page.
      * @param <T> The data element for each page that extends {@link ViewPagerComponentController}
      */

@@ -21,6 +21,11 @@ interface ComponentController {
     val size: Int
 
     /**
+     * Controls the scrollability of the underlying view.
+     */
+    var isScrollable: Boolean
+
+    /**
      * Returns the [Component] at the specified position in this controller.
      */
     operator fun get(index: Int): Component

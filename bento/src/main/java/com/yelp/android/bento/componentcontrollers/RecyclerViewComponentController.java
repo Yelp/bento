@@ -313,6 +313,16 @@ public class RecyclerViewComponentController
         }
     }
 
+    @Override
+    public boolean isScrollable() {
+        return mLayoutManager.isScrollEnabled();
+    }
+
+    @Override
+    public void setScrollable(boolean isScrollable) {
+        mLayoutManager.setScrollEnabled(isScrollable);
+    }
+
     public void onRecyclerViewDetachedFromWindow() {
         mComponentVisibilityListener.onComponentGroupVisibilityChanged(false);
     }
