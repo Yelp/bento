@@ -1,0 +1,11 @@
+name: Pull request
+on: pull_request
+
+jobs:
+  commitsar:
+    runs-on: ubuntu-latest
+    name: Verify commit messages
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run commitsar
+        uses: docker://commitsar/commitsar
