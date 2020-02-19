@@ -1,0 +1,8 @@
+{
+    "bumpFiles": [
+        {
+            "filename": "buildSrc/src/main/java/com/yelp/gradle/bento/GlobalDependencies.kt",
+            "updater":".standard-version/updaters/global-dependency.js"
+        }
+    ]
+}

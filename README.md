@@ -107,13 +107,31 @@ Repeat as necessary. The project should build from within Android Studio and if 
 
 You can also run `./gradlew publishToMavenLocal` to publish the package to your local maven repo on your machine. From there you can add `mavenLocal()` before other maven repositories. That way your project can load in the version of Bento you're working on.
 
-We follow [semver](https://semver.org/) so the version number in `GlobalDependencies.kt` should be updated to reflect the changes.
-
-Add a summary of your change to the `CHANGELOG.md` file.
+We follow the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) specification, and you should write what your changes are about in a clear commit message.
 
 #### 5. Push your changes and open a pull request
 
-Push your branch with the new commits to your cloned repo, then open a pull request through GitHub. Once Travis CI gives it a green light along with a member of our team, it will be merged and the new version will be deployed to Maven Central.
+First, squash your commits if you have multiple, and make sure your commit message follows the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) convention.
+Push your branch with the new commits to your cloned repo, then open a pull request through GitHub. Once Travis CI gives it a green light along with a member of our team, it will be merged.
+
+If your reviewer asks for some changes, address the issue and then make sure to amend your previous commit - there should be only one commit per pull request. Push your changes, repeat until you get a green light.
+
+## Making a release
+We switched to using [standard-version](https://github.com/conventional-changelog/standard-version) to handle our releases. standard-version is a utility for versioning using [semver](https://semver.org/) and CHANGELOG generation powered by Conventional Commits.
+
+If you are one of the members and must release a new version, then check its documentation. You will need to install `npm` if you don't have it. (We recommand using `homebrew` to do so.)
+
+With `npm` install, install standard-version globally: `npm i -g standard-version`
+
+From master, run `standard-version`.
+
+`standard-version` will take care of
+* Detect the previous version tag (based on git tags)
+* Infer the next version number, based on previous standard commit messages. A breaking change will trigger a major bump, a new feature will trigger a minor bump, and a fix will trigger a patch bump.
+* Update the CHANGELOG.md file with the commit messages, as well as the [GlobalDependency.kt](buildSrc/src/main/java/com/yelp/gradle/bento/GlobalDependencies.kt) file with the new version number.
+* Create a new commit with these change, and tag it with the version number.
+
+The rest has to be done manually: check that the commit looks good (proper changelog, version number, tag), then push both commit and tags to master.
 
 ## Help
 
