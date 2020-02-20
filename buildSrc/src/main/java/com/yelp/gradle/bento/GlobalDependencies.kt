@@ -16,7 +16,6 @@ object Versions {
     // In alphabetical order.
     const val APACHE_COMMONS = "3.4"
     const val ANDROID_GRADLE = "3.1.4"
-    const val ANDROID_X_ANNOTATIONS = "1.0.0"
     const val ANDROID_X_APP_COMPAT = "1.0.0"
     const val ANDROID_X_CONSTRAINT_LAYOUT = "1.1.2"
     const val ANDROID_X_MATERIAL = "1.0.0"
@@ -31,7 +30,6 @@ object Versions {
     const val MAVEN_SETTINGS = "0.5"
     const val MOCKITO = "2.7.19"
     const val MOCKITO_KOTLIN = "2.1.0"
-    const val POWERMOCK = "1.7.4"
     const val RX_JAVA_2 = "2.1.13"
     const val SUPPORT_TEST = "1.0.2"
 }
@@ -56,7 +54,6 @@ object PublishLibs {
 }
 
 object SupportLibs {
-    const val ANNOTATIONS = "androidx.annotation:annotation:${Versions.ANDROID_X_ANNOTATIONS}"
     const val APP_COMPAT = "androidx.appcompat:appcompat:${Versions.ANDROID_X_APP_COMPAT}"
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.ANDROID_X_CONSTRAINT_LAYOUT}"
     const val DESIGN = "com.google.android.material:material:${Versions.ANDROID_X_MATERIAL}"
@@ -66,20 +63,10 @@ object SupportLibs {
 object TestLibs {
     const val ESPRESSO = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO}"
     const val ESPRESSO_CONTRIB = "androidx.test.espresso:espresso-contrib:${Versions.ESPRESSO}"
-    const val ESPRESSO_IDLING = "androidx.test.espresso.idling:idling-concurrent:${Versions.ESPRESSO}"
     const val ESPRESSO_INTENTS = "androidx.test.espresso:espresso-intents:${Versions.ESPRESSO}"
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
-    const val KOTLIN_JUNIT = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.KOTLIN}"
     const val MOCKITO = "org.mockito:mockito-core:${Versions.MOCKITO}"
-    const val MOCKITO_ANDROID = "org.mockito:mockito-android:${Versions.MOCKITO}"
-    const val MOCKITO_INLINE = "org.mockito:mockito-inline:${Versions.MOCKITO}"
     const val MOCKITO_KOTLIN = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.MOCKITO_KOTLIN}"
-    const val POWERMOCK_JUNIT4 = "org.powermock:powermock-module-junit4:${Versions.POWERMOCK}"
-    const val POWERMOCK_JUNIT4_RULE =
-            "org.powermock:powermock-module-junit4-rule:${Versions.POWERMOCK}"
-    const val POWERMOCK_MOCKITO2 = "org.powermock:powermock-api-mockito2:${Versions.POWERMOCK}"
-    const val POWERMOCK_CLASSLOADING =
-            "org.powermock:powermock-classloading-xstream:${Versions.POWERMOCK}"
     const val SUPPORT_TEST_RULES = "androidx.test:rules:${Versions.ANDROID_X_TEST}"
     const val SUPPORT_TEST_RUNNER = "androidx.test:runner:${Versions.ANDROID_X_TEST}"
 }
