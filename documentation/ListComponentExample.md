@@ -1,6 +1,6 @@
 # An Example List Component
 
-The `ListComponent` can be used to create a component that contains multiple repeating items that use the same `ComponentViewHolder` and the same type of data to populate the view. A good example of this might be a list of ingredients with the name on the right and the quantity on the right.
+The `ListComponent` can be used to create a component that contains multiple repeating items that use the same `ComponentViewHolder` and the same type of data to populate the view. A good example of this might be a list of ingredients with the name on the left and the quantity on the right.
 
 Let's start with our layout file (we won't be winning any design awards with this one). It's a simple `ConstraintLayout` with two `TextViews` that will be show side by side called `ingredient_list_item`.
 
