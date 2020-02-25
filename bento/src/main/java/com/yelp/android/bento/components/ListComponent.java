@@ -86,17 +86,31 @@ public class ListComponent<P, T> extends Component {
     }
 
     /**
-     * Removes the provided data items from the list.
+     * Inserts a single list item at the specified index in the list.
+     *
+     * @param index The index used to insert the given data in the list.
+     * @param data The list item to be inserted.
+     */
+    public void insertData(int index, @NonNull T data) {
+        mData.add(index, data);
+        // Update 2 items if dividers are showing.
+        notifyItemRangeInserted(index, mShouldShowDivider ? 2 : 1);
+    }
+
+    /**
+     * Removes the first occurrence of the specified data item from the list.
      *
      * @param data The data item to remove from the list.
+     * @return The index that the data occupied. Returns -1 if nothing was removed.
      */
-    public void removeData(@NonNull T data) {
+    public int removeData(@NonNull T data) {
         int index = mData.indexOf(data);
         // Check if the object indeed is in the list.
         if (index != -1) {
             mData.remove(index);
             notifyItemRangeRemoved(getRemoveIndexStart(index), getRemoveItemCount());
         }
+        return index;
     }
 
     /**

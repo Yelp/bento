@@ -1,6 +1,7 @@
 package com.yelp.android.bentosampleapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -50,6 +51,7 @@ class ListViewActivity : AppCompatActivity() {
         addCarouselComponent(controller)
         addArrayAdapterComponent(controller)
         addAnimatedComponent(controller)
+        addListComponentRemovableItems(controller)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -85,14 +87,33 @@ class ListViewActivity : AppCompatActivity() {
         controller.addComponent(simpleComponent)
     }
 
-
-    private fun addListComponent(controller: ComponentController) {
+    private fun addListComponent(controller: ComponentController, removable: Boolean = false) {
         with(ListComponent(null,
                 ListComponentExampleViewHolder::class.java)) {
             setStartGap(50)
             setData((1 until 42).map { "List element $it" })
             toggleDivider(false)
             controller.addComponent(this)
+        }
+    }
+
+    private fun addListComponentRemovableItems(controller: ComponentController) {
+        val component = ListComponent(null, ListComponentExampleViewHolder::class.java)
+        with(component) {
+            setStartGap(50)
+            setData(listOf("List element 1"))
+            toggleDivider(true)
+            controller.addComponent(this)
+
+            listOf(1, 1, 1, 2, 4).forEachIndexed { index, i -> insertData(i, "List element ${index + 2}") }
+            insertData(0, "List element First")
+            insertData(0, "List element First")
+            insertData(1 + component.count / 2, "List element Last")
+            removeData("List element First")
+            val index = removeData("List element 1")
+            insertData(index, "List element 1")
+            removeData("List element 2")
+            removeData("List element nonexistent")
         }
     }
 
