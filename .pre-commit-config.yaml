@@ -1,6 +1,14 @@
--   repo: git@github.com:Yelp/detect-secrets
-    rev: 0.10.1
+repos:
+  - repo: git@github.com:Yelp/detect-secrets
+    rev: v0.13.0
     hooks:
-    -   id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
         exclude: .*/build/.*|.*/test/.*|.*/androidTest/.*
+  - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+    rev: v1.3.2
+    hooks:
+      - id: pretty-format-java
+        args: [--autofix]
+      - id: pretty-format-kotlin
+        args: [--autofix]
