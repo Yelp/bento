@@ -26,6 +26,7 @@
         <activity android:name=".ViewPagerGridActivity" />
         <activity android:name=".ReorderListActivity" />
         <activity android:name=".TabViewPagerActivity" />
+        <activity android:name=".ToggleScrollInRecyclerViewActivity" />
     </application>
 
 </manifest>
