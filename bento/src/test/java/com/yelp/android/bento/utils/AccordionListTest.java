@@ -1,20 +1,16 @@
 package com.yelp.android.bento.utils;
 
-import com.yelp.android.bento.utils.AccordionList.Range;
-import com.yelp.android.bento.utils.AccordionList.RangedValue;
-
-import org.junit.Test;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Unit tests for {@link AccordionList}.
- */
+import com.yelp.android.bento.utils.AccordionList.Range;
+import com.yelp.android.bento.utils.AccordionList.RangedValue;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import org.junit.Test;
+
+/** Unit tests for {@link AccordionList}. */
 public class AccordionListTest {
 
     @Test(expected = IllegalArgumentException.class)

@@ -11,8 +11,8 @@ import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentViewHolder
 
 class TabViewPagerComponent(
-        private val viewModel: TabViewPagerComponentViewModel,
-        private val onPageChangeListener: TabViewPagerOnPageChangeListener?
+    private val viewModel: TabViewPagerComponentViewModel,
+    private val onPageChangeListener: TabViewPagerOnPageChangeListener?
 ) : Component(), ViewPager.OnPageChangeListener {
     private val viewPagerComponentController: TabViewPagerComponentController =
             TabViewPagerComponentController()
@@ -44,15 +44,15 @@ class TabViewPagerComponent(
     override fun onPageScrollStateChanged(state: Int) {}
 
     data class TabViewPagerComponentViewModel(
-            val pageTitles: List<String>,
-            val componentsList: List<Component>,
-            var currentIndex: Int = 0,
-            @DimenRes var tabLayoutSideMargins: Int = 0,
-            @DrawableRes var background: Int = 0,
-            @DrawableRes var tabLayoutBackground: Int = 0,
-            @ColorRes var tabLayoutTextColorNormal: Int = 0,
-            @ColorRes var tabLayoutTextColorSelected: Int = 0,
-            @ColorRes var tabLayoutIndicatorColor: Int = 0
+        val pageTitles: List<String>,
+        val componentsList: List<Component>,
+        var currentIndex: Int = 0,
+        @DimenRes var tabLayoutSideMargins: Int = 0,
+        @DrawableRes var background: Int = 0,
+        @DrawableRes var tabLayoutBackground: Int = 0,
+        @ColorRes var tabLayoutTextColorNormal: Int = 0,
+        @ColorRes var tabLayoutTextColorSelected: Int = 0,
+        @ColorRes var tabLayoutIndicatorColor: Int = 0
     ) {
         var tabTitles: List<String>
         var componentList: List<Component>

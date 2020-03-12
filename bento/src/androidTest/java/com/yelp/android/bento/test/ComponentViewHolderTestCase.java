@@ -12,7 +12,8 @@ import org.junit.Rule;
 public abstract class ComponentViewHolderTestCase<P, T> {
 
     @Rule
-    public ActivityTestRule<ActivityComponentViewHolderTester> mActivityTestRule = new ActivityTestRule<>(ActivityComponentViewHolderTester.class);
+    public ActivityTestRule<ActivityComponentViewHolderTester> mActivityTestRule =
+            new ActivityTestRule<>(ActivityComponentViewHolderTester.class);
 
     private ComponentViewHolder<P, T> holder;
 
@@ -20,14 +21,17 @@ public abstract class ComponentViewHolderTestCase<P, T> {
      * Inflates, injects, and binds a specified {@link ComponentViewHolder} to the tester activity.
      */
     public <ViewHolder extends ComponentViewHolder<P, T>> void bindViewHolder(
-            final Class<ViewHolder> viewHolderType,
-            final P presenter,
-            final T element) throws Throwable {
+            final Class<ViewHolder> viewHolderType, final P presenter, final T element)
+            throws Throwable {
         mActivityTestRule.runOnUiThread(
                 new Runnable() {
                     @Override
                     public void run() {
-                        holder = mActivityTestRule.getActivity().inflateAndBindViewHolder(viewHolderType, presenter, element);
+                        holder =
+                                mActivityTestRule
+                                        .getActivity()
+                                        .inflateAndBindViewHolder(
+                                                viewHolderType, presenter, element);
                     }
                 });
     }

@@ -13,7 +13,7 @@ import org.hamcrest.Matcher
  * [RecyclerView] version of the [ViewInteraction].
  */
 internal class BentoRecyclerViewInteraction(
-        private val targetMatcher: BentoInteraction.TargetMatcher
+    private val targetMatcher: BentoInteraction.TargetMatcher
 ) : ViewInteraction {
     override fun check(viewAssertion: ViewAssertion): ViewInteraction = apply {
         Espresso.onView(targetMatcher)
@@ -26,8 +26,8 @@ internal class BentoRecyclerViewInteraction(
     }
 
     class ViewAssertionHolder(
-            private val viewAssertion: ViewAssertion,
-            private val targetMatcher: BentoInteraction.TargetMatcher
+        private val viewAssertion: ViewAssertion,
+        private val targetMatcher: BentoInteraction.TargetMatcher
     ) : ViewAction {
         override fun getDescription(): String {
             return ""
@@ -52,8 +52,8 @@ internal class BentoRecyclerViewInteraction(
     }
 
     class ViewActionHolder(
-            private val viewAction: ViewAction,
-            private val targetMatcher: BentoInteraction.TargetMatcher
+        private val viewAction: ViewAction,
+        private val targetMatcher: BentoInteraction.TargetMatcher
     ) : ViewAction {
         override fun getDescription(): String {
             return ("actionOnItemAtPosition performing ViewAction: ${viewAction.description}")

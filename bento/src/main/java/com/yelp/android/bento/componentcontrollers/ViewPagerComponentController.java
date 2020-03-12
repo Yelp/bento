@@ -178,7 +178,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
         if (!contains((Component) object)) {
             return POSITION_NONE;
         } else {
-            return indexOf((Component)object);
+            return indexOf((Component) object);
         }
     }
 

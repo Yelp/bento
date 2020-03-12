@@ -31,7 +31,7 @@ import com.yelp.android.bento.utils.inflate
  * fix.
  */
 open class CarouselComponent(
-        private val carouselViewHolder: Class<out CarouselComponentViewHolder> = CarouselComponentViewHolder::class.java
+    private val carouselViewHolder: Class<out CarouselComponentViewHolder> = CarouselComponentViewHolder::class.java
 ) : Component(), RecyclerViewComponentController.SharesViewPool {
 
     private val group = ComponentGroup()
@@ -158,8 +158,8 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
 }
 
 data class CarouselViewModel(
-        val group: ComponentGroup,
-        var sharedPool: RecyclerView.RecycledViewPool? = null,
-        var scrollPosition: Int = 0,
-        var scrollPositionOffset: Int = 0
+    val group: ComponentGroup,
+    var sharedPool: RecyclerView.RecycledViewPool? = null,
+    var scrollPosition: Int = 0,
+    var scrollPositionOffset: Int = 0
 )

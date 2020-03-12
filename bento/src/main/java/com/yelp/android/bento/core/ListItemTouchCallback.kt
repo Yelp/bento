@@ -7,17 +7,17 @@ const val DRAG_FLAGS = ItemTouchHelper.UP or ItemTouchHelper.DOWN or
         ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
 
 class ListItemTouchCallback(
-        private val component: ComponentGroup,
-        private val callback: OnItemMovedPositionListener
+    private val component: ComponentGroup,
+    private val callback: OnItemMovedPositionListener
 ) : ItemTouchHelper.Callback() {
 
     private var dragFrom = -1
     private var dragTo = -1
 
     override fun canDropOver(
-            recyclerView: RecyclerView,
-            current: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
+        recyclerView: RecyclerView,
+        current: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
     ): Boolean {
         // Only allow reorder if it is within the same component.
         val fromComponent = component.findRangedComponentWithIndex(current.adapterPosition)
@@ -35,8 +35,8 @@ class ListItemTouchCallback(
     override fun isLongPressDragEnabled() = true
 
     override fun getMovementFlags(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
     ): Int {
         val currentIndex = viewHolder.adapterPosition
         return if (currentIndex != RecyclerView.NO_POSITION &&
@@ -48,9 +48,9 @@ class ListItemTouchCallback(
     }
 
     override fun onMove(
-            recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
     ): Boolean {
         val fromPosition = viewHolder.adapterPosition
         val toPosition = target.adapterPosition

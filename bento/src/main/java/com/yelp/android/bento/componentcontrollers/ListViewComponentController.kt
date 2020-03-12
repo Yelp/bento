@@ -52,10 +52,10 @@ class ListViewComponentController(val listView: ListView) :
      */
     @Suppress("UNUSED_PARAMETER")
     override var isScrollable: Boolean
-        get() = listView.canScrollHorizontally(-1)
-                || listView.canScrollHorizontally(1)
-                || listView.canScrollVertically(-1)
-                || listView.canScrollVertically(1)
+        get() = listView.canScrollHorizontally(-1) ||
+                listView.canScrollHorizontally(1) ||
+                listView.canScrollVertically(-1) ||
+                listView.canScrollVertically(1)
         set(value) = Unit
 
     override fun get(index: Int) = components[index]
@@ -285,10 +285,10 @@ class ListViewComponentController(val listView: ListView) :
 
     // Scroll listener
     override fun onScroll(
-            view: AbsListView,
-            firstVisibleItem: Int,
-            visibleItemCount: Int,
-            totalItemCount: Int
+        view: AbsListView,
+        firstVisibleItem: Int,
+        visibleItemCount: Int,
+        totalItemCount: Int
     ) {
         componentVisibilityListener.onScrolled()
     }

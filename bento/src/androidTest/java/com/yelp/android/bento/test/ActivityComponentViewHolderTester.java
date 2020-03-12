@@ -45,8 +45,7 @@ public class ActivityComponentViewHolderTester extends Activity {
 
     /**
      * Uses reflections to instantiate a ComponentViewHolder of the specified type. For this reason,
-     * all subclasses of ComponentViewHolder must have a no-arg constructor.
-     * <br>
+     * all subclasses of ComponentViewHolder must have a no-arg constructor. <br>
      * See: {@link ComponentViewHolder}
      *
      * @throws RuntimeException if the specified view holder type could not be instantiated.

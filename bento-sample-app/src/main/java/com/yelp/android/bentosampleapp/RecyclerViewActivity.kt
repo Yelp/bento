@@ -82,9 +82,9 @@ class RecyclerViewActivity : AppCompatActivity() {
     }
 
     private fun addSimpleComponent(
-            controller: ComponentController,
-            hasGap: Boolean,
-            index: Int? = null
+        controller: ComponentController,
+        hasGap: Boolean,
+        index: Int? = null
     ) {
         val simpleComponent = SimpleComponent<Nothing>(
                 SimpleComponentExampleViewHolder::class.java)
@@ -99,7 +99,7 @@ class RecyclerViewActivity : AppCompatActivity() {
     }
 
     private fun addLabeledComponentWithItemVisibilityListener(
-            controller: ComponentController
+        controller: ComponentController
     ) {
         val simpleComponent =
                 LabeledComponent("LabeledComponent with visibility callback").apply {

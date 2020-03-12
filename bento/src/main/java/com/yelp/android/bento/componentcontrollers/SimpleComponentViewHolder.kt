@@ -14,9 +14,9 @@ import com.yelp.android.bento.core.ComponentViewHolder
  * See: ContributionsComponent for an example.
  */
 abstract class SimpleComponentViewHolder<P> protected constructor(
-        @param:LayoutRes
-        @field:LayoutRes
-        private val layoutId: Int
+    @param:LayoutRes
+    @field:LayoutRes
+    private val layoutId: Int
 ) : ComponentViewHolder<P, Unit?>() {
 
     protected abstract fun onViewCreated(itemView: View)
@@ -36,5 +36,5 @@ abstract class SimpleComponentViewHolder<P> protected constructor(
      * bind method. You should have fields for any views you wish to modify during the bind method
      * and instantiate them during inflation.
      */
-    open fun bind(presenter: P){}
+    open fun bind(presenter: P) {}
 }

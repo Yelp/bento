@@ -1,8 +1,6 @@
 package com.yelp.android.bento.utils;
 
-/**
- * General math utility methods not in {@link Math} class.
- */
+/** General math utility methods not in {@link Math} class. */
 public final class MathUtils {
 
     private MathUtils() {

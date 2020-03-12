@@ -16,8 +16,8 @@ private const val NO_POSITION = -1
  * will be notified.
  */
 class ComponentVisibilityListener(
-        private val layoutManagerHelper: LayoutManagerHelper,
-        private val componentGroup: ComponentGroup
+    private val layoutManagerHelper: LayoutManagerHelper,
+    private val componentGroup: ComponentGroup
 ) : Component.ComponentDataObserver {
     private var previousFirst = NO_POSITION
     private var previousLast = NO_POSITION

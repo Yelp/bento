@@ -66,7 +66,7 @@ interface ComponentController {
     /**
      * Inserts the specified [Component] to the specified position in this controller.
      *
-     * @param index     Position to insert
+     * @param index Position to insert
      * @param component [Component] to insert
      * @return Reference to this controller
      */
@@ -75,7 +75,7 @@ interface ComponentController {
     /**
      * Inserts the specified [ComponentGroup] to the specified position in this controller.
      *
-     * @param index          Position to insert
+     * @param index Position to insert
      * @param componentGroup [ComponentGroup] to insert
      * @return Reference to this controller
      */
@@ -92,7 +92,7 @@ interface ComponentController {
     /**
      * Replaces the [Component] at the specified position in this controller.
      *
-     * @param index     Position to update
+     * @param index Position to update
      * @param component [Component] to insert
      * @return Reference to this controller
      */
@@ -101,7 +101,7 @@ interface ComponentController {
     /**
      * Replaces the [ComponentGroup] at the specified position in this controller.
      *
-     * @param index          Position to update
+     * @param index Position to update
      * @param componentGroup [ComponentGroup] to insert
      * @return Reference to this controller
      */

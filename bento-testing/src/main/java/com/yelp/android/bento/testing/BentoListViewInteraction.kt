@@ -1,13 +1,13 @@
 package com.yelp.android.bento.testing
 
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.ListView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.matcher.ViewMatchers
-import android.view.View
-import android.widget.FrameLayout
-import android.widget.ListView
 import com.yelp.android.bento.R
 import org.hamcrest.Matcher
 
@@ -26,7 +26,7 @@ private const val DELAY_FOR_SCROLL_IN_MS = 100L
  * [ListView] version of the [ViewInteraction].
  */
 internal class BentoListViewInteraction(
-        private val targetMatcher: BentoInteraction.TargetMatcher
+    private val targetMatcher: BentoInteraction.TargetMatcher
 ) : ViewInteraction {
 
     override fun check(viewAssertion: ViewAssertion) = apply {
@@ -38,8 +38,8 @@ internal class BentoListViewInteraction(
     }
 
     class ViewAssertionHolder(
-            private val viewAssertion: ViewAssertion,
-            private val targetMatcher: BentoInteraction.TargetMatcher
+        private val viewAssertion: ViewAssertion,
+        private val targetMatcher: BentoInteraction.TargetMatcher
     ) : ViewAction {
         override fun getDescription(): String = "assertionOnItemAtPosition"
 
@@ -56,8 +56,8 @@ internal class BentoListViewInteraction(
     }
 
     class ViewActionHolder(
-            private val viewAction: ViewAction,
-            private val targetMatcher: BentoInteraction.TargetMatcher
+        private val viewAction: ViewAction,
+        private val targetMatcher: BentoInteraction.TargetMatcher
     ) : ViewAction {
         override fun getDescription(): String {
             return ("actionOnItemAtPosition performing ViewAction: ${viewAction.description}")

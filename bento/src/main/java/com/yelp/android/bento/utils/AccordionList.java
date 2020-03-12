@@ -20,9 +20,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
 
     private List<RangedValue<T>> mRangeList = new ArrayList<>();
 
-    /**
-     * Returns an iterator for the AccordionList. Not concurrent modification safe.
-     */
+    /** Returns an iterator for the AccordionList. Not concurrent modification safe. */
     @NonNull
     @Override
     public Iterator<RangedValue<T>> iterator() {
@@ -53,34 +51,31 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
         return new EqualsBuilder().append(this.mRangeList, that.mRangeList).isEquals();
     }
 
-    /**
-     * Returns the value associated with the range this location belongs to.
-     */
+    /** Returns the value associated with the range this location belongs to. */
     @NonNull
     public T valueAt(int location) {
         return rangedValueAt(location).mValue;
     }
 
-    /**
-     * Returns the range and its associated value that this location belongs to.
-     */
+    /** Returns the range and its associated value that this location belongs to. */
     @NonNull
     public RangedValue<T> rangedValueAt(int location) {
         int foundLocation = Collections.binarySearch(mRangeList, location);
 
         if (foundLocation < 0) {
             throw new ArrayIndexOutOfBoundsException(
-                    "Could not find value at index: " + location + ".\n" +
-                            "BinarySearch returned: " + foundLocation + ".\n" +
-                            describeAccordionList()
-            );
+                    "Could not find value at index: "
+                            + location
+                            + ".\n"
+                            + "BinarySearch returned: "
+                            + foundLocation
+                            + ".\n"
+                            + describeAccordionList());
         }
         return mRangeList.get(foundLocation);
     }
 
-    /**
-     * Returns the indexed range and its associated value.
-     */
+    /** Returns the indexed range and its associated value. */
     @NonNull
     public RangedValue<T> get(int entryIndex) {
         return mRangeList.get(entryIndex);
@@ -96,9 +91,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
                 0, mRangeList.isEmpty() ? 0 : mRangeList.get(mRangeList.size() - 1).mRange.mUpper);
     }
 
-    /**
-     * Returns the number of entries in the {@link AccordionList}.
-     */
+    /** Returns the number of entries in the {@link AccordionList}. */
     public int size() {
         return mRangeList.size();
     }
@@ -111,7 +104,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
      * Inserts the specified element to the end of the list.
      *
      * @param value Value to append
-     * @param size  Size to associate with the value. Cannot be negative.
+     * @param size Size to associate with the value. Cannot be negative.
      */
     public void add(@NonNull T value, int size) {
         add(mRangeList.size(), value, size);
@@ -121,8 +114,8 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
      * Inserts the specified entry at the specified position in this list.
      *
      * @param entryIndex Position to insert
-     * @param value      Value to insert
-     * @param size       Size to associate with the value. Cannot be negative.
+     * @param value Value to insert
+     * @param size Size to associate with the value. Cannot be negative.
      */
     public void add(int entryIndex, @NonNull T value, int size) {
         if (size < 0) {
@@ -149,8 +142,8 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
      * Updates the entry at the specified position in this list.
      *
      * @param entryIndex Position to update
-     * @param value      Value to insert
-     * @param size       Size to associate with the value. Cannot be negative.
+     * @param value Value to insert
+     * @param size Size to associate with the value. Cannot be negative.
      */
     public void set(int entryIndex, @NonNull T value, int size) {
         if (size < 0) {
@@ -229,34 +222,27 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
 
     /**
      * Immutable class for describing the range of two numeric values.
-     * <p>
-     * A range defines the inclusive-exclusive boundaries around a contiguous span of integers.
+     *
+     * <p>A range defines the inclusive-exclusive boundaries around a contiguous span of integers.
      * For example: {@code new Range(2, 5)} creates the interval [2, 5); that is, the values 2, 3,
      * and 4 would be represented by this range.
-     * </p>
-     * <p>
-     * All ranges are bounded, and the left side of the range is always {@code <}
-     * the right side of the range.
-     * </p>
+     *
+     * <p>All ranges are bounded, and the left side of the range is always {@code <} the right side
+     * of the range.
      */
     public static class Range {
 
-        /**
-         * The lower endpoint (inclusive)
-         */
+        /** The lower endpoint (inclusive) */
         public final int mLower;
 
-        /**
-         * The upper endpoint (exclusive)
-         */
+        /** The upper endpoint (exclusive) */
         public final int mUpper;
 
         /**
          * Create a new immutable range.
          *
-         * <p>
-         * The endpoints are {@code [lower, upper)}. {@code lower} must be less than {@code upper}.
-         * </p>
+         * <p>The endpoints are {@code [lower, upper)}. {@code lower} must be less than {@code
+         * upper}.
          *
          * @param lower The lower endpoint (inclusive)
          * @param upper The upper endpoint (exclusive)
@@ -273,7 +259,7 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
 
         /**
          * @return The number of integers in the range. eg. {@code new Range(2, 5).getSize()}
-         * returns 3 since the values 2, 3 and 4 are represented by this range.
+         *     returns 3 since the values 2, 3 and 4 are represented by this range.
          */
         public int getSize() {
             return mUpper - mLower;
@@ -281,8 +267,8 @@ public class AccordionList<T> implements Iterable<RangedValue<T>> {
 
         /**
          * @param offset Some integer by which we want to offset the range of values.
-         * @return A new {@link Range} that represents the values at the offset provided. eg.
-         * {@code new Range(2, 5).offset(3)} returns a new range that represents [5, 8).
+         * @return A new {@link Range} that represents the values at the offset provided. eg. {@code
+         *     new Range(2, 5).offset(3)} returns a new range that represents [5, 8).
          */
         @NonNull
         public Range offset(int offset) {

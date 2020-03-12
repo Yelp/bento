@@ -32,11 +32,11 @@ public class PaginatingListComponentTest {
 
         mPaginatingListComponent.getItem(6);
         observable.test().assertValueCount(1);
-
     }
 
     /**
      * Adds fake items to the list component.
+     *
      * @param count The number of items to add.
      */
     private void addItems(int count) {

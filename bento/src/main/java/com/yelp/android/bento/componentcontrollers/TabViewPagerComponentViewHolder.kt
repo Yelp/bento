@@ -33,8 +33,8 @@ class TabViewPagerComponentViewHolder : ComponentViewHolder<OnPageChangeListener
     }
 
     override fun bind(
-            presenter: OnPageChangeListener,
-            element: TabViewPagerComponentViewHolderData
+        presenter: OnPageChangeListener,
+        element: TabViewPagerComponentViewHolderData
     ) {
         element.viewPagerComponentController.setViewPager(viewPager)
 
@@ -75,7 +75,7 @@ class TabViewPagerComponentViewHolder : ComponentViewHolder<OnPageChangeListener
     }
 
     data class TabViewPagerComponentViewHolderData(
-            val viewModel: TabViewPagerComponent.TabViewPagerComponentViewModel,
-            val viewPagerComponentController: TabViewPagerComponentController
+        val viewModel: TabViewPagerComponent.TabViewPagerComponentViewModel,
+        val viewPagerComponentController: TabViewPagerComponentController
     )
 }

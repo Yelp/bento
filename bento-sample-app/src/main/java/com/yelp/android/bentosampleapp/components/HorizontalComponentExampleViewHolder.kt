@@ -22,5 +22,4 @@ class HorizontalComponentExampleViewHolder : ComponentViewHolder<Any?, String>()
     override fun bind(presenter: Any?, element: String) {
         itemView.text = element
     }
-
 }
