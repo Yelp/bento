@@ -20,8 +20,8 @@ import com.yelp.android.bento.utils.inflate
  * this new ViewHolder class to create the viewModel.
  */
 open class NestedComponent<P>(
-        private val presenter: P,
-        private val viewModel: NestedViewModel<*, *>
+    private val presenter: P,
+    private val viewModel: NestedViewModel<*, *>
 ) : Component() {
 
     override fun getPresenter(position: Int) = presenter
@@ -76,7 +76,7 @@ abstract class NestedOuterComponentViewHolder<P, T> :
 }
 
 data class NestedViewModel<P, T>(
-        val innerComponent: Component,
-        val outerComponentViewHolder: Class<out NestedOuterComponentViewHolder<P, T>>,
-        val outerComponentViewModel: T
+    val innerComponent: Component,
+    val outerComponentViewHolder: Class<out NestedOuterComponentViewHolder<P, T>>,
+    val outerComponentViewModel: T
 )

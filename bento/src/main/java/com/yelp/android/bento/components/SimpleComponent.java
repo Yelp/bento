@@ -7,8 +7,8 @@ import com.yelp.android.bento.core.ComponentController;
 import com.yelp.android.bento.core.ComponentViewHolder;
 
 /**
- * Component implementation that provides the bare minimum to be used with
- * {@link ComponentController}, it only has 1 View.
+ * Component implementation that provides the bare minimum to be used with {@link
+ * ComponentController}, it only has 1 View.
  */
 public class SimpleComponent<P> extends Component {
 
@@ -24,8 +24,7 @@ public class SimpleComponent<P> extends Component {
      * behaviour.
      */
     public SimpleComponent(
-            @Nullable P presenter,
-            @NonNull Class<? extends ComponentViewHolder> viewHolderType) {
+            @Nullable P presenter, @NonNull Class<? extends ComponentViewHolder> viewHolderType) {
         mPresenter = presenter;
         mViewHolderType = viewHolderType;
     }
@@ -35,7 +34,6 @@ public class SimpleComponent<P> extends Component {
     public Object getPresenter(int position) {
         return mPresenter;
     }
-
 
     @Override
     public int getCount() {

@@ -6,10 +6,10 @@ import java.util.ArrayList;
 /**
  * Provides methods for registering or unregistering arbitrary observers in an {@link ArrayList}.
  *
- * This abstract class is intended to be subclassed and specialized to maintain
- * a registry of observers of specific types and dispatch notifications to them.
+ * <p>This abstract class is intended to be subclassed and specialized to maintain a registry of
+ * observers of specific types and dispatch notifications to them.
  *
- * A direct copy of {@link android.database.Observable} because the original is not usable during
+ * <p>A direct copy of {@link android.database.Observable} because the original is not usable during
  * tests.
  *
  * @param <T> Type of the Observable.
@@ -17,18 +17,17 @@ import java.util.ArrayList;
 public abstract class Observable<T> {
 
     /**
-     * The list of observers.  An observer can be in the list at most
-     * once and will never be null.
+     * The list of observers. An observer can be in the list at most once and will never be null.
      */
     protected final ArrayList<T> mObservers = new ArrayList<T>();
 
     /**
-     * Adds an observer to the list. The observer cannot be null and it must not already
-     * be registered.
+     * Adds an observer to the list. The observer cannot be null and it must not already be
+     * registered.
      *
      * @param observer the observer to register
      * @throws IllegalArgumentException the observer is null
-     * @throws IllegalStateException    the observer is already registered
+     * @throws IllegalStateException the observer is already registered
      */
     public void registerObserver(@NonNull T observer) {
         synchronized (mObservers) {
@@ -40,12 +39,12 @@ public abstract class Observable<T> {
     }
 
     /**
-     * Removes a previously registered observer. The observer must not be null and it
-     * must already have been registered.
+     * Removes a previously registered observer. The observer must not be null and it must already
+     * have been registered.
      *
      * @param observer the observer to unregister
      * @throws IllegalArgumentException the observer is null
-     * @throws IllegalStateException    the observer is not yet registered
+     * @throws IllegalStateException the observer is not yet registered
      */
     public void unregisterObserver(@NonNull T observer) {
         synchronized (mObservers) {
@@ -57,9 +56,7 @@ public abstract class Observable<T> {
         }
     }
 
-    /**
-     * Remove all registered observers.
-     */
+    /** Remove all registered observers. */
     public void unregisterAll() {
         synchronized (mObservers) {
             mObservers.clear();

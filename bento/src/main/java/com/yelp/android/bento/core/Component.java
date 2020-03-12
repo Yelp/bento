@@ -5,9 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
-
 import com.yelp.android.bento.utils.Observable;
-
 import java.util.ArrayList;
 import java.util.List;
 

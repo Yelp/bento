@@ -17,8 +17,8 @@ import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
-import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.NestedInnerComponentExampleViewHolder
+import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.NestedOuterExampleViewModel
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_list_view.*
@@ -84,7 +84,6 @@ class ListViewActivity : AppCompatActivity() {
         val simpleComponent = SimpleComponent<Nothing>(SimpleComponentExampleViewHolder::class.java)
         controller.addComponent(simpleComponent)
     }
-
 
     private fun addListComponent(controller: ComponentController) {
         with(ListComponent(null,

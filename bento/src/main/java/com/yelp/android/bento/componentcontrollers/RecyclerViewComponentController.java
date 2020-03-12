@@ -2,7 +2,6 @@ package com.yelp.android.bento.componentcontrollers;
 
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
-
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
@@ -29,16 +27,13 @@ import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Sequenceable;
-
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import kotlin.sequences.Sequence;
+import org.jetbrains.annotations.Nullable;
 
 /** Implementation of {@link ComponentController} for {@link RecyclerView}s. */
 public class RecyclerViewComponentController

@@ -21,8 +21,8 @@ class NestedOuterComponentExampleViewHolder :
     }
 
     override fun bind(
-            presenter: Nothing?,
-            element: NestedViewModel<Nothing?, NestedOuterExampleViewModel>
+        presenter: Nothing?,
+        element: NestedViewModel<Nothing?, NestedOuterExampleViewModel>
     ) {
         super.bind(presenter, element)
         textView.text = element.outerComponentViewModel.text

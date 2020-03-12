@@ -2,11 +2,11 @@ package com.yelp.android.bentosampleapp.components
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bentosampleapp.R
 

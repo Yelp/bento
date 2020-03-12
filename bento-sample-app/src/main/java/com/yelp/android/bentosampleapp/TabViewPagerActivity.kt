@@ -8,8 +8,8 @@ import com.google.android.material.tabs.TabLayout
 import com.yelp.android.bento.componentcontrollers.TabViewPagerComponentController
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 
-class TabViewPagerActivity: AppCompatActivity(),
-        ViewPager.OnPageChangeListener{
+class TabViewPagerActivity : AppCompatActivity(),
+        ViewPager.OnPageChangeListener {
 
     private lateinit var componentController: TabViewPagerComponentController
 

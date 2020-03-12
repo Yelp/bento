@@ -11,7 +11,7 @@ import com.yelp.android.bentosampleapp.components.HorizontalComponentExampleView
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import kotlinx.android.synthetic.main.activity_recycler_view.*
 
-class HorizontalGridComponentsActivity: AppCompatActivity() {
+class HorizontalGridComponentsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler_view)

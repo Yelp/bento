@@ -33,9 +33,9 @@ class ComponentReplacementActivity : AppCompatActivity() {
 }
 
 class ReplaceComponentButton(
-        private var replacementId: Int,
-        private val onComponentClicked: (replacenentId: Int) -> Unit
-): Component() {
+    private var replacementId: Int,
+    private val onComponentClicked: (replacenentId: Int) -> Unit
+) : Component() {
     override fun getPresenter(position: Int) = this
 
     override fun getItem(position: Int) = replacementId
@@ -51,7 +51,7 @@ class ReplaceComponentButton(
     }
 }
 
-class ReplaceComponentViewHolder: ComponentViewHolder<ReplaceComponentButton, Int>() {
+class ReplaceComponentViewHolder : ComponentViewHolder<ReplaceComponentButton, Int>() {
     private lateinit var itemButton: Button
 
     override fun inflate(parent: ViewGroup) =

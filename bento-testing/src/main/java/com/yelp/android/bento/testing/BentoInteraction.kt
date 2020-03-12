@@ -53,7 +53,7 @@ class BentoInteraction private constructor(private val dataMatcher: Matcher<out 
     }
 
     private fun getAssertion(
-            targetMatcher: TargetMatcher
+        targetMatcher: TargetMatcher
     ): ViewInteraction {
         return when (targetMatcher.matchedView) {
             is RecyclerView -> BentoRecyclerViewInteraction(targetMatcher)

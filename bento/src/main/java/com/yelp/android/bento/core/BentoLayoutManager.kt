@@ -5,9 +5,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class BentoLayoutManager(
-        context: Context,
-        componentGroup: ComponentGroup,
-        @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL
+    context: Context,
+    componentGroup: ComponentGroup,
+    @RecyclerView.Orientation orientation: Int = RecyclerView.VERTICAL
 ) : GridLayoutManager(context, componentGroup.numberLanes, orientation, false) {
     var isScrollEnabled: Boolean = true
 

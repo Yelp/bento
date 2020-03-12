@@ -3,9 +3,9 @@ package com.yelp.android.bentosampleapp
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.yelp.android.bento.componentcontrollers.ViewPagerComponentController
 import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.core.ComponentController
-import com.yelp.android.bento.componentcontrollers.ViewPagerComponentController
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_view_pager.*
 
@@ -31,7 +31,7 @@ class ViewPagerGridActivity : AppCompatActivity() {
             setStartGap(50)
             setData((1..100).map { "$it" })
             toggleDivider(false)
-            spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return if (position % (columns + 1) == 0) columns else 1
                 }

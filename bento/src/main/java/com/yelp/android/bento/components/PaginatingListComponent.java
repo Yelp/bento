@@ -1,10 +1,10 @@
 package com.yelp.android.bento.components;
 
-import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.yelp.android.bento.R;
 import com.yelp.android.bento.core.ComponentViewHolder;
@@ -88,7 +88,7 @@ public class PaginatingListComponent<P, T> extends ListComponent<P, T> {
 
     /**
      * @param loadingFooter The view holder to use for the loading indicator in the footer of the
-     *                      list.
+     *     list.
      */
     public void setLoadingFooter(@NonNull Class<? extends LoadingFooterViewHolder> loadingFooter) {
         mLoadingFooter = loadingFooter;

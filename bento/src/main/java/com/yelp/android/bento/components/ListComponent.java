@@ -46,7 +46,7 @@ public class ListComponent<P, T> extends Component {
      * @param presenter The presenter used for {@link ListComponent} interactions.
      * @param listItemViewHolder The view holder used for each item in the list.
      * @param numberLanes The number of cross-axis lanes in the list if we want to make a grid-like
-     *                    component.
+     *     component.
      */
     public ListComponent(
             @Nullable P presenter,
@@ -99,9 +99,7 @@ public class ListComponent<P, T> extends Component {
         }
     }
 
-    /**
-     * @param shouldShowDivider True if we want to show a divider between list items.
-     */
+    /** @param shouldShowDivider True if we want to show a divider between list items. */
     public void toggleDivider(boolean shouldShowDivider) {
         mShouldShowDivider = shouldShowDivider;
         notifyDataChanged();
@@ -123,10 +121,10 @@ public class ListComponent<P, T> extends Component {
      * Override this method when you want to take an action when a view in this component is (at
      * least partially) visible on the screen. Contrary to onItemVisible(), this method only
      * pertains to the items and not the dividers.
+     *
      * @param index The index of the item in mData. Not including dividers.
      */
-    public void onListItemVisible(int index) {
-    }
+    public void onListItemVisible(int index) {}
 
     /** @inheritDoc */
     @Override
@@ -144,14 +142,12 @@ public class ListComponent<P, T> extends Component {
      * Override this method when you want to take an action when a view in this component is no
      * longer visible on the screen. Contrary to onItemNotVisible(), this method only pertains to
      * the items and not the dividers.
+     *
      * @param index The index of the item in mData. Not including dividers.
      */
-    public void onListItemNotVisible(int index) {
-    }
+    public void onListItemNotVisible(int index) {}
 
-    /**
-     * @param dividerViewHolder The {@link DividerViewHolder} to use for dividers in the list.
-     */
+    /** @param dividerViewHolder The {@link DividerViewHolder} to use for dividers in the list. */
     public void setDividerViewHolder(
             @NonNull Class<? extends DividerViewHolder> dividerViewHolder) {
         mDividerViewHolder = dividerViewHolder;
@@ -181,7 +177,7 @@ public class ListComponent<P, T> extends Component {
      * more information.
      *
      * @return An int representing the number of items to delete. Either 1 or 2 if we need to remove
-     * a divider.
+     *     a divider.
      */
     @VisibleForTesting
     int getRemoveItemCount() {
@@ -195,8 +191,7 @@ public class ListComponent<P, T> extends Component {
      * @param position Index of the data item.
      */
     @CallSuper
-    protected void onGetListItem(int position) {
-    }
+    protected void onGetListItem(int position) {}
 
     @Nullable
     @Override
@@ -242,23 +237,22 @@ public class ListComponent<P, T> extends Component {
      */
     @Override
     public void setSpanSizeLookup(@NonNull final SpanSizeLookup spanSizeLookup) {
-        mSpanSizeLookup = new SpanSizeLookup() {
-            // If there is a gap in the list component, we want it to span the entire width.
-            // Otherwise, return the requested span size lookup.
-            @Override
-            public int getSpanSize(int position) {
-                if (hasGap(position)) {
-                    return getNumberLanes();
-                }
-                return spanSizeLookup.getSpanSize(position - getPositionOffset());
-            }
-        };
+        mSpanSizeLookup =
+                new SpanSizeLookup() {
+                    // If there is a gap in the list component, we want it to span the entire width.
+                    // Otherwise, return the requested span size lookup.
+                    @Override
+                    public int getSpanSize(int position) {
+                        if (hasGap(position)) {
+                            return getNumberLanes();
+                        }
+                        return spanSizeLookup.getSpanSize(position - getPositionOffset());
+                    }
+                };
     }
 
     @Override
-    public final void onItemsMoved(
-            int fromIndex,
-            int toIndex) {
+    public final void onItemsMoved(int fromIndex, int toIndex) {
         super.onItemsMoved(fromIndex, toIndex);
 
         mData.add(toIndex, mData.remove(fromIndex));
