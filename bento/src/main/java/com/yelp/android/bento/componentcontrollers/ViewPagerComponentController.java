@@ -14,6 +14,9 @@ import com.yelp.android.bento.core.ComponentController;
 import com.yelp.android.bento.core.ComponentGroup;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.utils.AccordionList.Range;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -183,7 +186,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object component) {
+    public boolean isViewFromObject(@NotNull View view, @NotNull Object component) {
         return view == mComponentViewMap.get(component);
     }
 
@@ -196,6 +199,7 @@ public class ViewPagerComponentController extends PagerAdapter implements Compon
 
         if (mComponentPageMap.get(component) == null) {
             RecyclerView view = new RecyclerView(container.getContext());
+            view.setNestedScrollingEnabled(false);
             container.addView(view);
             componentController = new RecyclerViewComponentController(view);
             mComponentPageMap.put(component, componentController);
