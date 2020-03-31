@@ -1,3 +1,19 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [15.8.0](https://github.com/Yelp/bento/compare/v15.7.0...v15.8.0) (2020-03-31)
+
+
+### Features
+
+* Add an isScrollable boolean flag to ComponentController ([afdf6ae](https://github.com/Yelp/bento/commit/afdf6aecf3501897f1c5ab7b266570bf9c4afa18)), closes [#36](https://github.com/Yelp/bento/issues/36)
+
+
+### Bug Fixes
+
+* nested scrolling in view pager controller ([99765d2](https://github.com/Yelp/bento/commit/99765d29365ea1b7ce79afaaef7c8bdfe7968daa))
+
 # Bento Releases
 ## Version 15.7.0
 _2020-02-05_
