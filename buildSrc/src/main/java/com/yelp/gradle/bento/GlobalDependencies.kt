@@ -25,7 +25,7 @@ object Versions {
     const val GRADLE = "4.10"
     const val GUAVA = "25.0-android"
     const val JUNIT = "4.12"
-    const val KOTLIN = "1.2.70"
+    const val KOTLIN = "1.3.72"
     const val MAVEN_PUBLISH = "3.6.2"
     const val MAVEN_SETTINGS = "0.5"
     const val MOCKITO = "2.7.19"
@@ -42,15 +42,14 @@ object BuildScriptLibs {
 object Libs {
     const val APACHE_COMMONS = "org.apache.commons:commons-lang3:${Versions.APACHE_COMMONS}"
     const val GUAVA = "com.google.guava:guava:${Versions.GUAVA}"
-    const val KOTLIN = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.KOTLIN}"
+    const val KOTLIN = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.KOTLIN}"
     const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect:${Versions.KOTLIN}"
     const val RX_JAVA_2 = "io.reactivex.rxjava2:rxjava:${Versions.RX_JAVA_2}"
 }
 
 object PublishLibs {
     const val MAVEN_PUBLISH = "digital.wup:android-maven-publish:${Versions.MAVEN_PUBLISH}"
-    const val MAVEN_SETTINGS =
-            "net.linguica.gradle:maven-settings-plugin:${Versions.MAVEN_SETTINGS}"
+    const val MAVEN_SETTINGS = "net.linguica.gradle:maven-settings-plugin:${Versions.MAVEN_SETTINGS}"
 }
 
 object SupportLibs {
