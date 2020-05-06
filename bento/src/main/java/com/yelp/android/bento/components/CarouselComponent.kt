@@ -1,5 +1,6 @@
 package com.yelp.android.bento.components
 
+import android.os.Parcelable
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -73,8 +74,8 @@ open class CarouselComponent(
 open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselViewModel>() {
 
     lateinit var recyclerView: RecyclerView
-    lateinit var controller: RecyclerViewComponentController
-    lateinit var element: CarouselViewModel
+    private lateinit var controller: RecyclerViewComponentController
+    var element: CarouselViewModel? = null
     private var attachedPool = false
 
     final override fun inflate(parent: ViewGroup): View {
@@ -82,13 +83,9 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
             recyclerView = this
             controller = RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL)
             isNestedScrollingEnabled = false
-            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        saveScrollPosition()
-                    }
-                }
-            })
+            (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
+                this.recycleChildrenOnDetach = true
+            }
         }
     }
 
@@ -108,13 +105,7 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
             controller.addComponent(group)
         }
 
-        // The post is required because it's possible that the scroll will fail if the items in the
-        // carousel have not already been measured and laid out.
-        recyclerView.post {
-            (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
-                scrollToPositionWithOffset(element.scrollPosition, element.scrollPositionOffset)
-            }
-        }
+        restoreScrollPosition()
     }
 
     /**
@@ -135,31 +126,35 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
      */
     private fun saveScrollPosition() {
         if (recyclerView.childCount < 1) {
-            element.scrollPosition = 0
-            element.scrollPositionOffset = 0
+            element?.layoutManagerState = null
             return
         }
         (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
-            element.scrollPosition = findFirstVisibleItemPosition()
-            element.scrollPositionOffset =
-                    recyclerView.getChildAt(0).left - recyclerView.paddingLeft
+            element?.layoutManagerState = onSaveInstanceState()
         }
+    }
+
+    private fun restoreScrollPosition() {
+        val element = element ?: return
+        val state = element.layoutManagerState ?: return
+        (recyclerView.layoutManager as? LinearLayoutManager)?.onRestoreInstanceState(state)
     }
 
     override fun onViewDetachedFromWindow() {
         super.onViewDetachedFromWindow()
+        saveScrollPosition()
         controller.onRecyclerViewDetachedFromWindow()
     }
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
         controller.onRecyclerViewAttachedToWindow()
+        restoreScrollPosition()
     }
 }
 
 data class CarouselViewModel(
     val group: ComponentGroup,
     var sharedPool: RecyclerView.RecycledViewPool? = null,
-    var scrollPosition: Int = 0,
-    var scrollPositionOffset: Int = 0
+    var layoutManagerState: Parcelable? = null
 )
