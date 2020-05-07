@@ -4,6 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.IdlingResource.ResourceCallback
 import androidx.test.platform.app.InstrumentationRegistry
@@ -14,8 +16,12 @@ import com.yelp.android.bento.components.CarouselViewModel
 import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.core.ComponentGroup
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
+
+private const val ITEM_POSITION = 3
+private const val SCROLL_OFFSET = 20
 
 class CarouselComponentViewHolderTest : ComponentViewHolderTestCase<Unit?, CarouselViewModel>() {
 
@@ -25,7 +31,11 @@ class CarouselComponentViewHolderTest : ComponentViewHolderTestCase<Unit?, Carou
         group.addAll((1..20).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) })
         val pool = RecyclerView.RecycledViewPool()
 
-        bindViewHolder(CarouselComponentViewHolder::class.java, null, CarouselViewModel(group, pool))
+        bindViewHolder(
+            CarouselComponentViewHolder::class.java,
+            null,
+            CarouselViewModel(group, pool)
+        )
         val holder = getHolder<CarouselComponentViewHolder>()
 
         assertEquals(pool, holder.recyclerView.recycledViewPool)
@@ -60,15 +70,17 @@ class CarouselComponentViewHolderTest : ComponentViewHolderTestCase<Unit?, Carou
         }
         val carousels = (1..3).map { CarouselComponent() }
 
-        val group = ComponentGroup().addAll(listOf(
+        val group = ComponentGroup().addAll(
+            listOf(
                 ComponentGroup().addAll((1..20).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) }),
                 carousels[0],
                 ComponentGroup().addAll((1..10).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) })
-                        .addComponent(carousels[1])
-                        .addAll((1..5).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) }),
+                    .addComponent(carousels[1])
+                    .addAll((1..5).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) }),
                 ComponentGroup().addAll((1..20).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) }),
                 carousels[2]
-        ))
+            )
+        )
 
         carousels.forEachIndexed { index, carousel ->
             assertNull("At carousel: $index", carousel.getItem(0).sharedPool)
@@ -80,66 +92,57 @@ class CarouselComponentViewHolderTest : ComponentViewHolderTestCase<Unit?, Carou
     }
 
     @Test
-    fun savedScrollPositionWithOffset_IsRestoredOnBind() {
+    fun savedLinearLayoutManager_IsRestoredOnBind() {
         val group = ComponentGroup()
         group.addAll((1..20).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) })
         val pool = RecyclerView.RecycledViewPool()
 
+        // Setup a carousel, scroll, then detach from window to store LayoutManager's info.
         bindViewHolder(
-                CarouselComponentViewHolder::class.java,
-                null,
-                CarouselViewModel(group, pool, scrollPosition = 3, scrollPositionOffset = -200)
+            CarouselComponentViewHolder::class.java,
+            null,
+            CarouselViewModel(group, pool)
         )
-        val (recyclerView, element) = getHolder<CarouselComponentViewHolder>().let {
+        val (initialRecyclerView, initialElement) = getHolder<CarouselComponentViewHolder>().let {
             Pair(it.recyclerView, it.element)
         }
 
-        ViewAttachedToWindowIdlingResource(recyclerView).registerIdleTransitionCallback {
-            val firstVisibleItemPosition =
-                    (recyclerView.layoutManager as? LinearLayoutManager)
-                            ?.findFirstVisibleItemPosition()
-
-            val firstVisibleItemOffset = recyclerView.getChildAt(0).left - recyclerView.paddingLeft
-
-            assertEquals(element.scrollPosition, firstVisibleItemPosition)
-            assertEquals(element.scrollPositionOffset, firstVisibleItemOffset)
+        IdlingRegistry.getInstance()
+            .register(RecyclerViewScrollStateIdlingResource(initialRecyclerView))
+        runOnMainSync {
+            (initialRecyclerView.layoutManager as? LinearLayoutManager)?.smoothScrollToPosition(
+                initialRecyclerView,
+                null,
+                ITEM_POSITION
+            )
         }
-    }
+        Espresso.onIdle()
+        initialRecyclerView.scrollBy(SCROLL_OFFSET, 0)
 
-    @Test
-    fun scrollingCarousel_SavesScrollPosition() {
-        val group = ComponentGroup()
-        group.addAll((1..20).map { SimpleComponent<Unit>(TestComponentViewHolder::class.java) })
-        val pool = RecyclerView.RecycledViewPool()
+        getHolder<CarouselComponentViewHolder>().onViewDetachedFromWindow()
+        val layoutManagerState = initialElement?.layoutManagerState
+        assertNotNull(layoutManagerState)
 
-        bindViewHolder(CarouselComponentViewHolder::class.java, null, CarouselViewModel(group, pool))
-        val holder = getHolder<CarouselComponentViewHolder>()
+        // Rebind a ViewHolder, passing the stored layoutManagerState before verifying that
+        // the position and offset are properly applied.
+        bindViewHolder(
+            CarouselComponentViewHolder::class.java,
+            null,
+            CarouselViewModel(group, pool, layoutManagerState)
+        )
+        val testedRecyclerView = getHolder<CarouselComponentViewHolder>().recyclerView
 
-        val scrollToPosition = 3
-        holder.recyclerView.layoutManager?.smoothScrollToPosition(
-                holder.recyclerView, null, scrollToPosition)
+        Espresso.onIdle()
 
-        RecyclerViewScrollStateIdlingResource(holder.recyclerView).registerIdleTransitionCallback {
-            assertEquals(scrollToPosition, holder.element.scrollPosition)
-            assertEquals(0, holder.element.scrollPositionOffset)
-        }
-    }
+        val firstVisibleItemPosition =
+            (testedRecyclerView.layoutManager as? LinearLayoutManager)
+                ?.findFirstVisibleItemPosition()
 
-    @Test
-    fun scrollingEmptyCarousel_SavesScrollPosition() {
-        val pool = RecyclerView.RecycledViewPool()
+        val firstVisibleItemOffset =
+            testedRecyclerView.getChildAt(0).left - testedRecyclerView.paddingLeft
 
-        bindViewHolder(CarouselComponentViewHolder::class.java, null, CarouselViewModel(ComponentGroup(), pool))
-        val holder = getHolder<CarouselComponentViewHolder>()
-
-        val scrollToPosition = 3
-        holder.recyclerView.layoutManager?.smoothScrollToPosition(
-                holder.recyclerView, null, scrollToPosition)
-
-        RecyclerViewScrollStateIdlingResource(holder.recyclerView).registerIdleTransitionCallback {
-            assertEquals(0, holder.element.scrollPosition)
-            assertEquals(0, holder.element.scrollPositionOffset)
-        }
+        assertEquals(ITEM_POSITION, firstVisibleItemPosition)
+        assertEquals(-SCROLL_OFFSET, firstVisibleItemOffset)
     }
 
     @Test
@@ -152,12 +155,17 @@ class CarouselComponentViewHolderTest : ComponentViewHolderTestCase<Unit?, Carou
         }
         val pool = RecyclerView.RecycledViewPool()
 
-        bindViewHolder(CarouselComponentViewHolder::class.java, null, CarouselViewModel(group, pool))
+        bindViewHolder(
+            CarouselComponentViewHolder::class.java,
+            null,
+            CarouselViewModel(group, pool)
+        )
         val holder = getHolder<CarouselComponentViewHolder>()
 
         val scrollToPosition = 20
         holder.recyclerView.layoutManager?.smoothScrollToPosition(
-                holder.recyclerView, null, scrollToPosition)
+            holder.recyclerView, null, scrollToPosition
+        )
 
         RecyclerViewScrollStateIdlingResource(holder.recyclerView).registerIdleTransitionCallback {
             assertEquals(20, visibleCount)

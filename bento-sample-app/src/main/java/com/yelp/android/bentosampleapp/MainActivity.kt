@@ -33,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                 "Component Replacement" to ComponentReplacementActivity::class.java,
                 "Reorder Items" to ReorderListActivity::class.java,
                 "Tab View Pager" to TabViewPagerActivity::class.java,
-                "Toggle Scroll in RecyclerView" to ToggleScrollInRecyclerViewActivity::class.java
+                "Toggle Scroll in RecyclerView" to ToggleScrollInRecyclerViewActivity::class.java,
+                "Checking re-use of items" to RecyclingActivity::class.java
         ))
         componentController.addComponent(listComponent)
     }

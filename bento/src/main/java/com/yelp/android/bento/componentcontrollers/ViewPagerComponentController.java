@@ -14,12 +14,10 @@ import com.yelp.android.bento.core.ComponentController;
 import com.yelp.android.bento.core.ComponentGroup;
 import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.utils.AccordionList.Range;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 /** Component controller that can be used at the top-level for adding components to a view pager. */
 public class ViewPagerComponentController extends PagerAdapter implements ComponentController {
