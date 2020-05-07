@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [16.0.0](https://github.com/Yelp/bento/compare/v15.8.0...v16.0.0) (2020-05-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** Bump kotlin and java
+
+### Bug Fixes
+
+* **carousel:** Fix CarouselComponent recycling behavior ([ee38d72](https://github.com/Yelp/bento/commit/ee38d728cf99f73eff7417ea8a8a428ea87ff11b)), closes [#62](https://github.com/Yelp/bento/issues/62)
+
+
+* **deps:** Bump kotlin and java ([4a846ff](https://github.com/Yelp/bento/commit/4a846ff17eef0e3db9433d5bfb9a68232ed71de2))
+
 ## [15.8.0](https://github.com/Yelp/bento/compare/v15.7.0...v15.8.0) (2020-03-31)
 
 
