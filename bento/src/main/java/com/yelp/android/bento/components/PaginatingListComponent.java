@@ -8,8 +8,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.yelp.android.bento.R;
 import com.yelp.android.bento.core.ComponentViewHolder;
-import io.reactivex.Observable;
-import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 
 /**
  * A {@link ListComponent} that supports pagination by exposing an {@link Observable} reporting the
