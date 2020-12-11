@@ -4,7 +4,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [16.0.0](https://github.com/Yelp/bento/compare/v15.8.0...v16.0.0) (2020-05-07)
 
-
 ### ⚠ BREAKING CHANGES
 
 * **deps:** Bump kotlin and java
