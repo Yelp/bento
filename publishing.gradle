@@ -11,6 +11,76 @@ task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
+task zipArtifacts(type: Zip) {
+    archiveName = "${project.name}.zip"
+    destinationDir = file("${buildDir}/tmp")
+
+    // Gather all the things we want to dejetify: the aar, jar, and pom file.
+    from("${buildDir}/outputs/aar/${project.name}-release.aar")
+    from("${buildDir}/libs/${project.name}-${Publishing.VERSION}-sources.jar")
+    from("${buildDir}/publications/mavenAar/pom-default.xml")
+
+    // The jetifier expects a '.pom' file, but until the final maven artifact is created, we have a
+    // .xml file. We rename it when zipping and then again when unzipping so the jetifier works
+    // correctly.
+    rename("pom-default.xml", "pom-default.pom")
+}
+
+task dejetify {
+    doLast {
+        // Zip the artifacts that we want to dejetify. Unfortunately there isn't a nice DSL for
+        // zipping, so we have to execute another task.
+        zipArtifacts.execute()
+
+        // Dejetify the zip.
+        exec {
+            workingDir projectDir
+            commandLine "../jetifier/jetifier-standalone/bin/jetifier-standalone",
+                    "-r",
+                    "-c", "../jetifier/default.generated.config",
+                    "-i", "${buildDir}/tmp/${project.name}.zip",
+                    "-o", "${buildDir}/tmp/${project.name}.zip"
+        }
+
+        // Extract the zip.
+        copy {
+            from zipTree("${buildDir}/tmp/${project.name}.zip")
+            into "${buildDir}/tmp/${project.name}-extracted"
+        }
+
+        // Copy extracted files back.
+        copy {
+            from "${buildDir}/tmp/${project.name}-extracted/${project.name}-release.aar"
+            into "${buildDir}/outputs/aar/"
+        }
+
+        copy {
+            from "${buildDir}/tmp/${project.name}-extracted/${project.name}-${Publishing.VERSION}-sources.jar"
+            into "${buildDir}/libs/"
+        }
+
+        copy {
+            from "${buildDir}/tmp/${project.name}-extracted/pom-default.pom"
+            into "${buildDir}/publications/mavenAar/"
+            // The jetifier expects a '.pom' file, but until the final maven artifact is created,
+            // we have a .xml file. We rename it when zipping and then again when unzipping so the
+            // jetifier works correctly.
+            rename("pom-default.pom", "pom-default.xml")
+        }
+    }
+}
+
+afterEvaluate {
+    tasks.dejetify.dependsOn(
+            tasks.bundleRelease,
+            tasks.sourcesJar,
+            tasks.generatePomFileForMavenAarPublication
+    )
+    tasks.matching { it.name.matches("publishMavenAar.*") }.each {
+        it.dependsOn(tasks.dejetify)
+    }
+}
+
 publishing {
     publications {
         mavenAar(MavenPublication) {
