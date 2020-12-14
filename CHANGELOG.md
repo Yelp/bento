@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [17.0.0](https://github.com/Yelp/bento/compare/v16.0.0...v17.0.0) (2020-12-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* projects need to be fully migrated to AndroidX to use Bento
+
+* drop jetifier ([a90291b](https://github.com/Yelp/bento/commit/a90291b8582db62a5cc7ed49dd3614722d603fc2))
+
 ## [16.0.0](https://github.com/Yelp/bento/compare/v15.8.0...v16.0.0) (2020-05-07)
 
 
