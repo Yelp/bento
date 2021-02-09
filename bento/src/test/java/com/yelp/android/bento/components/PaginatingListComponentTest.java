@@ -2,7 +2,7 @@ package com.yelp.android.bento.components;
 
 import static junit.framework.Assert.assertEquals;
 
-import io.reactivex.Observable;
+import io.reactivex.rxjava3.core.Observable;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;

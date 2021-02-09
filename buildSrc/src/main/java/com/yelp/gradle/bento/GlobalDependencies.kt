@@ -5,7 +5,7 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 
 object Publishing {
     const val GROUP = "com.yelp.android"
-    const val VERSION = "17.0.0"
+    const val VERSION = "18.0.0"
 }
 
 object Versions {
@@ -30,7 +30,7 @@ object Versions {
     const val MAVEN_SETTINGS = "0.5"
     const val MOCKITO = "2.7.19"
     const val MOCKITO_KOTLIN = "2.1.0"
-    const val RX_JAVA_2 = "2.1.13"
+    const val RX_JAVA_3 = "3.0.7"
     const val SUPPORT_TEST = "1.0.2"
 }
 
@@ -44,7 +44,7 @@ object Libs {
     const val GUAVA = "com.google.guava:guava:${Versions.GUAVA}"
     const val KOTLIN = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.KOTLIN}"
     const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect:${Versions.KOTLIN}"
-    const val RX_JAVA_2 = "io.reactivex.rxjava2:rxjava:${Versions.RX_JAVA_2}"
+    const val RX_JAVA_2 = "io.reactivex.rxjava3:rxjava:${Versions.RX_JAVA_3}"
 }
 
 object PublishLibs {
