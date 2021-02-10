@@ -1,6 +1,23 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [18.0.1](https://github.com/Yelp/bento/compare/v18.0.0...v18.0.1) (2021-02-10)
+
+
+### Bug Fixes
+
+* Fix crash in ComponentVisibilityListener ([6133a75](https://github.com/Yelp/bento/commit/6133a7553187ec92ab67300b74687b28e2ea828f))
+
+## [18.0.0](https://github.com/Yelp/bento/compare/v17.0.0...v18.0.0) (2021-02-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* Migrated to RxJava3. (#66)
+
+* Migrated to RxJava3. ([#66](https://github.com/Yelp/bento/issues/66)) ([1fc25bc](https://github.com/Yelp/bento/commit/1fc25bcc4ecaa91e66defa46a02d24f5a9124d67))
+
 ## [18.0.0](https://github.com/Yelp/bento/compare/v17.0.0...v18.0.0) (2020-10-26)
 
 
