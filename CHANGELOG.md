@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [17.0.1](https://github.com/Yelp/bento/compare/v17.0.0...v17.0.1) (2021-02-10)
+
+
+### Bug Fixes
+
+* Fix crash in ComponentVisibilityListener ([df54e68](https://github.com/Yelp/bento/commit/df54e68ee7d953116f3467ef95608d0e74b55d49))
+
 ## [17.0.0](https://github.com/Yelp/bento/compare/v16.0.0...v17.0.0) (2020-12-14)
 
 
