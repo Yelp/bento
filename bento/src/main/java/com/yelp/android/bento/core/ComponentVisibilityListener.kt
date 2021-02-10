@@ -152,8 +152,10 @@ class ComponentVisibilityListener(
                     val firstVisible = layoutManagerHelper.findFirstVisibleItemPosition()
                     val lastVisible = layoutManagerHelper.findLastVisibleItemPosition()
 
-                    for (i in firstVisible..lastVisible) {
-                        componentGroup.notifyVisibilityChange(i, false)
+                    if (firstVisible != NO_POSITION || lastVisible != NO_POSITION) {
+                        for (i in firstVisible..lastVisible) {
+                            componentGroup.notifyVisibilityChange(i, false)
+                        }
                     }
                 }
 
