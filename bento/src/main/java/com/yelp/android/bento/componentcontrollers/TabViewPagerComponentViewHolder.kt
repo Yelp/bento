@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout.LayoutParams
+import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.google.android.material.tabs.TabLayout
@@ -49,13 +50,12 @@ class TabViewPagerComponentViewHolder : ComponentViewHolder<OnPageChangeListener
         }
         if (element.viewModel.tabLayoutIndicatorColor != 0) {
             tabLayout.setSelectedTabIndicatorColor(
-                    context.resources.getColor(element.viewModel.tabLayoutIndicatorColor))
+                    ContextCompat.getColor(context, element.viewModel.tabLayoutIndicatorColor))
         }
         if (element.viewModel.tabLayoutTextColorNormal != 0 && element.viewModel.tabLayoutTextColorSelected != 0) {
             tabLayout.setTabTextColors(
-                    context.resources.getColor(element.viewModel.tabLayoutTextColorNormal),
-                    context.resources
-                            .getColor(element.viewModel.tabLayoutTextColorSelected))
+                    ContextCompat.getColor(context, element.viewModel.tabLayoutTextColorNormal),
+                    ContextCompat.getColor(context, element.viewModel.tabLayoutTextColorSelected))
         }
         if (element.viewModel.tabLayoutSideMargins != 0) {
             val tabLayoutParams = LayoutParams(
