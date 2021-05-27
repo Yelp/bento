@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [18.0.2](https://github.com/Yelp/bento/compare/v18.0.1...v18.0.2) (2021-05-27)
+
+
+### Bug Fixes
+
+* Upgrade Guava to 28.1 ([92f74b5](https://github.com/Yelp/bento/commit/92f74b5653356cfbfc6bccf9666c37a4e684591e))
+
 ## [18.0.1](https://github.com/Yelp/bento/compare/v18.0.0...v18.0.1) (2021-02-10)
 
 
