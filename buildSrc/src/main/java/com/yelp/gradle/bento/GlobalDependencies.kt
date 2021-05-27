@@ -15,14 +15,14 @@ object Versions {
 
     // In alphabetical order.
     const val APACHE_COMMONS = "3.4"
-    const val ANDROID_GRADLE = "3.1.4"
+    const val ANDROID_GRADLE = "4.2.0"
     const val ANDROID_X_APP_COMPAT = "1.0.0"
     const val ANDROID_X_CONSTRAINT_LAYOUT = "1.1.2"
     const val ANDROID_X_MATERIAL = "1.0.0"
     const val ANDROID_X_RECYCLER_VIEW = "1.0.0"
     const val ANDROID_X_TEST = "1.1.0"
     const val ESPRESSO = "3.1.0"
-    const val GRADLE = "4.10"
+    const val GRADLE = "6.9"
     const val GUAVA = "28.1-android"
     const val JUNIT = "4.12"
     const val KOTLIN = "1.3.72"
