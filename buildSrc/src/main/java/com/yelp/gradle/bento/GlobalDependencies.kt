@@ -23,7 +23,7 @@ object Versions {
     const val ANDROID_X_TEST = "1.1.0"
     const val ESPRESSO = "3.1.0"
     const val GRADLE = "4.10"
-    const val GUAVA = "25.0-android"
+    const val GUAVA = "28.1-android"
     const val JUNIT = "4.12"
     const val KOTLIN = "1.3.72"
     const val MAVEN_PUBLISH = "3.6.2"
