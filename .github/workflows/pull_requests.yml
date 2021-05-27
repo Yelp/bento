@@ -3,9 +3,60 @@ on: pull_request
 
 jobs:
   commitsar:
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest]
     name: Verify commit messages
     steps:
       - uses: actions/checkout@v1
       - name: Run commitsar
         uses: docker://commitsar/commitsar
+  checks:
+    runs-on: [ubuntu-latest]
+    name: Run checks
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Cache Gradle Folders
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: cache-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            cache-gradle-
+      - name: Run check
+        run: ./gradlew check
+  assemble:
+    runs-on: [ubuntu-latest]
+    name: Assemble the project
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Cache Gradle Folders
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: cache-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            cache-gradle-
+      - name: Run assembleDebug
+        run: ./gradlew assembleDebug
+  publishToMavenLocal:
+    runs-on: [ubuntu-latest]
+    name: Publish to Maven local
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      - name: Cache Gradle Folders
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches/
+            ~/.gradle/wrapper/
+          key: cache-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: |
+            cache-gradle-
+      - name: Run publishToMavenLocal
+        run: ./gradlew publishToMavenLocal
