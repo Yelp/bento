@@ -19,7 +19,7 @@ abstract class SimpleComponentViewHolder<P> protected constructor(
     private val layoutId: Int
 ) : ComponentViewHolder<P, Unit?>() {
 
-    protected abstract fun onViewCreated(itemView: View)
+    abstract override fun onViewCreated(itemView: View)
 
     override fun inflate(parent: ViewGroup): View {
         val itemView = LayoutInflater.from(parent.context).inflate(layoutId, parent, false)

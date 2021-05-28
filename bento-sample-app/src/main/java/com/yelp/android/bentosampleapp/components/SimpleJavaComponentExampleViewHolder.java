@@ -14,7 +14,7 @@ public class SimpleJavaComponentExampleViewHolder extends SimpleComponentViewHol
     }
 
     @Override
-    protected void onViewCreated(@NonNull View itemView) {
+    public void onViewCreated(@NonNull View itemView) {
         mTextView = itemView.findViewById(R.id.text);
     }
 

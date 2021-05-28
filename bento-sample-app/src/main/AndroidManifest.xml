@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".GridComponentsActivity" />
+        <activity android:name=".AsyncInflationActivity" />
         <activity android:name=".HorizontalGridComponentsActivity" />
         <activity android:name=".RecyclerViewActivity" />
         <activity android:name=".ComponentReplacementActivity" />

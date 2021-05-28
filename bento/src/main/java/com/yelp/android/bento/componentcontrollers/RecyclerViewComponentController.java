@@ -1,7 +1,9 @@
 package com.yelp.android.bento.componentcontrollers;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -11,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
 import com.google.common.collect.HashBiMap;
+import com.yelp.android.bento.core.AsyncCompat;
 import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
@@ -22,20 +26,28 @@ import com.yelp.android.bento.core.ComponentGroup.ComponentGroupDataObserver;
 import com.yelp.android.bento.core.ComponentViewHolder;
 import com.yelp.android.bento.core.ComponentVisibilityListener;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
+import com.yelp.android.bento.core.LayoutPreInflater;
 import com.yelp.android.bento.core.ListItemTouchCallback;
 import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Sequenceable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import kotlin.sequences.Sequence;
+
 import org.jetbrains.annotations.Nullable;
 
-/** Implementation of {@link ComponentController} for {@link RecyclerView}s. */
+import static com.yelp.android.bento.core.LayoutPreInflaterKt.LOG_TAG;
+
+/**
+ * Implementation of {@link ComponentController} for {@link RecyclerView}s.
+ */
 public class RecyclerViewComponentController
         implements ComponentController, OnItemMovedPositionListener {
 
@@ -50,11 +62,13 @@ public class RecyclerViewComponentController
     private ComponentVisibilityListener mComponentVisibilityListener;
     private OnScrollListener mOnScrollListener;
     private AdapterDataObserver mAdapterDataObserver;
-    private BentoLayoutManager mLayoutManager;
-    private LinearSmoothScroller mSmoothScroller;
-    private ItemTouchHelper mItemTouchHelper;
+    private final BentoLayoutManager mLayoutManager;
+    private final LinearSmoothScroller mSmoothScroller;
+    private final ItemTouchHelper mItemTouchHelper;
+    public LayoutPreInflater preInflater;
 
-    @RecyclerView.Orientation private int mOrientation;
+    @RecyclerView.Orientation
+    private int mOrientation;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
@@ -62,7 +76,25 @@ public class RecyclerViewComponentController
      * {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do it manually.
      */
     public RecyclerViewComponentController(@NonNull RecyclerView recyclerView) {
-        this(recyclerView, RecyclerView.VERTICAL);
+        this(recyclerView, RecyclerView.VERTICAL, null);
+    }
+
+
+    /**
+     * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
+     * the {@link RecyclerView} with preinflater.
+     */
+    public RecyclerViewComponentController(@NonNull RecyclerView recyclerView, LayoutPreInflater preInflater) {
+        this(recyclerView, RecyclerView.VERTICAL, preInflater);
+    }
+
+
+    /**
+     * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
+     * the {@link RecyclerView} with preinflater.
+     */
+    public RecyclerViewComponentController(@NonNull RecyclerView recyclerView, @Orientation int orientation) {
+        this(recyclerView, orientation, null);
     }
 
     /**
@@ -72,7 +104,9 @@ public class RecyclerViewComponentController
      * it manually.
      */
     public RecyclerViewComponentController(
-            @NonNull RecyclerView recyclerView, @Orientation int orientation) {
+            @NonNull RecyclerView recyclerView, @Orientation int orientation,
+            LayoutPreInflater preInflater) {
+        this.preInflater = preInflater;
         mOrientation = orientation;
         mRecyclerViewAdapter = new RecyclerViewAdapter();
         mComponentGroup = new ComponentGroup();
@@ -179,18 +213,36 @@ public class RecyclerViewComponentController
     @NonNull
     @Override
     public RecyclerViewComponentController addComponent(@NonNull Component component) {
-        mComponentGroup.addComponent(component);
-        shareViewPool(component);
-        mComponentVisibilityListener.onComponentAdded(component);
+        if (preInflater == null) {
+            mComponentGroup.addComponent(component);
+            shareViewPool(component);
+            mComponentVisibilityListener.onComponentAdded(component);
+            return this;
+        }
+        preInflater.inflateAll(component, () -> {
+            mComponentGroup.addComponent(component);
+            shareViewPool(component);
+            mComponentVisibilityListener.onComponentAdded(component);
+            return null;
+        });
         return this;
     }
 
     @NonNull
     @Override
     public ComponentController addComponent(@NonNull ComponentGroup componentGroup) {
-        mComponentGroup.addComponent(componentGroup);
-        shareViewPool(componentGroup);
-        mComponentVisibilityListener.onComponentAdded(componentGroup);
+        if (preInflater == null) {
+            mComponentGroup.addComponent(componentGroup);
+            shareViewPool(componentGroup);
+            mComponentVisibilityListener.onComponentAdded(componentGroup);
+            return this;
+        }
+        preInflater.inflateAll(componentGroup, () -> {
+            mComponentGroup.addComponent(componentGroup);
+            shareViewPool(componentGroup);
+            mComponentVisibilityListener.onComponentAdded(componentGroup);
+            return null;
+        });
         return this;
     }
 
@@ -198,18 +250,36 @@ public class RecyclerViewComponentController
     @Override
     public RecyclerViewComponentController addComponent(
             int index, @NonNull final Component component) {
-        mComponentGroup.addComponent(index, component);
-        shareViewPool(component);
-        mComponentVisibilityListener.onComponentAdded(component);
+        if (preInflater == null) {
+            mComponentGroup.addComponent(index, component);
+            shareViewPool(component);
+            mComponentVisibilityListener.onComponentAdded(component);
+            return this;
+        }
+        preInflater.inflateAll(component, () -> {
+            mComponentGroup.addComponent(index, component);
+            shareViewPool(component);
+            mComponentVisibilityListener.onComponentAdded(component);
+            return null;
+        });
         return this;
     }
 
     @NonNull
     @Override
     public ComponentController addComponent(int index, @NonNull ComponentGroup componentGroup) {
-        mComponentGroup.addComponent(index, componentGroup);
-        shareViewPool(componentGroup);
-        mComponentVisibilityListener.onComponentAdded(componentGroup);
+        if (preInflater == null) {
+            mComponentGroup.addComponent(index, componentGroup);
+            shareViewPool(componentGroup);
+            mComponentVisibilityListener.onComponentAdded(componentGroup);
+            return this;
+        }
+        preInflater.inflateAll(componentGroup, () -> {
+            mComponentGroup.addComponent(index, componentGroup);
+            shareViewPool(componentGroup);
+            mComponentVisibilityListener.onComponentAdded(componentGroup);
+            return null;
+        });
         return this;
     }
 
@@ -488,9 +558,26 @@ public class RecyclerViewComponentController
         @SuppressWarnings("unchecked") // Unchecked Component generics.
         @Override
         public ViewHolderWrapper onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            ComponentViewHolder viewHolder =
-                    constructViewHolder(mViewTypeMap.inverse().get(viewType));
-            return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+            ComponentViewHolder viewHolder = constructViewHolder(mViewTypeMap.inverse().get(viewType));
+            if (preInflater == null) {
+                return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+            }
+            View view = null;
+            if (viewHolder instanceof AsyncCompat) {
+                int resId = ((AsyncCompat) viewHolder).getLayoutId();
+                view = preInflater.getView(resId);
+            }
+            if (view == null) {
+                if (!(viewHolder instanceof AsyncCompat)) {
+                    Log.e(LOG_TAG, "onCreateViewHolder: " + "preInflater view null. Inflating on main thread. Not AsyncCompat.");
+                } else {
+                    Log.e(LOG_TAG, "onCreateViewHolder: " + "preInflater view null. Inflating on main thread.");
+                }
+                return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+            }
+            Log.e(LOG_TAG, "onCreateViewHolder: " + "Used preinflated view: " + view);
+            viewHolder.onViewCreated(view);
+            return new ViewHolderWrapper(view, viewHolder);
         }
 
         @SuppressWarnings("unchecked") // Unchecked Component generics.
@@ -541,7 +628,7 @@ public class RecyclerViewComponentController
      *
      * @param <T> The type of data the wrapped {@link ComponentViewHolder} uses.
      */
-    private static class ViewHolderWrapper<P, T> extends RecyclerView.ViewHolder {
+    protected static class ViewHolderWrapper<P, T> extends RecyclerView.ViewHolder {
 
         private ComponentViewHolder<P, T> mViewHolder;
 

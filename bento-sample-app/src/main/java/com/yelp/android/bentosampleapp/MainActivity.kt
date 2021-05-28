@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
                 )
         listComponent.setData(listOf(
                 "Recycler View" to RecyclerViewActivity::class.java,
+                "Async Inflation" to AsyncInflationActivity::class.java,
                 "Recycler View with grid" to GridComponentsActivity::class.java,
                 "Horizontal recycler View with grid" to
                         HorizontalGridComponentsActivity::class.java,

@@ -30,6 +30,8 @@ abstract class ComponentViewHolder<P, T> {
      */
     abstract fun inflate(parent: ViewGroup): View
 
+    open fun onViewCreated(view: View) = Unit
+
     /**
      * Called to bind the component item's presenter and data item to the view. This is a
      * performance sensitive operation since it's called every time a view is recycled back
