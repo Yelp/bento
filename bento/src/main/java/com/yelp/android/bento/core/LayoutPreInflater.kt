@@ -9,20 +9,59 @@ import io.reactivex.rxjava3.core.BackpressureStrategy.BUFFER
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.FlowableEmitter
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.collections.ArrayList
 
 const val LOG_TAG = "pre-inflater"
 
 class LayoutPreInflater(private val asyncLayoutInflater: AsyncLayoutInflater) {
 
     private val viewMap = SparseArray<MutableList<View>>()
+    private val waitingForInflationMap = ConcurrentHashMap<Component, () -> Unit>()
+
+    private val callbackList = ConcurrentLinkedQueue<() -> Unit>()
 
     fun inflateAll(component: Component, callback: () -> Unit) {
         val views = inflateForComponent(component)
+        if (views.isEmpty()) {
+            // no async inflation to do, only proceed with callback
+            // if not waiting for inflation to finish.
+            // need to queue the work up
+            if (waitingForInflationMap.isEmpty()) {
+                Log.e("paul", "empty : $component)")
+                callback()
+                return
+            } else {
+                Log.e("paul", "queueing callback for : $component")
+                callbackList.add(callback)
+                return
+                // add work to queue
+                // return
+            }
+        }
+
+        waitingForInflationMap[component] = callback
         Flowable.fromIterable(views)
                 .flatMap { task -> task.subscribeOn(Schedulers.io()) }
                 .toList()
                 .map { _ -> true }
-                .doAfterSuccess { callback() }
+                .doAfterSuccess {
+                    waitingForInflationMap.remove(component)
+                    if (waitingForInflationMap.isEmpty()) {
+                        Log.e("paul", "waitingForInflationMap empty chewing queue")
+
+                        while (!callbackList.isEmpty()) {
+                            callbackList.poll()()
+                        }
+                        callback()
+                    } else {
+                        Log.e("paul", "queueing callback for : $component")
+                        callbackList.add(callback)
+                    }
+//                    callback()
+                }
                 .subscribe()
     }
 

@@ -1,5 +1,7 @@
 package com.yelp.android.bento.core;
 
+import android.util.Log;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +16,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import static com.yelp.android.bento.core.LayoutPreInflaterKt.LOG_TAG;
 
 /**
  * A {@link Component} comprising of zero or more ordered child {@link Component}s. Useful for
@@ -123,6 +127,7 @@ public class ComponentGroup extends Component {
      */
     @NonNull
     public ComponentGroup addComponent(@NonNull Component component) {
+//        Log.e(LOG_TAG, "addComponent: " + component);
         return addComponent(getSize(), component);
     }
 
@@ -134,6 +139,7 @@ public class ComponentGroup extends Component {
      */
     @NonNull
     public ComponentGroup addComponent(@NonNull ComponentGroup componentGroup) {
+//        Log.e(LOG_TAG, "addComponent: " + componentGroup);
         return addComponent(getSize(), componentGroup);
     }
 
@@ -150,6 +156,7 @@ public class ComponentGroup extends Component {
      */
     @NonNull
     public ComponentGroup addComponent(int index, @NonNull final Component component) {
+//        Log.e(LOG_TAG, "addComponent: " + component);
         if (mComponentIndexMap.containsKey(component)) {
             throw new IllegalArgumentException("Component " + component + " already added.");
         }
@@ -182,6 +189,7 @@ public class ComponentGroup extends Component {
      */
     @NonNull
     public ComponentGroup addComponent(int index, @NonNull ComponentGroup componentGroup) {
+//        Log.e(LOG_TAG, "addComponent: " + componentGroup);
         return addComponent(index, (Component) componentGroup);
     }
 

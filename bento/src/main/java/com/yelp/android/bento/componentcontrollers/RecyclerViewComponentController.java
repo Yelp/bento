@@ -33,12 +33,18 @@ import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.Sequenceable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.functions.Action;
+import kotlin.Unit;
 import kotlin.sequences.Sequence;
 
 import org.jetbrains.annotations.Nullable;
@@ -210,6 +216,16 @@ public class RecyclerViewComponentController
         return mComponentGroup.rangeOf(component);
     }
 
+    // task queue
+    // componentA async - add to queue, callback needs to be called first
+    // componentB not async, add to queue, wait for callback one
+
+    // [ async wait, async wait, non-async wait ]
+//    Map<Component, Boolean> doneMap = new HashMap<>();
+
+//    List<Component> inflateProgress = new LinkedList<Component>();
+//    List<Completable> work = new ArrayList<>();
+
     @NonNull
     @Override
     public RecyclerViewComponentController addComponent(@NonNull Component component) {
@@ -219,10 +235,31 @@ public class RecyclerViewComponentController
             mComponentVisibilityListener.onComponentAdded(component);
             return this;
         }
+        Log.e("paul", "addComponent before lambda: " + component);
+//        doneMap.put(component, false);
+//        inflateProgress.add(component);
+        // this waits for views to be inflated before adding them
         preInflater.inflateAll(component, () -> {
+            Log.e("paul", "addComponent after lambda: " + component);
             mComponentGroup.addComponent(component);
             shareViewPool(component);
             mComponentVisibilityListener.onComponentAdded(component);
+//            if (inflateProgress.isEmpty()) {
+//
+//                inflateProgress.remove(component);
+//
+//            } else {
+//
+//                work.add(Completable.fromAction(() -> {
+//                    Log.e("paul", "addComponent after lambda: " + component);
+//                    mComponentGroup.addComponent(component);
+//                    shareViewPool(component);
+//                    mComponentVisibilityListener.onComponentAdded(component);
+//                    inflateProgress.remove(component);
+//                }));
+//
+//            }
+
             return null;
         });
         return this;
@@ -571,7 +608,7 @@ public class RecyclerViewComponentController
                 if (!(viewHolder instanceof AsyncCompat)) {
                     Log.e(LOG_TAG, "onCreateViewHolder: " + "preInflater view null. Inflating on main thread. Not AsyncCompat.");
                 } else {
-                    Log.e(LOG_TAG, "onCreateViewHolder: " + "preInflater view null. Inflating on main thread.");
+                    Log.e(LOG_TAG, "onCreateViewHolder: " + "preInflater view null. Inflating on main thread: " + viewHolder);
                 }
                 return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
             }
