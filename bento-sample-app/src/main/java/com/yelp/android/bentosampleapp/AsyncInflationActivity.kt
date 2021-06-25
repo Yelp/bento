@@ -8,6 +8,7 @@ import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.core.*
+import com.yelp.android.bentosampleapp.components.ComplexLayoutComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponent2
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolderAsync
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,6 +29,9 @@ class AsyncInflationActivity : AppCompatActivity() {
         addListComponent(componentController)
         addComponentToScrollTo(componentController)
 
+        for (i in 0..50) {
+            componentController.addComponent(ComplexLayoutComponent("$i"))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
