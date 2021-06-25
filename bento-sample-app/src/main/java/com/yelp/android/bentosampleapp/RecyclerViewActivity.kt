@@ -22,15 +22,11 @@ import com.yelp.android.bentosampleapp.components.NestedOuterExampleViewModel
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleJavaComponentExampleViewHolder
 import kotlinx.android.synthetic.main.activity_recycler_view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Main activity for displaying the different options for demonstrating Bento features.
  */
-class RecyclerViewActivity : AppCompatActivity(), CoroutineScope {
+class RecyclerViewActivity : AppCompatActivity() {
 
     private val componentController by lazy {
         RecyclerViewComponentController(recyclerView)
@@ -172,8 +168,4 @@ class RecyclerViewActivity : AppCompatActivity(), CoroutineScope {
         val nestedComponent = NestedComponent(null, nestedViewModel)
         controller.addComponent(nestedComponent)
     }
-
-    private val activityJob = Job()
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + activityJob
 }
