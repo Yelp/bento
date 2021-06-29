@@ -1,7 +1,9 @@
 package com.yelp.android.bento.componentcontrollers;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.google.common.collect.HashBiMap;
+import com.yelp.android.bento.core.AsyncLayoutInflater;
 import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
@@ -53,6 +56,7 @@ public class RecyclerViewComponentController
     private BentoLayoutManager mLayoutManager;
     private LinearSmoothScroller mSmoothScroller;
     private ItemTouchHelper mItemTouchHelper;
+    private AsyncLayoutInflater mAsyncLayoutInflater;
 
     @RecyclerView.Orientation private int mOrientation;
 
@@ -141,6 +145,7 @@ public class RecyclerViewComponentController
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecycledViewPool = mRecyclerView.getRecycledViewPool();
+        mAsyncLayoutInflater = new AsyncLayoutInflater(mRecyclerView.getContext());
         setupComponentSpans();
         addVisibilityListeners();
     }
@@ -302,7 +307,7 @@ public class RecyclerViewComponentController
                     ((ViewHolderWrapper)
                             mRecyclerView.findViewHolderForAdapterPosition(currentIndex));
             if (holder != null) {
-                holder.mViewHolder.setAbsolutePosition(currentIndex);
+                holder.setAbsolutePosition(currentIndex);
             }
             currentIndex++;
         }
@@ -490,7 +495,18 @@ public class RecyclerViewComponentController
         public ViewHolderWrapper onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             ComponentViewHolder viewHolder =
                     constructViewHolder(mViewTypeMap.inverse().get(viewType));
-            return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+
+            final ViewHolderWrapper viewHolderWrapper =
+                    new ViewHolderWrapper(parent.getContext(), viewHolder);
+            mAsyncLayoutInflater.inflate(
+                    viewHolder,
+                    parent,
+                    (componentViewHolder, view) -> {
+                        viewHolderWrapper.updateView(view);
+                        return null;
+                    });
+
+            return viewHolderWrapper;
         }
 
         @SuppressWarnings("unchecked") // Unchecked Component generics.
@@ -514,17 +530,17 @@ public class RecyclerViewComponentController
 
         @Override
         public void onViewAttachedToWindow(@NonNull ViewHolderWrapper holder) {
-            holder.mViewHolder.onViewAttachedToWindow();
+            holder.onViewAttachedToWindow();
         }
 
         @Override
         public void onViewDetachedFromWindow(@NonNull ViewHolderWrapper holder) {
-            holder.mViewHolder.onViewDetachedFromWindow();
+            holder.onViewDetachedFromWindow();
         }
 
         @Override
         public void onViewRecycled(@NonNull ViewHolderWrapper holder) {
-            holder.mViewHolder.onViewRecycled();
+            holder.onViewRecycled();
         }
 
         @Nullable
@@ -542,17 +558,60 @@ public class RecyclerViewComponentController
      * @param <T> The type of data the wrapped {@link ComponentViewHolder} uses.
      */
     private static class ViewHolderWrapper<P, T> extends RecyclerView.ViewHolder {
+        private boolean mIsInflated = false;
 
-        private ComponentViewHolder<P, T> mViewHolder;
+        private final ComponentViewHolder<P, T> mViewHolder;
+        private Runnable mDeferredBinding = null;
 
-        ViewHolderWrapper(View itemView, ComponentViewHolder<P, T> viewHolder) {
-            super(itemView);
+        ViewHolderWrapper(Context context, ComponentViewHolder<P, T> viewHolder) {
+            super(new FrameLayout(context));
             mViewHolder = viewHolder;
         }
 
         void bind(P presenter, int position, T element) {
             mViewHolder.setAbsolutePosition(position);
-            mViewHolder.bind(presenter, element);
+            if (mIsInflated) {
+                mViewHolder.bind(presenter, element);
+            } else {
+                mDeferredBinding = () -> mViewHolder.bind(presenter, element);
+            }
+        }
+
+        public boolean isInflated() {
+            return mIsInflated;
+        }
+
+        public void updateView(View view) {
+            mIsInflated = true;
+
+            ((FrameLayout) itemView).addView(view);
+            if (itemView.isAttachedToWindow() && mDeferredBinding != null) {
+                mDeferredBinding.run();
+                mDeferredBinding = null;
+            }
+        }
+
+        void setAbsolutePosition(int currentIndex) {
+            mViewHolder.setAbsolutePosition(currentIndex);
+        }
+
+        void onViewAttachedToWindow() {
+            if (mIsInflated) {
+                mViewHolder.onViewAttachedToWindow();
+            }
+        }
+
+        void onViewDetachedFromWindow() {
+            if (mIsInflated) {
+                mViewHolder.onViewDetachedFromWindow();
+            }
+        }
+
+        void onViewRecycled() {
+            mDeferredBinding = null;
+            if (mIsInflated) {
+                mViewHolder.onViewRecycled();
+            }
         }
     }
 
