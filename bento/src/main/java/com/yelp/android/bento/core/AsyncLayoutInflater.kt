@@ -17,9 +17,10 @@ class AsyncLayoutInflater(context: Context) {
     private val handlerCallback = Handler.Callback { msg ->
         val request = msg.obj as InflateRequest
         if (request.view == null) {
-            request.view = request.inflateBlock?.invoke(request.parent!!)
+            request.view = request.viewHolder?.inflate(request.parent!!)
         }
         requireNotNull(request.callback).invoke(
+            requireNotNull(request.viewHolder),
             requireNotNull(request.view)
         )
         mInflateThread.releaseRequest(request)
@@ -32,13 +33,13 @@ class AsyncLayoutInflater(context: Context) {
 
     @UiThread
     fun inflate(
-        inflateBlock: (parent: ViewGroup) -> View,
+        viewHolder: ComponentViewHolder<*, *>,
         parent: ViewGroup,
-        callback: (view: View) -> Unit
+        callback: (viewHolder: ComponentViewHolder<*, *>, view: View) -> Unit
     ) {
         val request = mInflateThread.obtainRequest()
+        request.viewHolder = viewHolder
         request.inflater = this
-        request.inflateBlock = inflateBlock
         request.parent = parent
         request.callback = callback
         mInflateThread.enqueue(request)
@@ -73,11 +74,11 @@ class AsyncLayoutInflater(context: Context) {
     }
 
     class InflateRequest {
-        var inflateBlock: ((parent: ViewGroup) -> View)? = null
+        var viewHolder: ComponentViewHolder<*, *>? = null
         var inflater: AsyncLayoutInflater? = null
         var parent: ViewGroup? = null
         var view: View? = null
-        var callback: ((View) -> Unit)? = null
+        var callback: ((ComponentViewHolder<*, *>, View) -> Unit)? = null
     }
 
     class InflateThread : Thread() {
@@ -104,7 +105,7 @@ class AsyncLayoutInflater(context: Context) {
                 return
             }
             try {
-                request.view = request.inflateBlock?.invoke(request.parent!!)
+                request.view = request.viewHolder?.inflate(request.parent!!)
             } catch (ex: RuntimeException) {
                 // Probably a Looper failure, retry on the UI thread
                 Log.w(
@@ -132,7 +133,7 @@ class AsyncLayoutInflater(context: Context) {
 
         fun releaseRequest(obj: InflateRequest) {
             obj.callback = null
-            obj.inflateBlock = null
+            obj.viewHolder = null
             obj.inflater = null
             obj.parent = null
             obj.view = null

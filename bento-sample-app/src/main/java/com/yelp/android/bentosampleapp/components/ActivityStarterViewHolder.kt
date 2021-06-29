@@ -14,8 +14,9 @@ class ActivityStarterViewHolder : ComponentViewHolder<Context, Pair<String, Clas
     lateinit var button: Button
 
     override fun inflate(parent: ViewGroup): View {
-        return LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false)
                 .also { button = it as Button }
+        return view
     }
 
     override fun bind(presenter: Context, element: Pair<String, Class<out AppCompatActivity>>) {

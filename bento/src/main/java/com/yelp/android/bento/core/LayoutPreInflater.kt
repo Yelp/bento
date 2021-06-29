@@ -1,6 +1,5 @@
 package com.yelp.android.bento.core
 
-import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.rxjava3.core.BackpressureStrategy.BUFFER
@@ -30,7 +29,8 @@ class LayoutPreInflater(
     }
 
     private val sequentialScheduler: Scheduler = Schedulers.single()
-    private val viewMap = SparseArray<MutableList<View>>()
+    private val viewMap =
+        mutableMapOf<Class<out ComponentViewHolder<*, *>>, MutableList<Pair<ComponentViewHolder<*, *>, View>>>()
     private val inflationInProgressSet = mutableSetOf<Component>()
     private val callbackList = LinkedList<() -> Unit>()
 
@@ -64,19 +64,19 @@ class LayoutPreInflater(
     /**
      * Retrieves a previously async inflated view if there is one.
      */
-    fun getView(layoutResId: Int): View? {
-        val views = viewMap[layoutResId]
+    fun getView(viewHolderType: Class<out ComponentViewHolder<*, *>>): Pair<ComponentViewHolder<*, *>, View>? {
+
+        val views = viewMap[viewHolderType]
         if (views == null || views.isEmpty()) {
             // No pre-inflated views were found. This log tag is useul
             return null
         }
-        val view: View = views.removeAt(0)
-        viewMap.put(layoutResId, views)
+        val pair = views.removeAt(views.lastIndex)
         // We want to make sure we always return a view without a parent in case someone is
         // using this to create RecyclerView viewHolders.
-        return if (view.parent != null) {
-            getView(layoutResId)
-        } else view
+        return if (pair.second.parent != null) {
+            getView(viewHolderType)
+        } else pair
     }
 
     private fun createAsyncInflationFlowablesForComponent(component: Component): MutableList<Flowable<View>> {
@@ -99,28 +99,25 @@ class LayoutPreInflater(
         return Flowable.create({ emitter: FlowableEmitter<View> ->
             val viewHolder: ComponentViewHolder<*, *> = constructViewHolder(viewHolderType)
             ViewHolderInstanceCache.viewHolderMap[viewHolderType] = viewHolder
-            if (viewHolder is AsyncCompat) {
-                val resId = (viewHolder as AsyncCompat).layoutId
-                asyncLayoutInflater.inflate({ parent: ViewGroup ->
-                    viewHolder.inflate(parent)
-                }, viewGroup) { view ->
-                    addView(view, resId)
-                    emitter.onNext(view)
-                    emitter.onComplete()
-                }
-            } else {
+//            if (viewHolder is AsyncCompat) {
+            asyncLayoutInflater.inflate(viewHolder, viewGroup) { viewHolder, view ->
+                addView(viewHolder, view, viewHolderType)
+                emitter.onNext(view)
                 emitter.onComplete()
             }
+//            } else {
+//                emitter.onComplete()
+//            }
         }, BUFFER)
     }
 
-    private fun addView(view: View, layoutResId: Int) {
-        var views = viewMap[layoutResId]
-        if (views == null) {
-            views = mutableListOf()
-        }
-        views.add(view)
-        viewMap.put(layoutResId, views)
+    private fun addView(
+        viewHolder: ComponentViewHolder<*, *>,
+        view: View,
+        viewHolderType: Class<out ComponentViewHolder<*, *>>
+    ) {
+        val views = viewMap.getOrPut(viewHolderType, { mutableListOf() })
+        views.add(Pair(viewHolder, view))
     }
 
     private fun constructViewHolder(
