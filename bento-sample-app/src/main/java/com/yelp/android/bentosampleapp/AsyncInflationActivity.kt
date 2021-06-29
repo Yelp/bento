@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.ListComponent
-import com.yelp.android.bento.core.*
+import com.yelp.android.bento.core.AsyncLayoutInflater
+import com.yelp.android.bento.core.Component
+import com.yelp.android.bento.core.ComponentController
+import com.yelp.android.bento.core.LayoutPreInflater
 import com.yelp.android.bentosampleapp.components.ComplexLayoutComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponent2
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolderAsync
@@ -24,7 +26,7 @@ class AsyncInflationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recycler_view)
-        val preInflater = LayoutPreInflater(AsyncLayoutInflater(this))
+        val preInflater = LayoutPreInflater(AsyncLayoutInflater(this), recyclerView)
         componentController = RecyclerViewComponentController(recyclerView, preInflater)
         addListComponent(componentController)
         addComponentToScrollTo(componentController)
@@ -59,8 +61,10 @@ class AsyncInflationActivity : AppCompatActivity() {
     }
 
     private fun addListComponent(controller: ComponentController) {
-        controller.addComponent(ListComponent(null,
-                ListComponentExampleViewHolderAsync::class.java).apply {
+        controller.addComponent(ListComponent(
+            null,
+            ListComponentExampleViewHolderAsync::class.java
+        ).apply {
             setData((1..20).map { "List element $it" })
         })
     }

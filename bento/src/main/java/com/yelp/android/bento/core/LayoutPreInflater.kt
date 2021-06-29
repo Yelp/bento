@@ -3,13 +3,12 @@ package com.yelp.android.bento.core
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import io.reactivex.rxjava3.core.BackpressureStrategy.BUFFER
 import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.FlowableEmitter
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.LinkedList
+import java.util.*
 
 const val LOG_TAG = "pre-inflater"
 
@@ -19,11 +18,15 @@ const val LOG_TAG = "pre-inflater"
  * AsyncLayoutInflater. Components are added to the RecyclerView when the inflation
  * is finished.
  */
-class LayoutPreInflater(private val asyncLayoutInflater: AsyncLayoutInflater) {
+class LayoutPreInflater(
+    private val asyncLayoutInflater: AsyncLayoutInflater,
+    val viewGroup: ViewGroup
+) {
 
     object ViewHolderInstanceCache {
         @JvmStatic
-        val viewHolderMap = mutableMapOf<Class<out ComponentViewHolder<*, *>>, ComponentViewHolder<*, *>>()
+        val viewHolderMap =
+            mutableMapOf<Class<out ComponentViewHolder<*, *>>, ComponentViewHolder<*, *>>()
     }
 
     private val sequentialScheduler: Scheduler = Schedulers.single()
@@ -43,19 +46,19 @@ class LayoutPreInflater(private val asyncLayoutInflater: AsyncLayoutInflater) {
 
         inflationInProgressSet.add(component)
         Flowable.fromIterable(views)
-                .flatMap { task -> task.subscribeOn(sequentialScheduler) }
-                .toList()
-                .map { true }
-                .subscribe({
-                    inflationInProgressSet.remove(component)
-                    if (inflationInProgressSet.isEmpty()) {
-                        while (!callbackList.isEmpty()) {
-                            callbackList.poll()()
-                        }
+            .flatMap { task -> task.subscribeOn(sequentialScheduler) }
+            .toList()
+            .map { true }
+            .subscribe({
+                inflationInProgressSet.remove(component)
+                if (inflationInProgressSet.isEmpty()) {
+                    while (!callbackList.isEmpty()) {
+                        callbackList.poll()()
                     }
-                }, {
-                    it.printStackTrace()
-                })
+                }
+            }, {
+                it.printStackTrace()
+            })
     }
 
     /**
@@ -91,15 +94,16 @@ class LayoutPreInflater(private val asyncLayoutInflater: AsyncLayoutInflater) {
      * too and caches the instance for use in RecyclerViewComponentController.
      */
     private fun createCompletableForViewConfig(
-            viewHolderType: Class<out ComponentViewHolder<*, *>>
+        viewHolderType: Class<out ComponentViewHolder<*, *>>
     ): Flowable<View> {
         return Flowable.create({ emitter: FlowableEmitter<View> ->
             val viewHolder: ComponentViewHolder<*, *> = constructViewHolder(viewHolderType)
             ViewHolderInstanceCache.viewHolderMap[viewHolderType] = viewHolder
             if (viewHolder is AsyncCompat) {
                 val resId = (viewHolder as AsyncCompat).layoutId
-                asyncLayoutInflater.inflate(resId, null
-                ) { view: View, _: Int, _: ViewGroup? ->
+                asyncLayoutInflater.inflate({ parent: ViewGroup ->
+                    viewHolder.inflate(parent)
+                }, viewGroup) { view ->
                     addView(view, resId)
                     emitter.onNext(view)
                     emitter.onComplete()
@@ -120,7 +124,8 @@ class LayoutPreInflater(private val asyncLayoutInflater: AsyncLayoutInflater) {
     }
 
     private fun constructViewHolder(
-            viewHolderType: Class<out ComponentViewHolder<*, *>>): ComponentViewHolder<*, *> {
+        viewHolderType: Class<out ComponentViewHolder<*, *>>
+    ): ComponentViewHolder<*, *> {
         return try {
             viewHolderType.newInstance()
         } catch (e: InstantiationException) {
