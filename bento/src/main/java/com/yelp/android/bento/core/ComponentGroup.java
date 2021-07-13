@@ -35,6 +35,7 @@ public class ComponentGroup extends Component {
     private final Map<Component, ComponentDataObserver> mComponentDataObserverMap = new HashMap<>();
 
     private final ComponentGroupObservable mObservable = new ComponentGroupObservable();
+    private final NotifyChecker mNotifyChecker = new NotifyChecker();
 
     public ComponentGroup() {
         mSpanSizeLookup =
@@ -346,7 +347,10 @@ public class ComponentGroup extends Component {
     public Object getItem(int position) {
         RangedValue<Component> compPair = mComponentAccordionList.rangedValueAt(position);
         Component component = mComponentAccordionList.valueAt(position);
-        return component.getItemInternal(position - compPair.mRange.mLower);
+        int positionInComponent = position - compPair.mRange.mLower;
+        Object itemInternal = component.getItemInternal(positionInComponent);
+        mNotifyChecker.save(component, positionInComponent, itemInternal);
+        return itemInternal;
     }
 
     /**
@@ -591,6 +595,7 @@ public class ComponentGroup extends Component {
                 entry.setValue(entry.getValue() - 1);
             }
         }
+        mNotifyChecker.remove(component);
 
         mObservable.notifyOnComponentRemoved(component);
     }
@@ -610,6 +615,7 @@ public class ComponentGroup extends Component {
 
         @Override
         public void onChanged() {
+            mNotifyChecker.onChanged(mComponent);
             int listPosition = mComponentIndexMap.get(mComponent);
             Range originalRange = mComponentAccordionList.get(listPosition).mRange;
             int newSize = mComponent.getCountInternal();
@@ -621,6 +627,7 @@ public class ComponentGroup extends Component {
 
         @Override
         public void onItemRangeChanged(int positionStart, int itemCount) {
+            mNotifyChecker.onItemRangeChanged(mComponent, positionStart, itemCount);
             int listPosition = mComponentIndexMap.get(mComponent);
             Range originalRange = mComponentAccordionList.get(listPosition).mRange;
 
@@ -630,6 +637,7 @@ public class ComponentGroup extends Component {
 
         @Override
         public void onItemRangeInserted(int positionStart, int itemCount) {
+            mNotifyChecker.onItemRangeInserted(mComponent, positionStart, itemCount);
             int listPosition = mComponentIndexMap.get(mComponent);
             Range originalRange = mComponentAccordionList.get(listPosition).mRange;
             mComponentAccordionList.set(
@@ -643,6 +651,7 @@ public class ComponentGroup extends Component {
 
         @Override
         public void onItemRangeRemoved(int positionStart, int itemCount) {
+            mNotifyChecker.onItemRangeRemoved(mComponent, positionStart, itemCount);
             int listPosition = mComponentIndexMap.get(mComponent);
             Range originalRange = mComponentAccordionList.get(listPosition).mRange;
             mComponentAccordionList.set(
@@ -656,6 +665,7 @@ public class ComponentGroup extends Component {
 
         @Override
         public void onItemMoved(int fromPosition, int toPosition) {
+            mNotifyChecker.onItemMoved(mComponent, fromPosition, toPosition);
             int listPosition = mComponentIndexMap.get(mComponent);
             Range originalRange = mComponentAccordionList.get(listPosition).mRange;
 
