@@ -11,7 +11,7 @@ class NotifyChecker {
             ItemStorage(component.countInternal)
         }
 
-        items[position] = WeakReference(component)
+        items[position] = WeakReference(item)
     }
 
     fun remove(component: Component) {
