@@ -4,6 +4,8 @@ import android.util.Log
 import com.yelp.android.bento.utils.EqualsHelper.deepEquals
 import java.lang.ref.WeakReference
 
+private const val TAG = "NotifyChecker"
+
 class NotifyChecker {
     private val componentsToItem: MutableMap<Component, ItemStorage> = mutableMapOf()
 
@@ -18,7 +20,7 @@ class NotifyChecker {
             }
         }
         if (result.isFailure) {
-            Log.d("ComponentGroup", "Could not prefetch $component", result.exceptionOrNull())
+            Log.d(TAG, "Could not prefetch $component", result.exceptionOrNull())
         }
     }
 
@@ -36,12 +38,12 @@ class NotifyChecker {
 
     fun onChanged(component: Component) {
         val verifyChange = verifyOnChanged(component)
-        Log.d("ComponentGroup", "onChanged for $component: $verifyChange")
+        Log.d(TAG, "onChanged for $component: $verifyChange")
     }
 
     fun onItemRangeChanged(component: Component, positionStart: Int, itemCount: Int) {
         val verifyChange = verifyItemRangeChanged(component, positionStart, itemCount)
-        Log.d("ComponentGroup", "onItemRangeChanged for $component: $verifyChange")
+        Log.d(TAG, "onItemRangeChanged for $component: $verifyChange")
     }
 
     fun onItemRangeInserted(component: Component, positionStart: Int, itemCount: Int) {
