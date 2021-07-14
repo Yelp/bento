@@ -40,6 +40,7 @@ task androidSourcesJar(type: Jar) {
 dependencies {
     // Kotlin
     implementation Libs.KOTLIN
+    implementation Libs.KOTLIN_REFLECT
 
     // Apache Commons
     implementation Libs.APACHE_COMMONS

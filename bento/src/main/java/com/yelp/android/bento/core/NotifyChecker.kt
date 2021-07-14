@@ -1,6 +1,7 @@
 package com.yelp.android.bento.core
 
 import android.util.Log
+import com.yelp.android.bento.utils.EqualsHelper.deepEquals
 import java.lang.ref.WeakReference
 
 class NotifyChecker {
@@ -26,7 +27,7 @@ class NotifyChecker {
             ItemStorage(component.countInternal)
         }
 
-        items[position] = WeakReference(item)
+        items[position] = item
     }
 
     fun remove(component: Component) {
@@ -70,7 +71,7 @@ class NotifyChecker {
             return NotifyCheckResult.NotEnoughData
         }
 
-        val updatedItems = ItemStorage(component.count)
+        val updatedItems = ItemStorage(component.countInternal)
 
         val unchanged = mutableListOf<Int>()
         // We can also keep track of the "null"? A bunch of components use null as items,
@@ -78,7 +79,7 @@ class NotifyChecker {
         val undecided = mutableListOf<Int>()
 
         when {
-            itemStorage.items.size == component.count -> {
+            itemStorage.items.size == component.countInternal -> {
                 // Same size, let's compare items one by one.
                 itemStorage.items.forEachIndexed { index, weakReference ->
                     val item: Any? = component.getItem(index)
@@ -86,7 +87,7 @@ class NotifyChecker {
 
                     if (item == null) {
                         undecided.add(index)
-                    } else if (item == weakReference?.get()) {
+                    } else if (item.deepEquals(weakReference?.get())) {
                         unchanged.add(index)
                     }
                 }
@@ -97,7 +98,7 @@ class NotifyChecker {
                     NotifyCheckResult.CorrectChange
                 }
             }
-            itemStorage.items.size < component.count -> {
+            itemStorage.items.size < component.countInternal -> {
                 // Let's compare the stored items, to see if it's okay to call onChanged,
                 // or if we should call onItemRangeInsertedInstead
                 itemStorage.items.forEachIndexed { index, weakReference ->
@@ -106,11 +107,11 @@ class NotifyChecker {
 
                     if (item == null) {
                         undecided.add(index)
-                    } else if (item == weakReference?.get()) {
+                    } else if (item.deepEquals(weakReference?.get())) {
                         unchanged.add(index)
                     }
                 }
-                for (index in itemStorage.items.size until component.count) {
+                for (index in itemStorage.items.size until component.countInternal) {
                     val item: Any? = component.getItem(index)
                     updatedItems[index] = item
                 }
@@ -126,13 +127,13 @@ class NotifyChecker {
             else -> {
                 // Well, the count shrunk, let's make sure that the items in the component are different
                 // than the one stored. If not, it would be better to call OnItemRangeChange instead.
-                for (index in 0 until component.count) {
+                for (index in 0 until component.countInternal) {
                     val weakReference: WeakReference<*>? = itemStorage[index]
                     val item: Any? = component.getItem(index)
                     updatedItems[index] = item
                     if (item == null) {
                         undecided.add(index)
-                    } else if (item == weakReference?.get()) {
+                    } else if (item.deepEquals(weakReference?.get())) {
                         unchanged.add(index)
                     }
                 }
@@ -167,7 +168,7 @@ class NotifyChecker {
 
             if (item == null) {
                 undecided.add(index)
-            } else if (item == weakReference?.get()) {
+            } else if (item.deepEquals(weakReference?.get())) {
                 unchanged.add(index)
             }
         }
