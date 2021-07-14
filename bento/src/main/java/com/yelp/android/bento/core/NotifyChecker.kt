@@ -11,8 +11,13 @@ class NotifyChecker {
             ItemStorage(component.countInternal)
         }
 
-        for (position in 0 until component.countInternal) {
-            items[position] = component.getItemInternal(position)
+        val result = runCatching {
+            for (position in 0 until component.countInternal) {
+                items[position] = component.getItemInternal(position)
+            }
+        }
+        if (result.isFailure) {
+            Log.d("ComponentGroup", "Could not prefetch $component", result.exceptionOrNull())
         }
     }
 
