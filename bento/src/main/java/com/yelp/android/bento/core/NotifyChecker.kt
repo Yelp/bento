@@ -20,7 +20,7 @@ class NotifyChecker {
             }
         }
         if (result.isFailure) {
-            Log.d(TAG, "Could not prefetch $component", result.exceptionOrNull())
+            Log.v(TAG, "Could not prefetch $component", result.exceptionOrNull())
         }
     }
 
@@ -38,12 +38,16 @@ class NotifyChecker {
 
     fun onChanged(component: Component) {
         val verifyChange = verifyOnChanged(component)
-        Log.d(TAG, "onChanged for $component: $verifyChange")
+        if (verifyChange is NotifyCheckResult.IncorrectOnChange) {
+            Log.d(TAG, "onChanged for $component: $verifyChange")
+        }
     }
 
     fun onItemRangeChanged(component: Component, positionStart: Int, itemCount: Int) {
         val verifyChange = verifyItemRangeChanged(component, positionStart, itemCount)
-        Log.d(TAG, "onItemRangeChanged for $component: $verifyChange")
+        if (verifyChange is NotifyCheckResult.IncorrectOnItemRangeChange) {
+            Log.d(TAG, "onItemRangeChanged for $component: $verifyChange")
+        }
     }
 
     fun onItemRangeInserted(component: Component, positionStart: Int, itemCount: Int) {
@@ -93,12 +97,6 @@ class NotifyChecker {
                         unchanged.add(index)
                     }
                 }
-                componentsToItem[component] = updatedItems
-                return if (unchanged.size > 0) {
-                    NotifyCheckResult.IncorrectOnChange(unchanged)
-                } else {
-                    NotifyCheckResult.CorrectChange
-                }
             }
             itemStorage.items.size < component.countInternal -> {
                 // Let's compare the stored items, to see if it's okay to call onChanged,
@@ -117,14 +115,6 @@ class NotifyChecker {
                     val item: Any? = component.getItem(index)
                     updatedItems[index] = item
                 }
-
-                componentsToItem[component] = updatedItems
-
-                return if (unchanged.size > 0) {
-                    NotifyCheckResult.IncorrectOnChange(unchanged)
-                } else {
-                    NotifyCheckResult.CorrectChange
-                }
             }
             else -> {
                 // Well, the count shrunk, let's make sure that the items in the component are different
@@ -139,15 +129,15 @@ class NotifyChecker {
                         unchanged.add(index)
                     }
                 }
-
-                componentsToItem[component] = updatedItems
-
-                return if (unchanged.size > 0) {
-                    NotifyCheckResult.IncorrectOnChange(unchanged)
-                } else {
-                    NotifyCheckResult.CorrectChange
-                }
             }
+        }
+
+        componentsToItem[component] = updatedItems
+
+        return if (unchanged.size > 0) {
+            NotifyCheckResult.IncorrectOnChange(unchanged)
+        } else {
+            NotifyCheckResult.CorrectChange
         }
     }
 
