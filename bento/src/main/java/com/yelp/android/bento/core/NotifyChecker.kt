@@ -23,13 +23,15 @@ class NotifyChecker {
         val itemStorage = componentsToItem[component]
         if (itemStorage == null) {
             return NotifyCheckResult.NotEnoughData
-        } else if (!itemStorage.isFull) {
+        } else if (!itemStorage.isFullyPrefetched) {
             return NotifyCheckResult.NotEnoughData
         }
 
         val updatedItems = ItemStorage(component.count)
 
         val unchanged = mutableListOf<Int>()
+        // We can also keep track of the "null"? A bunch of components use null as items,
+        // like dividers, simple components, and so on.
         val undecided = mutableListOf<Int>()
 
         when {
@@ -113,11 +115,11 @@ class NotifyChecker {
         Log.d("ComponentGroup", "onItemRangeChanged for $component: $verifyChange")
     }
 
-    fun verifyItemRangeChanged(component: Component, positionStart: Int, itemCount: Int): NotifyCheckResult {
+    private fun verifyItemRangeChanged(component: Component, positionStart: Int, itemCount: Int): NotifyCheckResult {
         val itemStorage = componentsToItem[component]
         if (itemStorage == null) {
             return NotifyCheckResult.NotEnoughData
-        } else if (!itemStorage.isFull) {
+        } else if (!itemStorage.isFullyPrefetched) {
             return NotifyCheckResult.NotEnoughData
         }
 
@@ -165,7 +167,10 @@ class NotifyChecker {
     class ItemStorage(capacity: Int) {
         var items: Array<WeakReference<*>?> = Array(capacity) { null }
 
-        val isFull: Boolean get() = items.none { it == null }
+        /**
+         * Are all the item pre-fetched? Check that the items array is full of weak references.
+         */
+        val isFullyPrefetched: Boolean get() = items.none { it == null }
 
         operator fun set(index: Int, item: Any?) {
             items[index] = WeakReference(item)
