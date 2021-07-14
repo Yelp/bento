@@ -6,6 +6,16 @@ import java.lang.ref.WeakReference
 class NotifyChecker {
     private val componentsToItem: MutableMap<Component, ItemStorage> = mutableMapOf()
 
+    fun prefetch(component: Component) {
+        val items = componentsToItem.getOrPut(component) {
+            ItemStorage(component.countInternal)
+        }
+
+        for (position in 0 until component.countInternal) {
+            items[position] = component.getItemInternal(position)
+        }
+    }
+
     fun save(component: Component, position: Int, item: Any?) {
         val items = componentsToItem.getOrPut(component) {
             ItemStorage(component.countInternal)
@@ -16,6 +26,34 @@ class NotifyChecker {
 
     fun remove(component: Component) {
         componentsToItem.remove(component)
+    }
+
+    fun onChanged(component: Component) {
+        val verifyChange = verifyOnChanged(component)
+        Log.d("ComponentGroup", "onChanged for $component: $verifyChange")
+    }
+
+    fun onItemRangeChanged(component: Component, positionStart: Int, itemCount: Int) {
+        val verifyChange = verifyItemRangeChanged(component, positionStart, itemCount)
+        Log.d("ComponentGroup", "onItemRangeChanged for $component: $verifyChange")
+    }
+
+    fun onItemRangeInserted(component: Component, positionStart: Int, itemCount: Int) {
+        val itemStorage = componentsToItem[component] ?: return
+
+        itemStorage.onItemRangeInserted(positionStart, itemCount)
+    }
+
+    fun onItemRangeRemoved(component: Component, positionStart: Int, itemCount: Int) {
+        val itemStorage = componentsToItem[component] ?: return
+
+        itemStorage.onItemRangeRemoved(positionStart, itemCount)
+    }
+
+    fun onItemMoved(component: Component, fromPosition: Int, toPosition: Int) {
+        val itemStorage = componentsToItem[component] ?: return
+
+        itemStorage.onItemMoved(fromPosition, toPosition)
     }
 
     // Check to confirm that the whole component indeed changed.
@@ -105,16 +143,6 @@ class NotifyChecker {
         }
     }
 
-    fun onChanged(component: Component) {
-        val verifyChange = verifyOnChanged(component)
-        Log.d("ComponentGroup", "onChanged for $component: $verifyChange")
-    }
-
-    fun onItemRangeChanged(component: Component, positionStart: Int, itemCount: Int) {
-        val verifyChange = verifyItemRangeChanged(component, positionStart, itemCount)
-        Log.d("ComponentGroup", "onItemRangeChanged for $component: $verifyChange")
-    }
-
     private fun verifyItemRangeChanged(component: Component, positionStart: Int, itemCount: Int): NotifyCheckResult {
         val itemStorage = componentsToItem[component]
         if (itemStorage == null) {
@@ -144,24 +172,6 @@ class NotifyChecker {
         } else {
             NotifyCheckResult.CorrectChange
         }
-    }
-
-    fun onItemRangeInserted(component: Component, positionStart: Int, itemCount: Int) {
-        val itemStorage = componentsToItem[component] ?: return
-
-        itemStorage.onItemRangeInserted(positionStart, itemCount)
-    }
-
-    fun onItemRangeRemoved(component: Component, positionStart: Int, itemCount: Int) {
-        val itemStorage = componentsToItem[component] ?: return
-
-        itemStorage.onItemRangeRemoved(positionStart, itemCount)
-    }
-
-    fun onItemMoved(component: Component, fromPosition: Int, toPosition: Int) {
-        val itemStorage = componentsToItem[component] ?: return
-
-        itemStorage.onItemMoved(fromPosition, toPosition)
     }
 
     class ItemStorage(capacity: Int) {

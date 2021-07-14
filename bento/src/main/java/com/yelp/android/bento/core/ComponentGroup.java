@@ -167,6 +167,7 @@ public class ComponentGroup extends Component {
         ComponentDataObserver componentDataObserver = new ChildComponentDataObserver(component);
         component.registerComponentDataObserver(componentDataObserver);
         mComponentDataObserverMap.put(component, componentDataObserver);
+        mNotifyChecker.prefetch(component);
 
         notifyItemRangeInserted(insertionStartIndex, component.getCountInternal());
         mObservable.notifyOnChanged();
