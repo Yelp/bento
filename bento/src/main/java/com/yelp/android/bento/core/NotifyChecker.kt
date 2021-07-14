@@ -92,7 +92,7 @@ class NotifyChecker {
                 }
                 componentsToItem[component] = updatedItems
                 return if (unchanged.size > 0) {
-                    NotifyCheckResult.IncorrectChange(unchanged)
+                    NotifyCheckResult.IncorrectOnChange(unchanged)
                 } else {
                     NotifyCheckResult.CorrectChange
                 }
@@ -118,7 +118,7 @@ class NotifyChecker {
                 componentsToItem[component] = updatedItems
 
                 return if (unchanged.size > 0) {
-                    NotifyCheckResult.IncorrectChange(unchanged)
+                    NotifyCheckResult.IncorrectOnChange(unchanged)
                 } else {
                     NotifyCheckResult.CorrectChange
                 }
@@ -140,7 +140,7 @@ class NotifyChecker {
                 componentsToItem[component] = updatedItems
 
                 return if (unchanged.size > 0) {
-                    NotifyCheckResult.IncorrectChange(unchanged)
+                    NotifyCheckResult.IncorrectOnChange(unchanged)
                 } else {
                     NotifyCheckResult.CorrectChange
                 }
@@ -173,7 +173,7 @@ class NotifyChecker {
         }
         itemStorage.items = updatedItems
         return if (unchanged.size > 0) {
-            NotifyCheckResult.IncorrectChange(unchanged)
+            NotifyCheckResult.IncorrectOnItemRangeChange(unchanged)
         } else {
             NotifyCheckResult.CorrectChange
         }
@@ -226,9 +226,15 @@ sealed class NotifyCheckResult {
         }
     }
 
-    class IncorrectChange(val unchanged: List<Int>) : NotifyCheckResult() {
+    class IncorrectOnChange(private val unchanged: List<Int>) : NotifyCheckResult() {
         override fun toString(): String {
             return "NotifyCheckResult: You should not call onChange, indexes $unchanged stayed the same."
+        }
+    }
+
+    class IncorrectOnItemRangeChange(private val unchanged: List<Int>) : NotifyCheckResult() {
+        override fun toString(): String {
+            return "NotifyCheckResult: You should not call onItemRangeChange, indexes $unchanged stayed the same."
         }
     }
 
