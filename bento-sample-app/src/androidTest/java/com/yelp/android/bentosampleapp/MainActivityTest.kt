@@ -8,15 +8,23 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.filters.LargeTest
 import com.yelp.android.bento.testing.BentoInteraction
+import com.yelp.android.bento.utils.BentoSettings
+import com.yelp.android.bentosampleapp.rules.BeforeRule
 import org.hamcrest.Matchers.anything
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.RuleChain
 
 @LargeTest
 class MainActivityTest {
 
+    private val beforeRule = BeforeRule {
+        BentoSettings.asyncInflationEnabled = false
+    }
+    private val intentsTestRule = IntentsTestRule(MainActivity::class.java)
+
     @get:Rule
-    val intentsTestRule = IntentsTestRule(MainActivity::class.java)
+    val rule: RuleChain = RuleChain.outerRule(beforeRule).around(intentsTestRule)
 
     @Test
     fun onData_atPosition2_clickOpensListViewActivity() {

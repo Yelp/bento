@@ -18,9 +18,12 @@ object Versions {
     const val ANDROID_GRADLE = "4.2.0"
     const val ANDROID_X_APP_COMPAT = "1.0.0"
     const val ANDROID_X_CONSTRAINT_LAYOUT = "1.1.2"
+    const val ANDROID_X_CORE_CTX = "1.4.0"
+    const val ANDROID_X_LIFECYCLE = "2.3.1"
     const val ANDROID_X_MATERIAL = "1.0.0"
     const val ANDROID_X_RECYCLER_VIEW = "1.0.0"
     const val ANDROID_X_TEST = "1.1.0"
+    const val COROUTINES = "1.4.0"
     const val ESPRESSO = "3.1.0"
     const val GRADLE = "6.9"
     const val GUAVA = "28.1-android"
@@ -28,8 +31,9 @@ object Versions {
     const val KOTLIN = "1.3.72"
     const val MAVEN_PUBLISH = "3.6.2"
     const val MAVEN_SETTINGS = "0.5"
-    const val MOCKITO = "2.7.19"
+    const val MOCKITO = "3.11.2"
     const val MOCKITO_KOTLIN = "2.1.0"
+    const val ROBOLECTRIC = "4.4"
     const val RX_JAVA_3 = "3.0.7"
     const val SUPPORT_TEST = "1.0.2"
 }
@@ -41,6 +45,7 @@ object BuildScriptLibs {
 
 object Libs {
     const val APACHE_COMMONS = "org.apache.commons:commons-lang3:${Versions.APACHE_COMMONS}"
+    const val COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.COROUTINES}"
     const val GUAVA = "com.google.guava:guava:${Versions.GUAVA}"
     const val KOTLIN = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.KOTLIN}"
     const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect:${Versions.KOTLIN}"
@@ -57,15 +62,19 @@ object SupportLibs {
     const val CONSTRAINT_LAYOUT = "androidx.constraintlayout:constraintlayout:${Versions.ANDROID_X_CONSTRAINT_LAYOUT}"
     const val DESIGN = "com.google.android.material:material:${Versions.ANDROID_X_MATERIAL}"
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${Versions.ANDROID_X_RECYCLER_VIEW}"
+    const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.ANDROID_X_LIFECYCLE}"
 }
 
 object TestLibs {
+    const val CORE_KTX = "androidx.test:core-ktx:${Versions.ANDROID_X_CORE_CTX}"
+    const val COROUTINES_TEST = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.COROUTINES}"
     const val ESPRESSO = "androidx.test.espresso:espresso-core:${Versions.ESPRESSO}"
     const val ESPRESSO_CONTRIB = "androidx.test.espresso:espresso-contrib:${Versions.ESPRESSO}"
     const val ESPRESSO_INTENTS = "androidx.test.espresso:espresso-intents:${Versions.ESPRESSO}"
     const val JUNIT = "junit:junit:${Versions.JUNIT}"
     const val MOCKITO = "org.mockito:mockito-core:${Versions.MOCKITO}"
     const val MOCKITO_KOTLIN = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.MOCKITO_KOTLIN}"
+    const val ROBOLECTRIC = "org.robolectric:robolectric:${Versions.ROBOLECTRIC}"
     const val SUPPORT_TEST_RULES = "androidx.test:rules:${Versions.ANDROID_X_TEST}"
     const val SUPPORT_TEST_RUNNER = "androidx.test:runner:${Versions.ANDROID_X_TEST}"
 }

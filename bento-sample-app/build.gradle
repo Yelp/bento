@@ -40,6 +40,7 @@ dependencies {
     // Support library dependencies.
     implementation SupportLibs.APP_COMPAT
     implementation SupportLibs.CONSTRAINT_LAYOUT
+    implementation Libs.COROUTINES
     implementation SupportLibs.DESIGN
     implementation SupportLibs.RECYCLERVIEW
 

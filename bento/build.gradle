@@ -30,6 +30,12 @@ android {
     }
 
     resourcePrefix 'bento_'
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 task androidSourcesJar(type: Jar) {
@@ -40,10 +46,9 @@ task androidSourcesJar(type: Jar) {
 dependencies {
     // Kotlin
     implementation Libs.KOTLIN
-
+    implementation Libs.COROUTINES
     // Apache Commons
     implementation Libs.APACHE_COMMONS
-
 
     // Guava
     implementation(Libs.GUAVA) {
@@ -56,8 +61,13 @@ dependencies {
     // Support library dependencies.
     implementation SupportLibs.APP_COMPAT
     implementation SupportLibs.DESIGN
+    implementation SupportLibs.LIFECYCLE
     implementation SupportLibs.RECYCLERVIEW
     androidTestImplementation TestLibs.SUPPORT_TEST_RULES
+
+    testImplementation TestLibs.CORE_KTX
+    testImplementation TestLibs.COROUTINES_TEST
+    testImplementation TestLibs.ROBOLECTRIC
 
     // JUnit
     testImplementation TestLibs.JUNIT

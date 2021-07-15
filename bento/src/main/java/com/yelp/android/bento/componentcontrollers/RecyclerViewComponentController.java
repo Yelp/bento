@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.google.common.collect.HashBiMap;
+import com.yelp.android.bento.core.AsyncInflationBridge;
 import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
@@ -26,6 +27,7 @@ import com.yelp.android.bento.core.ListItemTouchCallback;
 import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
+import com.yelp.android.bento.utils.BentoSettings;
 import com.yelp.android.bento.utils.Sequenceable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import org.jetbrains.annotations.Nullable;
 public class RecyclerViewComponentController
         implements ComponentController, OnItemMovedPositionListener {
 
+    private static final int INVALID_COMPONENT_INDEX = -1;
     private final RecyclerView.Adapter<ViewHolderWrapper> mRecyclerViewAdapter;
     private final ComponentGroup mComponentGroup;
     private final Map<Component, Set<Class<? extends ComponentViewHolder>>>
@@ -53,26 +56,63 @@ public class RecyclerViewComponentController
     private BentoLayoutManager mLayoutManager;
     private LinearSmoothScroller mSmoothScroller;
     private ItemTouchHelper mItemTouchHelper;
+    public AsyncInflationBridge mAsyncInflationBridge;
 
     @RecyclerView.Orientation private int mOrientation;
+
+    private final boolean mAsyncInflationEnabled;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
      * the {@link RecyclerView}. In order to make the lanes, this component controller will set the
-     * {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do it manually.
+     * {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do it manually. Async
+     * inflation will be enabled based on the global toggle in {@link BentoSettings} which is
+     * disabled by default. When enabled, views will be inflated on a background thread.
      */
     public RecyclerViewComponentController(@NonNull RecyclerView recyclerView) {
-        this(recyclerView, RecyclerView.VERTICAL);
+        this(recyclerView, RecyclerView.VERTICAL, BentoSettings.getAsyncInflationEnabled());
+    }
+
+    /**
+     * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
+     * the {@link RecyclerView}. Passing true for 'asyncInflationEnabled' will enable {@link
+     * AsyncInflationBridge} for this controller, which inflates component's views on a background
+     * thread. This flag will override the global flag in {@link BentoSettings}.
+     */
+    public RecyclerViewComponentController(
+            @NonNull RecyclerView recyclerView, boolean asyncInflationEnabled) {
+        this(recyclerView, RecyclerView.VERTICAL, asyncInflationEnabled);
     }
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
      * the {@link RecyclerView}. In order to make the lanes (columns / rows), this component
      * controller will set the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do
-     * it manually.
+     * it manually. Async inflation will be enabled based on the global toggle in {@link
+     * BentoSettings} which is disabled by default. When enabled, views will be inflated on a
+     * background thread.
      */
     public RecyclerViewComponentController(
             @NonNull RecyclerView recyclerView, @Orientation int orientation) {
+        this(recyclerView, orientation, BentoSettings.getAsyncInflationEnabled());
+    }
+
+    /**
+     * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
+     * the {@link RecyclerView}. In order to make the lanes (columns / rows), this component
+     * controller will set the {@link RecyclerView}'s {@link RecyclerView.LayoutManager}. Do not do
+     * it manually. Passing true for 'asyncInflationEnabled' will enable {@link
+     * AsyncInflationBridge} for this controller, which inflates component's views on a background
+     * thread. This flag will override the global flag in {@link BentoSettings}.
+     */
+    public RecyclerViewComponentController(
+            @NonNull RecyclerView recyclerView,
+            @Orientation int orientation,
+            boolean asyncInflationEnabled) {
+        mAsyncInflationEnabled = asyncInflationEnabled;
+        if (asyncInflationEnabled) {
+            mAsyncInflationBridge = new AsyncInflationBridge(recyclerView);
+        }
         mOrientation = orientation;
         mRecyclerViewAdapter = new RecyclerViewAdapter();
         mComponentGroup = new ComponentGroup();
@@ -179,18 +219,32 @@ public class RecyclerViewComponentController
     @NonNull
     @Override
     public RecyclerViewComponentController addComponent(@NonNull Component component) {
-        mComponentGroup.addComponent(component);
-        shareViewPool(component);
-        mComponentVisibilityListener.onComponentAdded(component);
+        if (!mAsyncInflationEnabled) {
+            addComponentInternal(component);
+        } else {
+            mAsyncInflationBridge.asyncInflateViewsForComponent(
+                    component,
+                    () -> {
+                        addComponentInternal(component);
+                        return null;
+                    });
+        }
         return this;
     }
 
     @NonNull
     @Override
     public ComponentController addComponent(@NonNull ComponentGroup componentGroup) {
-        mComponentGroup.addComponent(componentGroup);
-        shareViewPool(componentGroup);
-        mComponentVisibilityListener.onComponentAdded(componentGroup);
+        if (!mAsyncInflationEnabled) {
+            addComponentInternal(componentGroup);
+        } else {
+            mAsyncInflationBridge.asyncInflateViewsForComponent(
+                    componentGroup,
+                    () -> {
+                        addComponentInternal(componentGroup);
+                        return null;
+                    });
+        }
         return this;
     }
 
@@ -198,18 +252,32 @@ public class RecyclerViewComponentController
     @Override
     public RecyclerViewComponentController addComponent(
             int index, @NonNull final Component component) {
-        mComponentGroup.addComponent(index, component);
-        shareViewPool(component);
-        mComponentVisibilityListener.onComponentAdded(component);
+        if (!mAsyncInflationEnabled) {
+            addComponentInternal(index, component);
+        } else {
+            mAsyncInflationBridge.asyncInflateViewsForComponent(
+                    component,
+                    () -> {
+                        addComponentInternal(index, component);
+                        return null;
+                    });
+        }
         return this;
     }
 
     @NonNull
     @Override
     public ComponentController addComponent(int index, @NonNull ComponentGroup componentGroup) {
-        mComponentGroup.addComponent(index, componentGroup);
-        shareViewPool(componentGroup);
-        mComponentVisibilityListener.onComponentAdded(componentGroup);
+        if (!mAsyncInflationEnabled) {
+            addComponentInternal(index, componentGroup);
+        } else {
+            mAsyncInflationBridge.asyncInflateViewsForComponent(
+                    componentGroup,
+                    () -> {
+                        addComponentInternal(index, componentGroup);
+                        return null;
+                    });
+        }
         return this;
     }
 
@@ -217,10 +285,23 @@ public class RecyclerViewComponentController
     @Override
     public RecyclerViewComponentController addAll(
             @NonNull Collection<? extends Component> components) {
-        mComponentGroup.addAll(components);
-        for (Component component : components) {
-            shareViewPool(component);
-            mComponentVisibilityListener.onComponentAdded(component);
+        if (!mAsyncInflationEnabled) {
+            mComponentGroup.addAll(components);
+            for (Component component : components) {
+                shareViewPool(component);
+                mComponentVisibilityListener.onComponentAdded(component);
+            }
+        } else {
+            for (Component component : components) {
+                mAsyncInflationBridge.asyncInflateViewsForComponent(
+                        component,
+                        () -> {
+                            addComponentInternal(component);
+                            shareViewPool(component);
+                            mComponentVisibilityListener.onComponentAdded(component);
+                            return null;
+                        });
+            }
         }
         return this;
     }
@@ -243,11 +324,17 @@ public class RecyclerViewComponentController
     @NonNull
     @Override
     public Component remove(int index) {
+        if (mAsyncInflationEnabled) {
+            mAsyncInflationBridge.trackComponentRemoval(mComponentGroup.get(index));
+        }
         return mComponentGroup.remove(index);
     }
 
     @Override
     public boolean remove(@NonNull Component component) {
+        if (mAsyncInflationEnabled) {
+            mAsyncInflationBridge.trackComponentRemoval(component);
+        }
         return mComponentGroup.remove(component);
     }
 
@@ -332,6 +419,20 @@ public class RecyclerViewComponentController
         if (holder != null) {
             mItemTouchHelper.startDrag(holder);
         }
+    }
+
+    private void addComponentInternal(int index, @NonNull final Component component) {
+        if (index == INVALID_COMPONENT_INDEX) {
+            mComponentGroup.addComponent(component);
+        } else {
+            mComponentGroup.addComponent(index, component);
+        }
+        shareViewPool(component);
+        mComponentVisibilityListener.onComponentAdded(component);
+    }
+
+    private void addComponentInternal(@NonNull final Component component) {
+        addComponentInternal(INVALID_COMPONENT_INDEX, component);
     }
 
     private void addVisibilityListeners() {
@@ -458,7 +559,7 @@ public class RecyclerViewComponentController
      *
      * @throws RuntimeException if the specified view holder type could not be instantiated.
      */
-    private ComponentViewHolder constructViewHolder(
+    public static ComponentViewHolder constructViewHolder(
             Class<? extends ComponentViewHolder> viewHolderType) {
         try {
             return viewHolderType.newInstance();
@@ -488,9 +589,23 @@ public class RecyclerViewComponentController
         @SuppressWarnings("unchecked") // Unchecked Component generics.
         @Override
         public ViewHolderWrapper onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            ComponentViewHolder viewHolder =
-                    constructViewHolder(mViewTypeMap.inverse().get(viewType));
-            return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+            ComponentViewHolder viewHolder = null;
+            Class<? extends ComponentViewHolder> viewHolderType =
+                    mViewTypeMap.inverse().get(viewType);
+            if (mAsyncInflationEnabled) {
+                viewHolder = mAsyncInflationBridge.getViewHolder(viewHolderType);
+            }
+            if (viewHolder == null) {
+                viewHolder = constructViewHolder(viewHolderType);
+            }
+            if (!mAsyncInflationEnabled) {
+                return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+            }
+            View view = mAsyncInflationBridge.getView(viewHolder);
+            if (view == null) {
+                return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+            }
+            return new ViewHolderWrapper(view, viewHolder);
         }
 
         @SuppressWarnings("unchecked") // Unchecked Component generics.

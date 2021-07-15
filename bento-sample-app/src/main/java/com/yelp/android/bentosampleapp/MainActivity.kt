@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.components.ListComponent
+import com.yelp.android.bento.utils.BentoSettings
 import com.yelp.android.bentosampleapp.components.ActivityStarterViewHolder
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -14,6 +15,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        BentoSettings.asyncInflationEnabled = true
         componentController = RecyclerViewComponentController(recyclerView)
 
         val listComponent =
