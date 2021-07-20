@@ -348,7 +348,7 @@ public class ComponentGroupTest {
         assertEquals(12, listComponent.getNumberLanes());
     }
 
-    private List<Component> createMockComponents(int numComponents) {
+    public static List<Component> createMockComponents(int numComponents) {
         List<Component> components = new ArrayList<>(numComponents);
         for (int i = 0; i < numComponents; i++) {
             Component mock = mock(Component.class);
