@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [18.1.0](https://github.com/Yelp/bento/compare/v18.0.2...v18.1.0) (2021-07-20)
+
+
+### Features
+
+* Inflate views on a background thread. ([7e8e908](https://github.com/Yelp/bento/commit/7e8e9080d381c280ed1b1fe7165b1c03b18e488b))
+
 ### [18.0.2](https://github.com/Yelp/bento/compare/v18.0.1...v18.0.2) (2021-05-27)
 
 
