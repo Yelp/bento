@@ -8,11 +8,9 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.whenever
 import junit.framework.Assert.assertNotNull
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertNotEquals
 import org.junit.Before
@@ -26,7 +24,6 @@ class AsyncInflationBridgeTest {
 
     private lateinit var asyncInflationBridge: AsyncInflationBridge
 
-    private val scope: CoroutineScope = TestCoroutineScope()
     private val testDispatcher = TestCoroutineDispatcher()
 
     @Before
@@ -41,7 +38,6 @@ class AsyncInflationBridgeTest {
                 asyncInflaterDispatcher = testDispatcher,
                 defaultBridgeDispatcher = testDispatcher
         ))
-        whenever(asyncInflationBridge.coroutineScope).doReturn(scope)
     }
 
     @Test

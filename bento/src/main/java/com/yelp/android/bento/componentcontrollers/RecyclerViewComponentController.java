@@ -343,6 +343,9 @@ public class RecyclerViewComponentController
         mComponentGroup.clear();
         removeVisibilityListeners();
         addVisibilityListeners();
+        if (mAsyncInflationEnabled) {
+            mAsyncInflationBridge.cancelAllInflationJobs();
+        }
     }
 
     @Override
