@@ -1,25 +1,27 @@
 package com.yelp.android.bento.core
 
 import android.view.View
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController.constructViewHolder
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.Executors
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -35,7 +37,7 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
     val recyclerView: RecyclerView,
     private val asyncInflaterDispatcher: CoroutineDispatcher = BentoAsyncLayoutInflater.dispatcher,
     private val defaultBridgeDispatcher: CoroutineDispatcher = dispatcher
-) {
+) : CoroutineScope {
 
     internal companion object {
         private val lock = Mutex()
@@ -43,28 +45,26 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
         private val dispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     }
 
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext = job
+
     private val viewHolderMap = ConcurrentHashMap<Class<out ComponentViewHolder<*, *>>,
             ConcurrentLinkedDeque<ComponentViewHolder<*, *>>>()
     private val viewMap = ConcurrentHashMap<ComponentViewHolder<*, *>, View?>()
     private val inflationJobs = ConcurrentHashMap<Component, Job>()
 
-    private val context = recyclerView.context
-
-    @VisibleForTesting
-    val coroutineScope: CoroutineScope = if (context is LifecycleOwner) {
-        context.lifecycleScope.launch(Dispatchers.Main) {
-            context.lifecycle.addObserver(object : LifecycleObserver {
-                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-                fun cleanUp() {
-                    viewHolderMap.clear()
-                    viewMap.clear()
-                    context.lifecycle.removeObserver(this)
+    init {
+        if (recyclerView.isAttachedToWindow) {
+            findAndAttachToLifecycleOwner()
+        } else {
+            recyclerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View?) {
+                    findAndAttachToLifecycleOwner()
+                    recyclerView.removeOnAttachStateChangeListener(this)
                 }
+                override fun onViewDetachedFromWindow(v: View?) = Unit
             })
         }
-        context.lifecycleScope
-    } else {
-        GlobalScope
     }
 
     /**
@@ -72,7 +72,7 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
      * getting them nice and ready for RecyclerViewComponentController to use them.
      */
     fun asyncInflateViewsForComponent(component: Component, addComponentCallback: () -> Unit) {
-        inflationJobs[component] = coroutineScope.launch(defaultBridgeDispatcher) {
+        inflationJobs[component] = launch(defaultBridgeDispatcher) {
             val inflations = (0 until component.count).map { i ->
                 async {
                     val viewHolderType = component.getHolderType(i)
@@ -119,6 +119,10 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
         inflationJobs[component]?.cancel()
     }
 
+    fun cancelAllInflationJobs() {
+        clearResources()
+    }
+
     private fun addViewHolder(
         viewHolder: ComponentViewHolder<*, *>,
         viewHolderType: Class<out ComponentViewHolder<*, *>>
@@ -145,5 +149,31 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
                 }
             }
         }
+    }
+
+    private fun findAndAttachToLifecycleOwner() {
+        var owner = recyclerView.findViewTreeLifecycleOwner()
+        if (owner == null) {
+            if (recyclerView.context is LifecycleOwner) {
+                owner = recyclerView.context as LifecycleOwner
+            }
+        }
+        owner?.lifecycleScope?.launch(Dispatchers.Main.immediate) {
+            owner.lifecycle.addObserver(object : LifecycleObserver {
+
+                @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+                fun cleanUp() {
+                    clearResources()
+                    owner.lifecycle.removeObserver(this)
+                }
+            })
+        }
+    }
+
+    private fun clearResources() {
+        coroutineContext.cancelChildren()
+        viewHolderMap.clear()
+        viewMap.clear()
+        inflationJobs.clear()
     }
 }
