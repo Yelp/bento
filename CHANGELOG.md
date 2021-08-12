@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [18.1.1](https://github.com/Yelp/bento/compare/v18.1.0...v18.1.1) (2021-08-12)
+
+
+### Bug Fixes
+
+* Fixed a memory leak in the async inflation feature. ([5bd8020](https://github.com/Yelp/bento/commit/5bd80207a492adb32c7d5cea1cead8eadfb8fde9))
+
 ## [18.1.0](https://github.com/Yelp/bento/compare/v18.0.2...v18.1.0) (2021-07-20)
 
 
