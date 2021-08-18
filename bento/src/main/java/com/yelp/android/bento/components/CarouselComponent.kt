@@ -81,7 +81,7 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
     final override fun inflate(parent: ViewGroup): View {
         return createRecyclerView(parent).apply {
             recyclerView = this
-            controller = RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL)
+            controller = RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL, false)
             isNestedScrollingEnabled = false
             (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
                 this.recycleChildrenOnDetach = true
