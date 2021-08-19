@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [18.1.2](https://github.com/Yelp/bento/compare/v18.1.1...v18.1.2) (2021-08-19)
+
+
+### Bug Fixes
+
+* Disabled async bento for the CarouselComponent. ([ed2faa2](https://github.com/Yelp/bento/commit/ed2faa291a74ce12682e159500a22054ec5b76ee))
+
 ### [18.1.1](https://github.com/Yelp/bento/compare/v18.1.0...v18.1.1) (2021-08-12)
 
 
