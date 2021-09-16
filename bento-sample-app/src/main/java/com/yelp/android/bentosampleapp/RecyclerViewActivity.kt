@@ -11,6 +11,7 @@ import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.components.NestedComponent
 import com.yelp.android.bento.components.NestedViewModel
 import com.yelp.android.bento.components.SimpleComponent
+import com.yelp.android.bento.core.AsyncInflationStrategy.DEFAULT
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bentosampleapp.components.AnimatedComponentExampleViewHolder
@@ -29,7 +30,11 @@ import kotlinx.android.synthetic.main.activity_recycler_view.*
 class RecyclerViewActivity : AppCompatActivity() {
 
     private val componentController by lazy {
-        RecyclerViewComponentController(recyclerView)
+        RecyclerViewComponentController(recyclerView).apply {
+            setAsyncCacheKey("RecyclerViewActivity")
+            setAsyncStrategy(DEFAULT)
+            setNumberAboveTheFoldViewHolders(3)
+        }
     }
     private lateinit var componentToScrollTo: Component
 
