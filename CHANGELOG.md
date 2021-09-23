@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [18.2.0](https://github.com/Yelp/bento/compare/v18.1.2...v18.2.0) (2021-09-23)
+
+
+### Features
+
+* Added smarter async inflation and limited the max number of inflated views in some cases. ([4bd193c](https://github.com/Yelp/bento/commit/4bd193c1691f23d0a53c834a61786082287e1da4))
+
 ### [18.1.2](https://github.com/Yelp/bento/compare/v18.1.1...v18.1.2) (2021-08-19)
 
 
