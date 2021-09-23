@@ -1,5 +1,6 @@
 package com.yelp.android.bento.componentcontrollers;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView.Orientation;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.AsyncInflationBridge;
+import com.yelp.android.bento.core.AsyncInflationStrategy;
 import com.yelp.android.bento.core.BentoLayoutManager;
 import com.yelp.android.bento.core.Component;
 import com.yelp.android.bento.core.Component.ComponentDataObserver;
@@ -25,6 +27,7 @@ import com.yelp.android.bento.core.ComponentVisibilityListener;
 import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelper;
 import com.yelp.android.bento.core.ListItemTouchCallback;
 import com.yelp.android.bento.core.OnItemMovedPositionListener;
+import com.yelp.android.bento.core.SmartAsyncInflationCache;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.BentoSettings;
@@ -61,6 +64,9 @@ public class RecyclerViewComponentController
     @RecyclerView.Orientation private int mOrientation;
 
     private final boolean mAsyncInflationEnabled;
+    // This will be used to track how many of each view holder was needed when async inflation is
+    // enabled.
+    private String mAsyncCacheKey = null;
 
     /**
      * Creates a new {@link RecyclerViewComponentController} and automatically attaches itself to
@@ -112,6 +118,7 @@ public class RecyclerViewComponentController
         mAsyncInflationEnabled = asyncInflationEnabled;
         if (asyncInflationEnabled) {
             mAsyncInflationBridge = new AsyncInflationBridge(recyclerView);
+            mAsyncCacheKey = mAsyncInflationBridge.getAsyncCacheKey();
         }
         mOrientation = orientation;
         mRecyclerViewAdapter = new RecyclerViewAdapter();
@@ -408,6 +415,46 @@ public class RecyclerViewComponentController
         mLayoutManager.setScrollEnabled(isScrollable);
     }
 
+    /**
+     * Allows overwriting of the default cache key used in {@link SmartAsyncInflationCache}.
+     *
+     * @param cacheKey Cache key which should be unique per controller / RecyclerView.
+     */
+    public RecyclerViewComponentController setAsyncCacheKey(@NonNull String cacheKey) {
+        if (mAsyncInflationEnabled) {
+            mAsyncCacheKey = cacheKey;
+            this.mAsyncInflationBridge.setAsyncCacheKey(cacheKey);
+        }
+        return this;
+    }
+
+    /**
+     * Sets the {@link AsyncInflationStrategy} to use for this controller if async inflation is
+     * enabled.
+     *
+     * @param strategy The strategy to use.
+     */
+    public RecyclerViewComponentController setAsyncStrategy(
+            @NonNull AsyncInflationStrategy strategy) {
+        if (mAsyncInflationEnabled) {
+            mAsyncInflationBridge.setStrategy(strategy);
+        }
+        return this;
+    }
+
+    /**
+     * Sets the number of view holdrs that are visible in the RecyclerView before scrolling. If this
+     * number is too high, it may cause UI issues. It's only used when async inflation is enabled.
+     *
+     * @param number The number of view holders visible before scrolling or "above the fold."
+     */
+    public RecyclerViewComponentController setNumberAboveTheFoldViewHolders(int number) {
+        if (mAsyncInflationEnabled) {
+            mAsyncInflationBridge.setNumberOfAboveTheFoldViewHolders(number);
+        }
+        return this;
+    }
+
     public void onRecyclerViewDetachedFromWindow() {
         mComponentVisibilityListener.onComponentGroupVisibilityChanged(false);
     }
@@ -588,6 +635,15 @@ public class RecyclerViewComponentController
      */
     private final class RecyclerViewAdapter extends RecyclerView.Adapter<ViewHolderWrapper>
             implements Sequenceable {
+        private float preInflatedViewUsed = 0;
+        private float nonPreInflatedViewUsed = 0;
+
+        // If we should track how many view holders were needed in SmartAsyncInflationCache.
+        private boolean shouldTrack = false;
+
+        private final Set<Class<? extends ComponentViewHolder>> missingViewHoldersSet =
+                new HashSet<>();
+
         @NonNull
         @SuppressWarnings("unchecked") // Unchecked Component generics.
         @Override
@@ -605,8 +661,45 @@ public class RecyclerViewComponentController
                 return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
             }
             View view = mAsyncInflationBridge.getView(viewHolder);
+            if (mAsyncCacheKey != null) {
+                if (!SmartAsyncInflationCache.INSTANCE.containsKey(mAsyncCacheKey)) {
+                    // Only track the first one so we don't end up with tons of views for
+                    // each view holder.
+                    shouldTrack = true;
+                }
+                if (shouldTrack || missingViewHoldersSet.contains(viewHolderType)) {
+                    if (BentoSettings.getLoggingEnabled()
+                            && missingViewHoldersSet.contains(viewHolderType)) {
+                        Log.i(BentoSettings.BENTO_TAG, "updating record for: " + viewHolderType);
+                    }
+                    SmartAsyncInflationCache.INSTANCE.incrementForViewHolder(
+                            mAsyncCacheKey, viewHolderType);
+                }
+                // Some pages have different components every time so some view holders might not
+                // have a cache hit. This attempts to track that 1 view holder was needed in such
+                // cases.
+                boolean wasMissing =
+                        SmartAsyncInflationCache.INSTANCE.incrementForViewHolderIfMissing(
+                                mAsyncCacheKey, viewHolderType);
+                if (wasMissing) {
+                    missingViewHoldersSet.add(viewHolderType);
+                }
+            }
+
             if (view == null) {
+                if (BentoSettings.getLoggingEnabled()) {
+                    nonPreInflatedViewUsed += 1.0f;
+                    Log.i(
+                            BentoSettings.BENTO_TAG,
+                            "% pre-inflated: " + getPercentage() + " FOR: " + parent);
+                }
                 return new ViewHolderWrapper(viewHolder.inflate(parent), viewHolder);
+            }
+            if (BentoSettings.getLoggingEnabled()) {
+                preInflatedViewUsed += 1.0f;
+                Log.i(
+                        BentoSettings.BENTO_TAG,
+                        "% pre-inflated: " + getPercentage() + " FOR: " + parent);
             }
             return new ViewHolderWrapper(view, viewHolder);
         }
@@ -649,6 +742,12 @@ public class RecyclerViewComponentController
         @Override
         public Sequence<Object> asItemSequence() {
             return ComponentControllerX.asItemSequence(RecyclerViewComponentController.this);
+        }
+
+        // Get the percentage of pre-inflated views used vs normal views.
+        private float getPercentage() {
+            if (preInflatedViewUsed == 0f && nonPreInflatedViewUsed == 0f) return 0f;
+            return preInflatedViewUsed / (preInflatedViewUsed + nonPreInflatedViewUsed) * 100;
         }
     }
 
