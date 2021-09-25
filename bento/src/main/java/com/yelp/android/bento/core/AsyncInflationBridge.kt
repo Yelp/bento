@@ -1,5 +1,6 @@
 package com.yelp.android.bento.core
 
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -12,6 +13,7 @@ import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentControll
 import com.yelp.android.bento.core.AsyncInflationStrategy.BEST_GUESS
 import com.yelp.android.bento.core.AsyncInflationStrategy.DEFAULT
 import com.yelp.android.bento.core.AsyncInflationStrategy.SMART
+import com.yelp.android.bento.utils.BentoSettings
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentLinkedDeque
 import java.util.concurrent.Executors
@@ -19,7 +21,6 @@ import java.util.concurrent.atomic.AtomicInteger
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -75,6 +76,7 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
     var asyncCacheKey: String = recyclerView.id.toString()
         set(value) {
             smartAsyncCacheEmptyOnStart = !SmartAsyncInflationCache.containsKey(value)
+            field = value
         }
 
     var strategy = DEFAULT
@@ -166,7 +168,12 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
                 if (!belowTheFoldTriggered && !smartAsyncCacheEmptyOnStart &&
                         SmartAsyncInflationCache.containsKey(asyncCacheKey)) {
                     if (!aboveTheFoldTriggered) {
+                        val start = System.currentTimeMillis()
                         asyncInflateViewsIfPossible(true)
+                        if (BentoSettings.loggingEnabled) {
+                            val timeTaken = System.currentTimeMillis() - start
+                            Log.i(BentoSettings.BENTO_TAG, "Above fold inflation time taken : $timeTaken ms")
+                        }
                         aboveTheFoldTriggered = true
                     }
                 }
@@ -178,7 +185,7 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
             // view holders without blocking any more addComponent calls.
             if (!belowTheFoldTriggered && !smartAsyncCacheEmptyOnStart &&
                     SmartAsyncInflationCache.containsKey(asyncCacheKey)) {
-                        belowTheFoldTriggered = true
+                belowTheFoldTriggered = true
                 asyncInflateViewsIfPossible(false)
             }
         }
@@ -188,24 +195,24 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
     private suspend fun asyncInflateViewsIfPossible(isAboveTheFoldCall: Boolean) {
         if (asyncCacheKey.isEmpty()) return // There's no work to do.
 
-        val mapToPrepare = SmartAsyncInflationCache[asyncCacheKey] ?: mutableMapOf()
-        if (mapToPrepare.isEmpty()) return // There's no work to do.
+        val listToPrepare = SmartAsyncInflationCache[asyncCacheKey] ?: mutableListOf()
+        if (listToPrepare.isEmpty()) return // There's no work to do.
 
-        val aboveFoldKeys = mapToPrepare.keys.take(numberOfAboveTheFoldViewHolders)
+        val aboveFoldKeys = listToPrepare.take(numberOfAboveTheFoldViewHolders)
+        val numberBelowFoldViewHolders = listToPrepare.size - numberOfAboveTheFoldViewHolders
 
-        val keysToUse = if (isAboveTheFoldCall) aboveFoldKeys else mapToPrepare.keys.subtract(aboveFoldKeys)
+        if (numberBelowFoldViewHolders < 0) {
+            return // There's no work to do.
+        }
+        val viewHoldersToInflate = if (isAboveTheFoldCall) aboveFoldKeys else listToPrepare.takeLast(numberBelowFoldViewHolders)
 
-        keysToUse.forEach { viewHolderType ->
-            val numberOfViewsToInflate: Int = mapToPrepare[viewHolderType] ?: 0
-            val inflations: List<Deferred<Unit>> = (0 until numberOfViewsToInflate).map {
-
-                coroutineScope {
-                    async {
-                        val viewHolder = constructViewHolder(viewHolderType as Class<out ComponentViewHolder<Any?, Any?>>?)
-                        addViewHolder(viewHolder, viewHolderType as Class<out ComponentViewHolder<*, *>>)
-                        val (_, view) = BentoAsyncLayoutInflater.inflate(viewHolder, recyclerView, asyncInflaterDispatcher)
-                        viewMap[viewHolder] = view
-                    }
+        coroutineScope {
+            val inflations = viewHoldersToInflate.map { viewHolderType ->
+                async {
+                    val viewHolder = constructViewHolder(viewHolderType as Class<out ComponentViewHolder<Any?, Any?>>?)
+                    addViewHolder(viewHolder, viewHolderType as Class<out ComponentViewHolder<*, *>>)
+                    val (_, view) = BentoAsyncLayoutInflater.inflate(viewHolder, recyclerView, asyncInflaterDispatcher)
+                    viewMap[viewHolder] = view
                 }
             }
             inflations.awaitAll()

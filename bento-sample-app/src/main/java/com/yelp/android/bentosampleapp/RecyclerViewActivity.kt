@@ -33,7 +33,7 @@ class RecyclerViewActivity : AppCompatActivity() {
         RecyclerViewComponentController(recyclerView).apply {
             setAsyncCacheKey("RecyclerViewActivity")
             setAsyncStrategy(DEFAULT)
-            setNumberAboveTheFoldViewHolders(3)
+            setNumberAboveTheFoldViewHolders(12)
         }
     }
     private lateinit var componentToScrollTo: Component

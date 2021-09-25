@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.yelp.android.bento.R
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
-import com.yelp.android.bento.core.AsyncInflationStrategy.SMART
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bento.core.ComponentViewHolder
@@ -82,10 +81,7 @@ open class CarouselComponentViewHolder : ComponentViewHolder<Unit?, CarouselView
     final override fun inflate(parent: ViewGroup): View {
         return createRecyclerView(parent).apply {
             recyclerView = this
-            controller = RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL, true).apply {
-                setAsyncCacheKey("carousel")
-                setAsyncStrategy(SMART)
-            }
+            controller = RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL, false)
             isNestedScrollingEnabled = false
             (recyclerView.layoutManager as? LinearLayoutManager)?.apply {
                 this.recycleChildrenOnDetach = true
