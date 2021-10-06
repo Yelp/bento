@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [18.2.1](https://github.com/Yelp/bento/compare/v18.2.0...v18.2.1) (2021-10-06)
+
+
+### Bug Fixes
+
+* Fixed a few bugs in the smart async implementation. ([eead220](https://github.com/Yelp/bento/commit/eead2200e5a8e05b3cba36a3766ee595804325fe))
+
 ## [18.2.0](https://github.com/Yelp/bento/compare/v18.1.2...v18.2.0) (2021-09-23)
 
 
