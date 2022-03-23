@@ -1,1 +1,1 @@
-include ':bento', ':bento-sample-app', ':bento-testing'
+include ':bento', ':bento-compose', ':bento-sample-app', ':bento-testing'
