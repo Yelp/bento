@@ -11,6 +11,7 @@ buildscript {
 }
 
 plugins {
+    id "digital.wup.android-maven-publish" version "3.6.2" apply false
     id "net.linguica.maven-settings" version "0.5" apply false
 }
 
