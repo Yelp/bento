@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [19.0.0](https://github.com/Yelp/bento/compare/v18.1.2...v19.0.0) (2022-04-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* Increasing the minSDK and targetSDK may mean this version is no longer compatible with some apps.
+
+### Features
+
+* Added jetpack compose support and updated build tools and libraries. ([7c8f6d6](https://github.com/Yelp/bento/commit/7c8f6d61ec2fa6a552deedc28a6f4c00985036fb))
+* Added jetpack compose support and updated build tools and libraries. ([ef34192](https://github.com/Yelp/bento/commit/ef34192c22f289139ce7eb7a91f945c42eb4cb93))
+* Added smarter async inflation and limited the max number of inflated views in some cases. ([4bd193c](https://github.com/Yelp/bento/commit/4bd193c1691f23d0a53c834a61786082287e1da4))
+
+
+### Bug Fixes
+
+* Fixed a few bugs in the smart async implementation. ([eead220](https://github.com/Yelp/bento/commit/eead2200e5a8e05b3cba36a3766ee595804325fe))
+
 ### [18.2.1](https://github.com/Yelp/bento/compare/v18.2.0...v18.2.1) (2021-10-06)
 
 

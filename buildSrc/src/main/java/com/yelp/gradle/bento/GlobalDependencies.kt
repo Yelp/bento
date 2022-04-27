@@ -5,7 +5,7 @@ import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 
 object Publishing {
     const val GROUP = "com.yelp.android"
-    const val VERSION = "18.2.1"
+    const val VERSION = "19.0.0"
 }
 
 object Versions {
