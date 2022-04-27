@@ -71,6 +71,10 @@ afterEvaluate {
     }
 }
 
+signing {
+    required { project.hasProperty("signing.keyId") }
+    sign publishing.publications.matching { "release" }
+}
 
 static def isReleaseBuild() {
     return !Publishing.VERSION.endsWith("-SNAPSHOT")
