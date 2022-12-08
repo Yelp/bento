@@ -3,6 +3,7 @@ package com.yelp.android.bento.componentcontrollers;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 import androidx.recyclerview.widget.RecyclerView.Orientation;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
 import com.google.common.collect.HashBiMap;
 import com.yelp.android.bento.core.AsyncInflationBridge;
 import com.yelp.android.bento.core.AsyncInflationStrategy;
@@ -28,17 +30,21 @@ import com.yelp.android.bento.core.ComponentVisibilityListener.LayoutManagerHelp
 import com.yelp.android.bento.core.ListItemTouchCallback;
 import com.yelp.android.bento.core.OnItemMovedPositionListener;
 import com.yelp.android.bento.core.SmartAsyncInflationCache;
+import com.yelp.android.bento.core.ViewHolderWrapper;
 import com.yelp.android.bento.utils.AccordionList.Range;
 import com.yelp.android.bento.utils.AccordionList.RangedValue;
 import com.yelp.android.bento.utils.BentoSettings;
 import com.yelp.android.bento.utils.Sequenceable;
+
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import kotlin.sequences.Sequence;
-import org.jetbrains.annotations.Nullable;
 
 /** Implementation of {@link ComponentController} for {@link RecyclerView}s. */
 public class RecyclerViewComponentController
@@ -399,7 +405,7 @@ public class RecyclerViewComponentController
                     ((ViewHolderWrapper)
                             mRecyclerView.findViewHolderForAdapterPosition(currentIndex));
             if (holder != null) {
-                holder.mViewHolder.setAbsolutePosition(currentIndex);
+                holder.setAbsolutePosition(currentIndex);
             }
             currentIndex++;
         }
@@ -725,17 +731,17 @@ public class RecyclerViewComponentController
 
         @Override
         public void onViewAttachedToWindow(@NonNull ViewHolderWrapper holder) {
-            holder.mViewHolder.onViewAttachedToWindow();
+            holder.onViewAttachedToWindow();
         }
 
         @Override
         public void onViewDetachedFromWindow(@NonNull ViewHolderWrapper holder) {
-            holder.mViewHolder.onViewDetachedFromWindow();
+            holder.onViewDetachedFromWindow();
         }
 
         @Override
         public void onViewRecycled(@NonNull ViewHolderWrapper holder) {
-            holder.mViewHolder.onViewRecycled();
+            holder.onViewRecycled();
         }
 
         @Nullable
@@ -748,28 +754,6 @@ public class RecyclerViewComponentController
         private float getPercentage() {
             if (preInflatedViewUsed == 0f && nonPreInflatedViewUsed == 0f) return 0f;
             return preInflatedViewUsed / (preInflatedViewUsed + nonPreInflatedViewUsed) * 100;
-        }
-    }
-
-    /**
-     * Wrapper class for ViewHolders that allows {@link ComponentViewHolder}s to have an empty
-     * constructor and perform view inflation post-instantiation. (This is necessary because
-     * RecyclerView.ViewHolder forces an already-inflated view to be passed into the constructor).
-     *
-     * @param <T> The type of data the wrapped {@link ComponentViewHolder} uses.
-     */
-    private static class ViewHolderWrapper<P, T> extends RecyclerView.ViewHolder {
-
-        private ComponentViewHolder<P, T> mViewHolder;
-
-        ViewHolderWrapper(View itemView, ComponentViewHolder<P, T> viewHolder) {
-            super(itemView);
-            mViewHolder = viewHolder;
-        }
-
-        void bind(P presenter, int position, T element) {
-            mViewHolder.setAbsolutePosition(position);
-            mViewHolder.bind(presenter, element);
         }
     }
 

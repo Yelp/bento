@@ -1,7 +1,7 @@
 @file:Suppress("Unused")
 
-import java.net.URI
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import java.net.URI
 
 object Publishing {
     const val GROUP = "com.yelp.android"
@@ -23,6 +23,7 @@ object Versions {
     const val ANDROID_X_MATERIAL = "1.0.0"
     const val ANDROID_X_RECYCLER_VIEW = "1.0.0"
     const val ANDROID_X_TEST = "1.1.0"
+    const val ANDROID_X_VIEW_PAGER2 = "1.0.0"
     const val COMPOSE = "1.1.1"
     const val COROUTINES = "1.4.0"
     const val ESPRESSO = "3.1.0"
@@ -65,6 +66,7 @@ object SupportLibs {
     const val DESIGN = "com.google.android.material:material:${Versions.ANDROID_X_MATERIAL}"
     const val RECYCLERVIEW = "androidx.recyclerview:recyclerview:${Versions.ANDROID_X_RECYCLER_VIEW}"
     const val LIFECYCLE = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.ANDROID_X_LIFECYCLE}"
+    const val VIEW_PAGER_2 = "androidx.viewpager2:viewpager2:${Versions.ANDROID_X_VIEW_PAGER2}"
 }
 
 object TestLibs {
