@@ -43,6 +43,7 @@ dependencies {
     implementation Libs.COROUTINES
     implementation SupportLibs.DESIGN
     implementation SupportLibs.RECYCLERVIEW
+    implementation SupportLibs.VIEW_PAGER_2
 
     // Espresso
     androidTestImplementation project(':bento-testing')

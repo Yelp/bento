@@ -63,6 +63,7 @@ dependencies {
     implementation SupportLibs.DESIGN
     implementation SupportLibs.LIFECYCLE
     implementation SupportLibs.RECYCLERVIEW
+    implementation SupportLibs.VIEW_PAGER_2
     androidTestImplementation TestLibs.SUPPORT_TEST_RULES
 
     testImplementation TestLibs.CORE_KTX

@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity() {
                         ActivityStarterViewHolder::class.java
                 )
         listComponent.setData(listOf(
+                "View Pager2" to ViewPager2Activity::class.java,
                 "Recycler View" to RecyclerViewActivity::class.java,
                 "Recycler View with grid" to GridComponentsActivity::class.java,
                 "Horizontal recycler View with grid" to
