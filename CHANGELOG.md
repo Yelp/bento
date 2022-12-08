@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [19.1.0](https://github.com/Yelp/bento/compare/v19.0.0...v19.1.0) (2022-12-08)
+
+
+### Features
+
+* Add ViewPager2ComponentController and tests ([679ae82](https://github.com/Yelp/bento/commit/679ae828dacd3a025b1893cf3276352538b2f8ed))
+
+
+### Bug Fixes
+
+* **publishing:** Fixing publishing to Maven Central ([ae96b38](https://github.com/Yelp/bento/commit/ae96b38f69c6bd5810ddc0a22bafa70a47a2e7e7))
+
 ## [19.0.0](https://github.com/Yelp/bento/compare/v18.1.2...v19.0.0) (2022-04-27)
 
 
