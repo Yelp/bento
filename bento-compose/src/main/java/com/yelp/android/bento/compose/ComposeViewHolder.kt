@@ -7,7 +7,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.yelp.android.bento.core.ComponentViewHolder
 
 /**
@@ -23,9 +22,6 @@ abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
 
     final override fun inflate(parent: ViewGroup): View {
         return ComposeView(parent.context).apply {
-            setViewCompositionStrategy(
-                ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
-            )
             setContent {
                 state = remember { mutableStateOf(element) }
                 presenter?.let { element?.let { nonNullElement -> BindView(it, nonNullElement) } }
@@ -40,11 +36,6 @@ abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
         this.presenter = presenter
         this.element = element
         state.value = element
-    }
-
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        composeView?.disposeComposition()
     }
 
     @Composable

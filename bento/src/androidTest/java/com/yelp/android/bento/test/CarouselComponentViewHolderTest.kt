@@ -229,11 +229,11 @@ private class ViewAttachedToWindowIdlingResource(view: View) : IdlingResource {
     }
 
     private inner class OnAttachListener : View.OnAttachStateChangeListener {
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             // Do nothing.
         }
 
-        override fun onViewAttachedToWindow(v: View?) {
+        override fun onViewAttachedToWindow(v: View) {
             mIdle = true
             mResourceCallback.onTransitionToIdle()
         }
