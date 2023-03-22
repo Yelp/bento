@@ -5,7 +5,7 @@ import java.net.URI
 
 object Publishing {
     const val GROUP = "com.yelp.android"
-    const val VERSION = "19.1.0"
+    const val VERSION = "19.2.0-YingTest"
 }
 
 object Versions {

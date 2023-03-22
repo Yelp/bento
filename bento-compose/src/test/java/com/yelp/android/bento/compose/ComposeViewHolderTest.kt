@@ -2,6 +2,9 @@ package com.yelp.android.bento.compose
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -33,9 +36,15 @@ class ComposeViewHolderTest {
 
     internal class MyTestViewHolder : ComposeViewHolder<Presenter, MyViewModel>() {
 
-        @Composable
-        override fun BindView(presenter: Presenter, element: MyViewModel) {
-            Text(text = element.name)
+        override fun BindView(
+            composeView1: ComposeView?,
+            presenter: Presenter,
+            element: MyViewModel
+        ) {
+            composeView?.setContent {
+                state = remember { mutableStateOf(element) }
+                Text(text = element.name)
+            }
         }
     }
 
