@@ -2,10 +2,6 @@ package com.yelp.android.bento.compose
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import com.yelp.android.bento.core.ComponentViewHolder
 
@@ -29,8 +25,8 @@ abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
     override fun bind(presenter: P, element: T) {
         this.presenter = presenter
         this.element = element
-        BindView(composeView, presenter, element)
+        bindView(composeView, presenter, element)
     }
 
-    abstract fun BindView(composeView: ComposeView, presenter: P, element: T)
+    abstract fun bindView(composeView: ComposeView, presenter: P, element: T)
 }

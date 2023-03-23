@@ -36,7 +36,7 @@ class ComposeViewHolderTest {
 
     internal class MyTestViewHolder : ComposeViewHolder<Presenter, MyViewModel>() {
 
-        override fun BindView(composeView: ComposeView, presenter: Presenter, element: MyViewModel) {
+        override fun bindView(composeView: ComposeView, presenter: Presenter, element: MyViewModel) {
             composeView.setContent {
                 val state by remember { mutableStateOf(element.name) }
                 Text(text = state)
