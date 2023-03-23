@@ -15,29 +15,22 @@ import com.yelp.android.bento.core.ComponentViewHolder
  */
 abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
 
-    private var state: MutableState<T?> = mutableStateOf(null)
-    private var composeView: ComposeView? = null
+    private lateinit var composeView: ComposeView
     var presenter: P? = null
     var element: T? = null
 
     final override fun inflate(parent: ViewGroup): View {
-        return ComposeView(parent.context).apply {
-            setContent {
-                state = remember { mutableStateOf(element) }
-                presenter?.let { element?.let { nonNullElement -> BindView(it, nonNullElement) } }
-            }
+        composeView = ComposeView(parent.context).apply {
             id = View.generateViewId()
-        }.also {
-            composeView = it
         }
+        return composeView
     }
 
     override fun bind(presenter: P, element: T) {
         this.presenter = presenter
         this.element = element
-        state.value = element
+        BindView(composeView, presenter, element)
     }
 
-    @Composable
-    abstract fun BindView(presenter: P, element: T)
+    abstract fun BindView(composeView: ComposeView, presenter: P, element: T)
 }
