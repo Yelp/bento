@@ -5,9 +5,7 @@ import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.yelp.android.bento.core.ComponentViewHolder
 
 /**
@@ -16,35 +14,27 @@ import com.yelp.android.bento.core.ComponentViewHolder
  */
 abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
 
-    private var state: MutableState<T?> = mutableStateOf(null)
-    private var composeView: ComposeView? = null
+    private lateinit var composeView: ComposeView
     var presenter: P? = null
     var element: T? = null
+    private val rowStates = mutableMapOf<Int, MutableState<T>>()
 
     final override fun inflate(parent: ViewGroup): View {
-        return ComposeView(parent.context).apply {
-            setViewCompositionStrategy(
-                ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
-            )
-            setContent {
-                state = remember { mutableStateOf(element) }
-                presenter?.let { element?.let { nonNullElement -> BindView(it, nonNullElement) } }
-            }
+        composeView = ComposeView(parent.context).apply {
             id = View.generateViewId()
-        }.also {
-            composeView = it
         }
+        return composeView
     }
 
     override fun bind(presenter: P, element: T) {
         this.presenter = presenter
         this.element = element
-        state.value = element
-    }
-
-    override fun onViewRecycled() {
-        super.onViewRecycled()
-        composeView?.disposeComposition()
+        composeView.setContent {
+            val state = rowStates.getOrPut(absolutePosition) {
+                    mutableStateOf(element)
+            }
+            BindView(presenter, state.value)
+        }
     }
 
     @Composable
