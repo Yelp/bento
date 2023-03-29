@@ -22,15 +22,16 @@ import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleVie
 import com.yelp.android.bentosampleapp.components.NestedOuterExampleViewModel
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.SimpleJavaComponentExampleViewHolder
-import kotlinx.android.synthetic.main.activity_recycler_view.*
+import com.yelp.android.bentosampleapp.databinding.ActivityRecyclerViewBinding
 
 /**
  * Main activity for displaying the different options for demonstrating Bento features.
  */
 class RecyclerViewActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityRecyclerViewBinding
 
     private val componentController by lazy {
-        RecyclerViewComponentController(recyclerView).apply {
+        RecyclerViewComponentController(binding.recyclerView).apply {
             setAsyncCacheKey("RecyclerViewActivity")
             setAsyncStrategy(DEFAULT)
             setNumberAboveTheFoldViewHolders(12)
@@ -40,7 +41,8 @@ class RecyclerViewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recycler_view)
+        binding = ActivityRecyclerViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         addSimpleComponent(componentController, false)
         addListComponent(componentController)

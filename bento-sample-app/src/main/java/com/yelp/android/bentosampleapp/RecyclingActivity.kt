@@ -11,15 +11,19 @@ import com.yelp.android.bento.components.CarouselComponent
 import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bento.core.ComponentViewHolder
-import kotlinx.android.synthetic.main.activity_main.*
+import com.yelp.android.bentosampleapp.databinding.ActivityMainBinding
 
 class RecyclingActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
     lateinit var componentController: ComponentController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        componentController = RecyclerViewComponentController(recyclerView)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        componentController = RecyclerViewComponentController(binding.recyclerView)
 
         componentController.addComponent(CarouselComponent().apply {
             addComponent(createListComponent(0..19))
