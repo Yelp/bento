@@ -4,7 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import com.yelp.android.bento.core.ComponentViewHolder
 
@@ -30,10 +32,10 @@ abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
         this.presenter = presenter
         this.element = element
         composeView.setContent {
-            val state = rowStates.getOrPut(absolutePosition) {
-                    mutableStateOf(element)
+            key(absolutePosition){
+                val state = remember { mutableStateOf(element) }
+                BindView(presenter, state.value)
             }
-            BindView(presenter, state.value)
         }
     }
 
