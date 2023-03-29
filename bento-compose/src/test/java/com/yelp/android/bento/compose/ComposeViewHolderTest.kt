@@ -1,5 +1,6 @@
 package com.yelp.android.bento.compose
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
@@ -34,7 +35,7 @@ class ComposeViewHolderTest {
     internal class MyTestViewHolder : ComposeViewHolder<Presenter, MyViewModel>() {
 
         @Composable
-        override fun BindView(presenter: Presenter, element: MyViewModel) {
+        override fun BindView(presenter: Presenter, element: MyViewModel, state: LazyListState) {
             Text(text = element.name)
         }
     }

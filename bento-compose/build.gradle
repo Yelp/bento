@@ -48,6 +48,7 @@ dependencies {
     implementation Libs.COMPOSE_RUNTIME
     implementation Libs.COMPOSE_UI
     implementation SupportLibs.RECYCLERVIEW
+    implementation Libs.COMPOSE_FOUNDATION
 
     testImplementation Libs.COMPOSE_MATERIAL
     testImplementation TestLibs.COMPOSE_UI_TEST

@@ -2,9 +2,8 @@ package com.yelp.android.bento.compose
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import com.yelp.android.bento.core.ComponentViewHolder
 
@@ -17,7 +16,7 @@ abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
     private lateinit var composeView: ComposeView
     var presenter: P? = null
     var element: T? = null
-    private val rowStates = mutableMapOf<Int, MutableState<T>>()
+    private val rowStates = mutableMapOf<Int, LazyListState>()
 
     final override fun inflate(parent: ViewGroup): View {
         composeView = ComposeView(parent.context).apply {
@@ -30,13 +29,11 @@ abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
         this.presenter = presenter
         this.element = element
         composeView.setContent {
-            val state = rowStates.getOrPut(absolutePosition) {
-                    mutableStateOf(element)
-            }
-            BindView(presenter, state.value)
+            val state = rowStates.getOrPut(absolutePosition) { LazyListState() }
+            BindView(presenter, element, state)
         }
     }
 
     @Composable
-    abstract fun BindView(presenter: P, element: T)
+    abstract fun BindView(presenter: P, element: T, state: LazyListState)
 }

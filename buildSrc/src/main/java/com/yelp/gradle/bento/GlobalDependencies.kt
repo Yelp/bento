@@ -5,7 +5,7 @@ import java.net.URI
 
 object Publishing {
     const val GROUP = "com.yelp.android"
-    const val VERSION = "19.1.0"
+    const val VERSION = "19.1.0_LazyListState"
 }
 
 object Versions {
@@ -47,6 +47,7 @@ object BuildScriptLibs {
 
 object Libs {
     const val APACHE_COMMONS = "org.apache.commons:commons-lang3:${Versions.APACHE_COMMONS}"
+    const val COMPOSE_FOUNDATION = "androidx.compose.foundation:foundation:${Versions.COMPOSE}"
     const val COMPOSE_MATERIAL = "androidx.compose.material:material:${Versions.COMPOSE}"
     const val COMPOSE_RUNTIME = "androidx.compose.runtime:runtime-rxjava3:${Versions.COMPOSE}"
     const val COMPOSE_UI = "androidx.compose.ui:ui:${Versions.COMPOSE}"
