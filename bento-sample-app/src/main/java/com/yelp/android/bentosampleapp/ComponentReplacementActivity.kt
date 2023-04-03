@@ -9,19 +9,20 @@ import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentViewHolder
 import com.yelp.android.bento.utils.inflate
 import com.yelp.android.bentosampleapp.components.LabeledComponent
-import kotlinx.android.synthetic.main.activity_recycler_view.*
+import com.yelp.android.bentosampleapp.databinding.ActivityRecyclerViewBinding
 
 private const val NUM_LABELED_COMPONENTS = 30
 
 class ComponentReplacementActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityRecyclerViewBinding
     private val componentController by lazy {
-        RecyclerViewComponentController(recyclerView)
+        RecyclerViewComponentController(binding.recyclerView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recycler_view)
+        binding = ActivityRecyclerViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         componentController.addComponent(ReplaceComponentButton(NUM_LABELED_COMPONENTS + 1) {
             componentController.replaceComponent(2, LabeledComponent(it.toString()))

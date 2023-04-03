@@ -7,11 +7,12 @@ import com.yelp.android.bento.components.CarouselComponent
 import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
-import kotlinx.android.synthetic.main.activity_toggle_scroll_in_recycler_view.*
+import com.yelp.android.bentosampleapp.databinding.ActivityToggleScrollInRecyclerViewBinding
 
 class ToggleScrollInRecyclerViewActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityToggleScrollInRecyclerViewBinding
     private val componentController by lazy {
-        RecyclerViewComponentController(recyclerView)
+        RecyclerViewComponentController(binding.recyclerView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +29,7 @@ class ToggleScrollInRecyclerViewActivity : AppCompatActivity() {
             setData((1..40).map { "List element $it" })
         })
 
-        toggleButton.setOnCheckedChangeListener { _, isChecked ->
+        binding.toggleButton.setOnCheckedChangeListener { _, isChecked ->
             componentController.isScrollable = isChecked
         }
     }

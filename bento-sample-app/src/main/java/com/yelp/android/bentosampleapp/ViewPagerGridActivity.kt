@@ -7,18 +7,19 @@ import com.yelp.android.bento.componentcontrollers.ViewPagerComponentController
 import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bentosampleapp.components.ListComponentExampleViewHolder
-import kotlinx.android.synthetic.main.activity_view_pager.*
+import com.yelp.android.bentosampleapp.databinding.ActivityViewPagerBinding
 
 class ViewPagerGridActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityViewPagerBinding
 
     private val controller: ComponentController by lazy {
-        ViewPagerComponentController().apply { setViewPager(viewPager) }
+        ViewPagerComponentController().apply { setViewPager(binding.viewPager) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_view_pager)
+        binding = ActivityViewPagerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         controller.addComponent(createListComponent(1))
         controller.addComponent(createListComponent(2))

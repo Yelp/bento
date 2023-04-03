@@ -19,19 +19,21 @@ import com.yelp.android.bentosampleapp.components.NestedInnerComponentExampleVie
 import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.NestedOuterExampleViewModel
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
-import kotlinx.android.synthetic.main.activity_view_pager.*
+import com.yelp.android.bentosampleapp.databinding.ActivityViewPagerBinding
 
 class ViewPagerActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityViewPagerBinding
 
     private val controller: ComponentController by lazy {
-        ViewPagerComponentController().apply { setViewPager(viewPager) }
+        ViewPagerComponentController().apply { setViewPager(binding.viewPager) }
     }
     private lateinit var componentToScrollTo: Component
     private lateinit var removableComponent: Component
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_pager)
+        binding = ActivityViewPagerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         addSimpleComponent(controller, false)
         addListComponent(controller)
@@ -112,7 +114,7 @@ class ViewPagerActivity : AppCompatActivity() {
         removableComponent =
                 LabeledComponent("This is a component used to test the removal and addition " +
                         "from/to the ViewPagerComponent. Use the overflow menu to remove me")
-        val index = viewPager.currentItem
+        val index = binding.viewPager.currentItem
         controller.addComponent(index, removableComponent)
     }
 

@@ -21,19 +21,20 @@ import com.yelp.android.bentosampleapp.components.NestedInnerComponentExampleVie
 import com.yelp.android.bentosampleapp.components.NestedOuterComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.NestedOuterExampleViewModel
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
-import kotlinx.android.synthetic.main.activity_list_view.*
+import com.yelp.android.bentosampleapp.databinding.ActivityListViewBinding
 
 class ListViewActivity : AppCompatActivity() {
-
+    private lateinit var binding: ActivityListViewBinding
     private lateinit var controller: ComponentController
     private lateinit var componentToScrollTo: Component
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_view)
+        binding = ActivityListViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         controller =
-                ListViewComponentController(listView)
+                ListViewComponentController(binding.listView)
 
         setupListView(controller)
     }
