@@ -9,15 +9,18 @@ import com.yelp.android.bento.components.ListComponent
 import com.yelp.android.bento.core.ComponentGroup
 import com.yelp.android.bentosampleapp.components.HorizontalComponentExampleViewHolder
 import com.yelp.android.bentosampleapp.components.LabeledComponent
-import kotlinx.android.synthetic.main.activity_recycler_view.*
+import com.yelp.android.bentosampleapp.databinding.ActivityRecyclerViewBinding
 
 class HorizontalGridComponentsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityRecyclerViewBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_recycler_view)
+        binding = ActivityRecyclerViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val componentController =
-                RecyclerViewComponentController(recyclerView, RecyclerView.HORIZONTAL)
+                RecyclerViewComponentController(binding.recyclerView, RecyclerView.HORIZONTAL)
 
         componentController.addComponent(createEmbeddedListComponent())
         componentController.addComponent(createSimplePaddedListComponent(4))

@@ -93,12 +93,12 @@ internal class AsyncInflationBridge @JvmOverloads constructor(
             findAndAttachToLifecycleOwner()
         } else {
             recyclerView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View?) {
+                override fun onViewAttachedToWindow(v: View) {
                     findAndAttachToLifecycleOwner()
                     recyclerView.removeOnAttachStateChangeListener(this)
                 }
 
-                override fun onViewDetachedFromWindow(v: View?) = Unit
+                override fun onViewDetachedFromWindow(v: View) = Unit
             })
         }
     }

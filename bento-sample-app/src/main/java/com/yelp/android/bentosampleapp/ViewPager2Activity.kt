@@ -6,17 +6,19 @@ import com.yelp.android.bento.componentcontrollers.ViewPager2ComponentController
 import com.yelp.android.bento.components.SimpleComponent
 import com.yelp.android.bento.core.ComponentController
 import com.yelp.android.bentosampleapp.components.SimpleComponentExampleViewHolder
-import kotlinx.android.synthetic.main.activity_view_pager2.*
+import com.yelp.android.bentosampleapp.databinding.ActivityViewPager2Binding
 
 class ViewPager2Activity : AppCompatActivity() {
+    private lateinit var binding: ActivityViewPager2Binding
 
     private val controller: ComponentController by lazy {
-        ViewPager2ComponentController(viewPager)
+        ViewPager2ComponentController(binding.viewPager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_pager2)
+        binding = ActivityViewPager2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         addSimpleComponent(controller, false)
         addSimpleComponent(controller, false)

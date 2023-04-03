@@ -16,18 +16,19 @@ import com.yelp.android.bento.core.setOnDragStartListener
 import com.yelp.android.bento.utils.inflate
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.components.LabeledComponentViewHolder
-import kotlinx.android.synthetic.main.activity_recycler_view.*
+import com.yelp.android.bentosampleapp.databinding.ActivityRecyclerViewBinding
 
 class ReorderListActivity : AppCompatActivity(), Presenter {
+    private lateinit var binding: ActivityRecyclerViewBinding
 
     private val componentController by lazy {
-        RecyclerViewComponentController(recyclerView)
+        RecyclerViewComponentController(binding.recyclerView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_recycler_view)
+        binding = ActivityRecyclerViewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         addUnorderableListComponent()
         addLongPressOrderableListComponent()
