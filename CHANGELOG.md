@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [20.0.0](https://github.com/Yelp/bento/compare/v19.1.0...v20.0.0) (2023-04-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* compileSdkVersion and targetSdkVersion to 33, AGP 7.4.2, Gradle 7.5.1, Kotlin 1.8.10, Compose 1.4.0, Compose Kotlin Compiler 1.4.4, Kotlin 1.8.10, RecyclerView 1.3.0; No need to set ViewCompositionStrategy any more
+
+### Features
+
+* bump libs for Compose/XML interop performance win since RecyclerView 1.3.0; move composeView.setContent to bind; ([08d1ada](https://github.com/Yelp/bento/commit/08d1adac87643574090cc4614d5743ee26672dd5))
+
 ## [19.1.0](https://github.com/Yelp/bento/compare/v19.0.0...v19.1.0) (2022-12-08)
 
 
