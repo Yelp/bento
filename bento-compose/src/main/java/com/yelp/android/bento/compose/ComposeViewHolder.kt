@@ -4,7 +4,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.ComposeView
 import com.yelp.android.bento.core.ComponentViewHolder
 
@@ -15,26 +17,27 @@ import com.yelp.android.bento.core.ComponentViewHolder
 abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
 
     private lateinit var composeView: ComposeView
-    var presenter: P? = null
-    var element: T? = null
-    private val rowStates = mutableMapOf<Int, MutableState<T>>()
+    private val presenterState: MutableState<P?> = mutableStateOf(null)
+    private val elementState: MutableState<T?> = mutableStateOf(null)
 
     final override fun inflate(parent: ViewGroup): View {
         composeView = ComposeView(parent.context).apply {
             id = View.generateViewId()
+            setContent {
+                val presenter: P? by remember { presenterState }
+                val element: T? by remember { elementState }
+                BindView(
+                    presenter = presenter ?: return@setContent,
+                    element = element ?: return@setContent
+                )
+            }
         }
         return composeView
     }
 
     override fun bind(presenter: P, element: T) {
-        this.presenter = presenter
-        this.element = element
-        composeView.setContent {
-            val state = rowStates.getOrPut(absolutePosition) {
-                    mutableStateOf(element)
-            }
-            BindView(presenter, state.value)
-        }
+        presenterState.value = presenter
+        elementState.value = element
     }
 
     @Composable

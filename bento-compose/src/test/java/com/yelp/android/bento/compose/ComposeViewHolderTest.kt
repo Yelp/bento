@@ -15,11 +15,20 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ComposeViewHolderTest {
 
-    @get:Rule val composeTestRule = createComposeRule()
+    @get:Rule
+    val composeTestRule = createComposeRule()
 
     internal data class MyViewModel(val name: String)
 
-    internal class MyTestComponent(val name: String) : Component() {
+    internal class MyTestComponent(initialValue: String) : Component() {
+
+        private var name: String = initialValue
+
+        fun updateName(name: String) {
+            this.name = name
+            notifyDataChanged()
+        }
+
         override fun getPresenter(position: Int) = Presenter()
 
         override fun getItem(position: Int) = MyViewModel(name)
@@ -50,5 +59,31 @@ class ComposeViewHolderTest {
             }
         }
         composeTestRule.onNodeWithText(name).assertIsDisplayed()
+    }
+
+    @Test
+    fun `compose view holder handle updates correctly`() {
+        val initialValue = "Initial Value"
+        val firstUpdate = "First Update"
+        val secondUpdate = "Second Update"
+        val component = MyTestComponent(initialValue = initialValue)
+        composeTestRule.setContent {
+            RecyclerView {
+                RecyclerViewComponentController(it).apply {
+                    addComponent(component)
+                }
+            }
+        }
+
+        // First time
+        composeTestRule.onNodeWithText(initialValue).assertIsDisplayed()
+
+        // Second time
+        component.updateName(firstUpdate)
+        composeTestRule.onNodeWithText(firstUpdate).assertIsDisplayed()
+
+        // Third time
+        component.updateName(secondUpdate)
+        composeTestRule.onNodeWithText(secondUpdate).assertIsDisplayed()
     }
 }
