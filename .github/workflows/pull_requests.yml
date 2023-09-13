@@ -13,8 +13,13 @@ jobs:
     runs-on: [ubuntu-latest]
     name: Run checks
     steps:
+      - name: Install Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Gradle Folders
         uses: actions/cache@v2
         with:
@@ -24,14 +29,21 @@ jobs:
           key: cache-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             cache-gradle-
+      - name: Delete Maven Settings file
+        run: rm ~/.m2/settings.xml
       - name: Run check
         run: ./gradlew check
   assemble:
     runs-on: [ubuntu-latest]
     name: Assemble the project
     steps:
+      - name: Install Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Gradle Folders
         uses: actions/cache@v2
         with:
@@ -41,14 +53,21 @@ jobs:
           key: cache-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             cache-gradle-
+      - name: Delete Maven Settings file
+        run: rm ~/.m2/settings.xml
       - name: Run assembleDebug
-        run: ./gradlew assembleDebug
+        run: ./gradlew assembleDebug --stacktrace --scan
   publishToMavenLocal:
     runs-on: [ubuntu-latest]
     name: Publish to Maven local
     steps:
+      - name: Install Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
       - name: Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Cache Gradle Folders
         uses: actions/cache@v2
         with:
@@ -58,5 +77,7 @@ jobs:
           key: cache-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
           restore-keys: |
             cache-gradle-
+      - name: Delete Maven Settings file
+        run: rm ~/.m2/settings.xml
       - name: Run publishToMavenLocal
         run: ./gradlew publishToMavenLocal

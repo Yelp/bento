@@ -7,6 +7,8 @@ ext.projectDescription = 'A framework for building modularized Android user inte
 apply from: "$rootDir/publishing.gradle"
 
 android {
+    namespace 'com.yelp.android.bento'
+
     compileSdkVersion Versions.COMPILE_SDK
 
     defaultConfig {
@@ -18,8 +20,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+    compileOptions {
+        sourceCompatibility = Versions.SOURCE_COMPATIBILITY
+        targetCompatibility = Versions.TARGET_COMPATIBILITY
     }
 
     buildTypes {
@@ -39,7 +42,8 @@ android {
 }
 
 task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier.convention('sources');
+    archiveClassifier.set('sources');
     from android.sourceSets.main.java.sourceFiles
 }
 

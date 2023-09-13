@@ -11,13 +11,15 @@ import com.yelp.android.bentosampleapp.databinding.ActivityToggleScrollInRecycle
 
 class ToggleScrollInRecyclerViewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityToggleScrollInRecyclerViewBinding
+
     private val componentController by lazy {
         RecyclerViewComponentController(binding.recyclerView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_toggle_scroll_in_recycler_view)
+        binding = ActivityToggleScrollInRecyclerViewBinding.inflate(layoutInflater)
+            .apply { setContentView(root) }
 
         componentController.addComponent(CarouselComponent().apply {
             (1..40).forEach {

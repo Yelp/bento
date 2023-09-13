@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.yelp.android.bento.R
 import com.yelp.android.bento.componentcontrollers.TabViewPagerComponentController
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 

@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    namespace 'com.yelp.android.bentosampleapp'
+
     compileSdkVersion Versions.COMPILE_SDK
 
     defaultConfig {
@@ -14,8 +16,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+    compileOptions {
+        sourceCompatibility = Versions.SOURCE_COMPATIBILITY
+        targetCompatibility = Versions.TARGET_COMPATIBILITY
     }
 
     buildTypes {
