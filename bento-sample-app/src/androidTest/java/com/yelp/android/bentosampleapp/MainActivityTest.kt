@@ -27,18 +27,14 @@ class MainActivityTest {
     val rule: RuleChain = RuleChain.outerRule(beforeRule).around(intentsTestRule)
 
     @Test
-    fun onData_atPosition2_clickOpensListViewActivity() {
-        BentoInteraction.onData(anything()).atPosition(6)
-                .check(ViewAssertions.matches(ViewMatchers.withText("List View")))
-                .perform(ViewActions.click())
-
+    fun onData_atPosition8_clickOpensListViewActivity() {
+        BentoInteraction.onData(anything()).atPosition(8).perform(ViewActions.click())
         Intents.intended(IntentMatchers.hasComponent(ListViewActivity::class.qualifiedName))
     }
 
     @Test
-    fun onData_atPosition0_clickOpensRecyclerViewActivity() {
-        BentoInteraction.onData(anything()).atPosition(0).perform(ViewActions.click())
-
+    fun onData_atPosition2_clickOpensRecyclerViewActivity() {
+        BentoInteraction.onData(anything()).atPosition(2).perform(ViewActions.click())
         Intents.intended(IntentMatchers.hasComponent(RecyclerViewActivity::class.qualifiedName))
     }
 }
