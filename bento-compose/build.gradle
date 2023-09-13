@@ -7,6 +7,8 @@ ext.projectDescription = 'A library which provides compatability for Jetpack Com
 apply from: "$rootDir/publishing.gradle"
 
 android {
+    namespace 'com.yelp.android.bento.compose'
+
     compileSdkVersion Versions.COMPILE_SDK
 
     defaultConfig {
@@ -16,8 +18,9 @@ android {
         versionName Publishing.VERSION
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+    compileOptions {
+        sourceCompatibility = Versions.SOURCE_COMPATIBILITY
+        targetCompatibility = Versions.TARGET_COMPATIBILITY
     }
 
     buildTypes {

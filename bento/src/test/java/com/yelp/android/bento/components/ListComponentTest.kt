@@ -1,9 +1,9 @@
 package com.yelp.android.bento.components
 
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
+import org.mockito.kotlin.never
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.verify
 import com.yelp.android.bento.core.TestComponentViewHolder
 import org.junit.Assert.assertEquals
 import org.junit.Test
