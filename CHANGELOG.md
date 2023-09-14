@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [21.0.0](https://github.com/Yelp/bento/compare/v20.0.0...v21.0.0) (2023-09-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* Bump AGP 8.0.2, Gradle 8.3.0, Kotlin 1.8.21, Prod & Test Libs to latest
+
+### Features
+
+* Bump AGP 8.0.2, Gradle 8.3.0, Kotlin 1.8.21, Prod & Test Libs to latest ([47adaeb](https://github.com/Yelp/bento/commit/47adaeb4d41567b547c0a397b80774ca039da5c7))
+* install java 17 ([ea8563a](https://github.com/Yelp/bento/commit/ea8563ae2264263a9d2f33e3ad7a2b34d83fd659))
+
+
+### Bug Fixes
+
+* Compose view holder fails to update correctly when the component state changes ([ba47ad0](https://github.com/Yelp/bento/commit/ba47ad0ff7e556b6e10efb97a8dbe7f7eec9e4cc))
+* Fix crash in ToggleScrollInRecyclerViewActivity.kt ([5028b14](https://github.com/Yelp/bento/commit/5028b1407bd2a5c177bfe7942d4300a09b10394f))
+
 ## [20.0.0](https://github.com/Yelp/bento/compare/v19.1.0...v20.0.0) (2023-04-04)
 
 
