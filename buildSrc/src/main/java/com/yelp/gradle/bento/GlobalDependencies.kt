@@ -1,7 +1,7 @@
 @file:Suppress("Unused")
 
-import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import java.net.URI
+import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 
 object Publishing {
     const val GROUP = "com.yelp.android"
