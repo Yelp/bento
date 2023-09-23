@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.yelp.android.bento.componentcontrollers.RecyclerViewComponentController
 import com.yelp.android.bento.core.Component
 import com.yelp.android.bento.core.ComponentViewHolder
+import com.yelp.android.bento.core.notifyingItem
 import com.yelp.android.bento.utils.inflate
 import com.yelp.android.bentosampleapp.components.LabeledComponent
 import com.yelp.android.bentosampleapp.databinding.ActivityRecyclerViewBinding
@@ -34,9 +35,10 @@ class ComponentReplacementActivity : AppCompatActivity() {
 }
 
 class ReplaceComponentButton(
-    private var replacementId: Int,
+    replacementId: Int,
     private val onComponentClicked: (replacenentId: Int) -> Unit
 ) : Component() {
+    private var replacementId by notifyingItem(replacementId)
     override fun getPresenter(position: Int) = this
 
     override fun getItem(position: Int) = replacementId
@@ -48,7 +50,6 @@ class ReplaceComponentButton(
     fun onClick() {
         onComponentClicked(replacementId)
         replacementId++
-        notifyDataChanged()
     }
 }
 
