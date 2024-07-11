@@ -8,6 +8,9 @@ import com.yelp.android.bento.utils.AccordionList.Range
  * <br></br><br></br>
  * See: [Component], [ComponentViewHolder]
  */
+@Deprecated(
+    message = "Bento is deprecated! Please consider using Jetpack Compose https://developer.android.com/jetpack/compose instead.",
+)
 interface ComponentController {
 
     /**

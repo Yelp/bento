@@ -1,7 +1,10 @@
-<img src="./documentation/images/bento_logo.png" width="80%"/>
+# ⛔️ DEPRECATED <Bento>
+This is no longer supported, please consider using [Jetpack Compose](https://developer.android.com/develop/ui/compose) instead.
 
-## A delicious framework for building modularized Android user interfaces, by Yelp.
+<img src="./documentation/images/bento_logo.png" width="20%"/>
 
+### A delicious framework for building modularized Android user interfaces, by Yelp.
+![No Maintenance Intended](https://unmaintained.tech/badge.svg)
 ![Maven Central](https://img.shields.io/maven-central/v/com.yelp.android/bento.svg)
 [![Build Status](https://travis-ci.org/Yelp/bento.svg?branch=master)](https://travis-ci.org/Yelp/bento)
 [![Twitter](https://img.shields.io/badge/Twitter-@YelpEngineering-blue.svg)](https://twitter.com/YelpEngineering)
@@ -54,9 +57,9 @@ Bento can be setup with Gradle:
 ```groovy
 // Top level build.gradle
 allprojects {
-	repositories {
-		mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+    }
 }
 
 // Module level build.gradle

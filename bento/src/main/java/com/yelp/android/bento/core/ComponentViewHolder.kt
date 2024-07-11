@@ -15,6 +15,9 @@ import android.view.ViewGroup
  * no-arg constructor. Unfortunately, this means all subclasses must be visible from this package
  * and provide a no-arg constructor.
  */
+@Deprecated(
+    message = "Bento is deprecated! Please consider using Jetpack Compose https://developer.android.com/jetpack/compose instead.",
+)
 abstract class ComponentViewHolder<P, T> {
 
     /**

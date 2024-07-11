@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @deprecated Bento is deprecated!
+ * <p>Please consider using Jetpack Compose https://developer.android.com/jetpack/compose instead.</p>
+ * <br>
  * The building block of user interfaces in the Bento framework. Represents a self-contained
  * component to be used with a {@link ComponentController}.
  *
@@ -20,6 +23,7 @@ import java.util.List;
  * a user interface as a series of modular components instead of a complicated set of internal items
  * whose state must be managed by the component.
  */
+@Deprecated
 public abstract class Component {
 
     private final ComponentDataObservable mObservable = new ComponentDataObservable();
