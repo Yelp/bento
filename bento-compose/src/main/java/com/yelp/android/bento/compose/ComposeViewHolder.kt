@@ -11,9 +11,12 @@ import androidx.compose.ui.platform.ComposeView
 import com.yelp.android.bento.core.ComponentViewHolder
 
 /**
- * ViewHolder which allows compatability with Jetpack Compose. Basically, this lets you write the
+ * ViewHolder which allows compatibility with Jetpack Compose. Basically, this lets you write the
  * view holders view code with Compose.
  */
+@Deprecated(
+    message = "Bento is deprecated! Only use ComposeViewHolder temporarily while migrating to full Jetpack Compose. Note that using Compose inside Bento may reduce performance. Please ensure a plan to migrate fully to Jetpack Compose soon.",
+)
 abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
 
     private lateinit var composeView: ComposeView

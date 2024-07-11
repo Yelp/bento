@@ -16,10 +16,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
+ * @deprecated Bento is deprecated!
+ * <p>Please consider using Jetpack Compose https://developer.android.com/jetpack/compose instead.</p>
+ * <br>
  * A {@link Component} comprising of zero or more ordered child {@link Component}s. Useful for
  * maintaining a group of related components in close proximity to each other in the {@link
  * ComponentController}.
  */
+@Deprecated
 public class ComponentGroup extends Component {
 
     /**
