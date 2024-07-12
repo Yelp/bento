@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [21.1.0](https://github.com/Yelp/bento/compare/v21.0.0...v21.1.0) (2024-07-12)
+
+
+### Features
+
+* Mark Bento as deprecated ([b8bd812](https://github.com/Yelp/bento/commit/b8bd8122a10f08a99b4a12014f7e24942e40331b))
+
 ## [21.0.0](https://github.com/Yelp/bento/compare/v20.0.0...v21.0.0) (2023-09-14)
 
 
