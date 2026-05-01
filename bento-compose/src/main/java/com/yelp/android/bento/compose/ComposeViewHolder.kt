@@ -34,6 +34,10 @@ abstract class ComposeViewHolder<P, T> : ComponentViewHolder<P, T>() {
                     element = element ?: return@setContent
                 )
             }
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
         }
         return composeView
     }
